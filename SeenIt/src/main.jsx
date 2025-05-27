@@ -1,13 +1,11 @@
 // src/main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+import Root from './Root';
+import './index.css'; // 전역 CSS (Tailwind 또는 초기화 CSS)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <Root />
   </React.StrictMode>
 );
