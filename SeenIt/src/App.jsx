@@ -1,6 +1,8 @@
 // src/App.jsx
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+
 
 import HomePage from './pages/HomePage';
 import About from './pages/About';
@@ -18,6 +20,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<About />} />
+        <Route path="/login" element={<LoginPage />} /> 
 
         {/* 존재하지 않는 경로 */}
         <Route path="*" element={
