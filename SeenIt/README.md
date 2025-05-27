@@ -1,12 +1,24 @@
-# React + Vite
+# 🎬 영화 상세 페이지
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- 사용자가 선택한 영화에 대한 상세 정보를 보여주는 웹 페이지
+- 현재는 react 없음
 
-Currently, two official plugins are available:
+## 🧩 주요 기능 및 구성
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **헤더 검색 바**  
+  화면 상단에는 영화 제목을 검색할 수 있는 검색 바 (현재는 동작 X)
 
-## Expanding the ESLint configuration
+- **영화 정보 섹션 (왼쪽)**  
+  - 영화 포스터 이미지  
+  - 영화 제목  
+  - 감독명  
+  - 영화 설명 텍스트 (줄바꿈 포함)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **요약 정보 섹션 (오른쪽)**  
+  - 별점 (텍스트 및 별 아이콘)  
+  - 좋아요 수 / 포스트 수  
+  - "Go to Posts", "Go to Reviews" 버튼 (현재는 동작 없음)
+
+## 🎨 디자인 요소
+
+- 아이콘은 [Font Awesome](https://fontawesome.com/) 사용
