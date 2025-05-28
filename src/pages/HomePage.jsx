@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../components/home/Header';
 import SearchBar from '../components/home/SearchBar';
 import MovieCard from '../components/home/MovieCard';
+import SearchPopup from '../components/search/SearchPopup';
 import './HomePage.css';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -11,30 +12,13 @@ import { EffectCoverflow } from 'swiper/modules';
 import { motion } from 'framer-motion';
 
 export default function HomePage() {
-  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
+  const [showSearchPopup, setShowSearchPopup] = useState(false);
   const dummyMovies = Array.from({ length: 10 });
 
   return (
     <div className="homepage-container">
-      {showSearchOverlay && (
-        <div className="overlay">
-          <motion.div
-            className="search-popup"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <input
-              type="text"
-              className="search-input"
-              placeholder="검색어를 입력하세요"
-              autoFocus
-            />
-            <button className="close-btn" onClick={() => setShowSearchOverlay(false)}>
-              닫기
-            </button>
-          </motion.div>
-        </div>
+      {showSearchPopup && (
+        <SearchPopup onClose={() => setShowSearchPopup(false)} />
       )}
 
       <motion.div
@@ -44,7 +28,9 @@ export default function HomePage() {
         transition={{ duration: 0.8, ease: 'easeOut' }}
       >
         <Header />
-        <SearchBar onClick={() => setShowSearchOverlay(true)} />
+        <SearchBar onClick={() => setShowSearchPopup(true)} />
+          console.log("SearchOverlay 상태:", showSearchOverlay);
+
 
         {/* 최신 영화 섹션 */}
         <section className="movie-section">
@@ -100,5 +86,7 @@ export default function HomePage() {
         </section>
       </motion.div>
     </div>
+    
   );
+  
 }

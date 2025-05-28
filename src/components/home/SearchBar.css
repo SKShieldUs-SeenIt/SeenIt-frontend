@@ -11,12 +11,3 @@
   border-radius: 9999px;
   border: 1px solid #ccc;
 }
-
-.search-button {
-  margin-left: 0.75rem;
-  padding: 0.5rem 1rem;
-  background-color: #3b82f6;
-  color: white;
-  border-radius: 9999px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}

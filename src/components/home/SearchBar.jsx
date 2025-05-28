@@ -11,7 +11,6 @@ export default function SearchBar({ onClick }) {
         className="search-input"
         readOnly
       />
-      <button className="search-button">🔍</button>
     </div>
   );
 }
