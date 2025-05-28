@@ -9,32 +9,19 @@ body {
   display: flex;
   justify-content: center;
   overflow-x: hidden;
-}
-
-.homepage {
-  width: 100%;
-  max-width: 1200px;body {
-  overflow-x: hidden;
-}
-
-.homepage-container {
-  width: 100vw;
-  min-height: 100vh;
-  background-color: #f3f4f6;
-  display: flex;
-  justify-content: center;
-  overflow-x: hidden;
+  /* outline: 2px solid red; */
 }
 
 .homepage {
   width: 100%;
   max-width: 1200px;
   padding: 2.5rem;
+  /* outline: 2px solid red; */
 }
 
 .movie-section {
-  margin-bottom: 4rem;
-  overflow: visible;
+  margin-top: 3rem;
+  /* outline: 2px dashed red; */
 }
 
 .section-title {
@@ -45,28 +32,17 @@ body {
 
 .swiper-container {
   padding-bottom: 2rem;
+  width: 100%;
   overflow: visible;
+  /* outline: 2px dashed red; */
 }
 
-  padding: 2.5rem;
-}
-
-.movie-section {
-  margin-bottom: 4rem;
-  overflow: visible;
-}
-
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.swiper-container {
-  padding-bottom: 2rem;
-  overflow: visible;
+.custom-slide {
+  width: 220px !important;
+  flex-shrink: 0;
+  /* outline: 1px solid red; */
 }
 .movie-card:hover {
   transform: scale(1.06);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
