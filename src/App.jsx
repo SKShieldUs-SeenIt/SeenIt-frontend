@@ -1,16 +1,15 @@
 // src/App.jsx
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import HomePage from './pages/HomePage';
 
 export default function App() {
   return (
     <div>
-      {/* 네비게이션 바 */}
-      <nav style={{ padding: '12px', borderBottom: '1px solid #ccc' }}>
-        <Link to="/" style={{ marginRight: '1rem' }}>홈</Link>
-      </nav>
+
 
       {/* 라우팅 영역 */}
       <Routes>
