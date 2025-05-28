@@ -29,7 +29,6 @@ export default function HomePage() {
       >
         <Header />
         <SearchBar onClick={() => setShowSearchPopup(true)} />
-          console.log("SearchOverlay 상태:", showSearchOverlay);
 
 
         {/* 최신 영화 섹션 */}
