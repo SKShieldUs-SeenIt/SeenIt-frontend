@@ -1,6 +1,7 @@
 // src/App.jsx
 import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -17,14 +18,12 @@ export default function App() {
   }, []);
 
   return (
-    <div>
+    <AnimatePresence mode="wait">
       {showSplash ? (
-        <SplashScreen />
+        <SplashScreen key="splash" />
       ) : (
-        <Routes>
+        <Routes key="main">
           <Route path="/" element={<HomePage />} />
-
-          {/* 존재하지 않는 경로 */}
           <Route path="*" element={
             <div style={{ padding: '20px' }}>
               <h2>🚫 페이지를 찾을 수 없습니다</h2>
@@ -32,6 +31,6 @@ export default function App() {
           } />
         </Routes>
       )}
-    </div>
+    </AnimatePresence>
   );
 }

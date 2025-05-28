@@ -8,13 +8,19 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import { EffectCoverflow } from 'swiper/modules';
+import { motion } from 'framer-motion';
 
 export default function HomePage() {
   const dummyMovies = Array.from({ length: 10 });
 
   return (
     <div className="homepage-container">
-      <div className="homepage">
+      <motion.div
+        className="homepage"
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+      >
         <Header />
         <SearchBar />
 
@@ -70,7 +76,7 @@ export default function HomePage() {
             ))}
           </Swiper>
         </section>
-      </div>
+      </motion.div>
     </div>
   );
 }
