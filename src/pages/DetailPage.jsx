@@ -27,7 +27,8 @@ function DetailPage() {
           <div className={styles['poster-title-row']}>
             <img src={moviePoster} alt="Movie Poster" className={styles.poster} />
             <div className={styles['title-block']}>
-              <div className={styles['movie-title']}>The Last of Us (ID: {id})</div>
+              {/* <div className={styles['movie-title']}>The Last of Us (ID: {id})</div> */}
+              <div className={styles['movie-title']}>The Last of Us</div>
               <div className={styles['director-name']}>Directed by Neil Druckmann</div>
             </div>
           </div>
