@@ -41,10 +41,10 @@ export default function HomePage() {
             centeredSlides={true}
             slidesPerView={5}
             coverflowEffect={{
-              rotate: 10,
+              rotate: 30,
               stretch: 0,
               depth: 80,
-              modifier: -1,
+              modifier: 1,
               slideShadows: false,
             }}
             className="swiper-container"
