@@ -1,0 +1,14 @@
+.header {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.header-subtitle {
+  font-size: 1.125rem;
+  color: #4b5563;
+}
+
+.header-title {
+  font-size: 2.25rem;
+  font-weight: bold;
+}
