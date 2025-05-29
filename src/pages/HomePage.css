@@ -1,0 +1,96 @@
+body {
+  overflow-x: hidden;
+}
+
+.homepage-container {
+  width: 100vw;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;
+  /* outline: 2px solid red; */
+}
+
+.homepage {
+  width: 100%;
+  max-width: 1200px;
+  padding: 2.5rem;
+  /* outline: 2px solid red; */
+}
+
+.movie-section {
+  margin-top: 3rem;
+  /* outline: 2px dashed red; */
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.swiper-container {
+  padding-bottom: 2rem;
+  width: 100%;
+  overflow: visible;
+  /* outline: 2px dashed red; */
+}
+
+.custom-slide {
+  width: 220px !important;
+  flex-shrink: 0;
+  /* outline: 1px solid red; */
+}
+.movie-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Search클릭시 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(97, 93, 93, 0.5);
+  backdrop-filter: blur(1px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.search-popup {
+  width: 90vw;
+  height: 80vh;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+
+.search-input {
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+
+.close-btn {
+  background-color: #4b6cda;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}

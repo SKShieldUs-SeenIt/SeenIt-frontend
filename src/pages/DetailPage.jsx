@@ -2,9 +2,12 @@
 import './DetailPage.css'
 import moviePoster from '../assets/movie.jpg'
 import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
+import React from 'react';
 
 function DetailPage() {
   const navigate = useNavigate()
+  const { id } = useParams();
 
   return (
     <div>
@@ -22,7 +25,7 @@ function DetailPage() {
           <div className="poster-title-row">
             <img src={moviePoster} alt="Movie Poster" className="poster" />
             <div className="title-block">
-              <div className="movie-title">The Last of Us</div>
+              <div className="movie-title">The Last of Us(ID: {id})</div>
               <div className="director-name">Directed by Neil Druckmann</div>
             </div>
           </div>
