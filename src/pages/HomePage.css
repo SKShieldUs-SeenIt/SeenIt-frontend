@@ -33,7 +33,7 @@ body {
 .swiper-container {
   padding-bottom: 2rem;
   width: 100%;
-  overflow: visible;
+  overflow: visible !important;
   /* outline: 2px dashed red; */
 }
 

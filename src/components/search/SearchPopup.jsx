@@ -41,7 +41,7 @@ export default function SearchPopup({ onClose }) {
             marginTop: '20px',
             fontSize: '16px',
             backgroundColor: '#333',
-            color: '#fff',
+             color: '#fff',
             borderRadius: '8px',
             cursor: 'pointer',
           }}

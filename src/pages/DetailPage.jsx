@@ -1,37 +1,39 @@
-// import { useState } from 'react'
-import './DetailPage.css'
-import moviePoster from '../assets/movie.jpg'
-import { useNavigate } from 'react-router-dom'
-import { useParams } from 'react-router-dom';
 import React from 'react';
+import styles from './DetailPage.module.css';
+import moviePoster from '../assets/movie.jpg';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function DetailPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { id } = useParams();
 
   return (
     <div>
-      <div className="header">
-        <div className="search-bar">
-          <input type="text" placeholder="Search movies..." className="search-input" />
-          <button className="search-btn">
+      <div className={styles.header}>
+        <div className={styles['search-bar']}>
+          <input
+            type="text"
+            placeholder="Search movies..."
+            className={styles['search-input']}
+          />
+          <button className={styles['search-btn']}>
             <i className="fas fa-search"></i>
           </button>
         </div>
       </div>
 
-      <div className="wrapper">
-        <div className="left-section">
-          <div className="poster-title-row">
-            <img src={moviePoster} alt="Movie Poster" className="poster" />
-            <div className="title-block">
-              <div className="movie-title">The Last of Us(ID: {id})</div>
-              <div className="director-name">Directed by Neil Druckmann</div>
+      <div className={styles.wrapper}>
+        <div className={styles['left-section']}>
+          <div className={styles['poster-title-row']}>
+            <img src={moviePoster} alt="Movie Poster" className={styles.poster} />
+            <div className={styles['title-block']}>
+              <div className={styles['movie-title']}>The Last of Us (ID: {id})</div>
+              <div className={styles['director-name']}>Directed by Neil Druckmann</div>
             </div>
           </div>
 
-          <h1 className="desc-title">Detail</h1>
-          <div className="movie-desc">
+          <h1 className={styles['desc-title']}>Detail</h1>
+          <div className={styles['movie-desc']}>
             Acolle vis laties handyered and lots fo the peplifiamls dee and you.<br />
             When teeting beting usact the ahony fleationalns unginis on atyns
             ralted to eeteror's aapoital, you the locem and clay oick tosed not
@@ -39,29 +41,45 @@ function DetailPage() {
           </div>
         </div>
 
-        <div className="right-section">
-          <div className="rating-label">Average Star Rating</div>
-          <div className="rating-score">4.0</div>
-          <div className="stars">★★★★☆</div>
+        <div className={styles['right-section']}>
+          <div className={styles['rating-label']}>Average Star Rating</div>
+          <div className={styles['rating-score']}>4.0</div>
+          <div className={styles.stars}>★★★★☆</div>
 
-          <div className="vote-counts">
-            <div>Like<br /><span className="count">5</span></div>
-            <div>Post<br /><span className="count">2</span></div>
+          <div className={styles['vote-counts']}>
+            <div>
+              Like<br />
+              <span className={styles.count}>5</span>
+            </div>
+            <div>
+              Post<br />
+              <span className={styles.count}>2</span>
+            </div>
           </div>
 
-          <div className="button-post">
-            <div className="button-label">View Posts</div>
-            <button className="btn post" onClick={() => navigate('/posts')}>Go to Posts</button>
+          <div className={styles['button-post']}>
+            <div className={styles['button-label']}>View Posts</div>
+            <button
+              className={`${styles.btn} ${styles.post}`}
+              onClick={() => navigate('/posts')}
+            >
+              Go to Posts
+            </button>
           </div>
 
-          <div className="button-review">
-            <div className="button-label">View Reviews</div>
-            <button className="btn review" onClick={() => navigate('/reviews')}>Go to Reviews</button>
+          <div className={styles['button-review']}>
+            <div className={styles['button-label']}>View Reviews</div>
+            <button
+              className={`${styles.btn} ${styles.review}`}
+              onClick={() => navigate('/reviews')}
+            >
+              Go to Reviews
+            </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default DetailPage
+export default DetailPage;
