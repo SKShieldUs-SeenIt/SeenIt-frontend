@@ -1,13 +1,17 @@
+// src/components/search/SearchPopup.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import { EffectCoverflow } from 'swiper/modules';
-import MovieCard from '../home/MovieCard';
 import './SearchPopup.css';
 
-export default function SearchPopup({ onClose, movies = [] }) {
+export default function SearchPopup({ onClose }) {
+  const navigate = useNavigate();
+
+  const handleGoToDetail = () => {
+    onClose(); // 팝업 닫고
+    navigate('/details/123'); // DetailPage로 이동
+  };
+
   return (
     <div className="overlay">
       <motion.div
@@ -29,27 +33,21 @@ export default function SearchPopup({ onClose, movies = [] }) {
         </div>
 
         <h2 className="popup-title">검색 결과</h2>
-        <Swiper
-          modules={[EffectCoverflow]}
-          effect="coverflow"
-          grabCursor={true}
-          centeredSlides={true}
-          slidesPerView={5}
-          coverflowEffect={{
-            rotate: 10,
-            stretch: 0,
-            depth: 80,
-            modifier: -1,
-            slideShadows: false,
+
+        <button
+          onClick={handleGoToDetail}
+          style={{
+            padding: '10px 20px',
+            marginTop: '20px',
+            fontSize: '16px',
+            backgroundColor: '#333',
+            color: '#fff',
+            borderRadius: '8px',
+            cursor: 'pointer',
           }}
-          className="swiper-container"
         >
-          {(movies ?? []).map((_, i) => (
-            <SwiperSlide key={i} className="custom-slide">
-              <MovieCard />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+          👉 상세 페이지로 이동
+        </button>
       </motion.div>
     </div>
   );

@@ -13,7 +13,18 @@ import { motion } from 'framer-motion';
 
 export default function HomePage() {
   const [showSearchPopup, setShowSearchPopup] = useState(false);
-  const dummyMovies = Array.from({ length: 10 });
+    const dummyMovies = [
+    { id: 1, title: 'Inception', rating: 4.8 },
+    { id: 2, title: 'Interstellar', rating: 4.7 },
+    { id: 3, title: 'Tenet', rating: 4.2 },
+    { id: 4, title: 'The Dark Knight', rating: 4.9 },
+    { id: 5, title: 'Dunkirk', rating: 4.0 },
+    { id: 6, title: 'Memento', rating: 4.3 },
+    { id: 7, title: 'The Prestige', rating: 4.6 },
+    { id: 8, title: 'Oppenheimer', rating: 4.5 },
+    { id: 9, title: 'Batman Begins', rating: 4.4 },
+    { id: 10, title: 'Following', rating: 3.8 },
+  ];
 
   return (
     <div className="homepage-container">
