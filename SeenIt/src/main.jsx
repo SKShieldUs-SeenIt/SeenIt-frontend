@@ -2,10 +2,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Root from './Root';
-import './index.css'; // 전역 CSS (Tailwind 또는 초기화 CSS)
+import { Provider } from 'react-redux';
+import { store } from './store';
+import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+-   <Provider store={store}>
     <Root />
+-   </Provider>
   </React.StrictMode>
 );
