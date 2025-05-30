@@ -1,8 +1,8 @@
 .header {
   text-align: center;
   margin: 2rem 0;
-  color: #6b7280;
-
+  
+  color: #eaecef;
 }
 
 .header-subtitle {
@@ -11,6 +11,6 @@
 }
 
 .header-title {
-  font-size: 2.25rem;
+  font-size: 4rem;
   font-weight: bold;
 }

@@ -91,3 +91,9 @@
 .detailBtn:hover {
   background-color: #f40612;
 }
+/* SearchPopup.module.css */
+
+.slide :global(.movie-card:hover) {
+  transform: none !important;
+  box-shadow: none !important;
+}
