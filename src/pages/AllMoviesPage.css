@@ -1,0 +1,17 @@
+.all-movies-page {
+  padding: 40px 20px;
+  background-color: #121212;
+  color: white;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
