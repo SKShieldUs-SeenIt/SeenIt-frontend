@@ -1,7 +1,6 @@
 .header {
   text-align: center;
   margin: 2rem 0;
-  
   color: #eaecef;
 }
 
@@ -11,6 +10,8 @@
 }
 
 .header-title {
-  font-size: 4rem;
+  font-family: 'Anton', sans-serif;
+  font-size: 7rem;
   font-weight: bold;
+
 }

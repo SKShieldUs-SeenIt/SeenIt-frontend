@@ -14,7 +14,8 @@
 }
 
 .splash-text {
-  font-size: 3rem;
+  font-size: 4rem;
+  font-family: 'Anton', sans-serif;
   font-weight: bold;
   color: #111827;
   opacity: 0;

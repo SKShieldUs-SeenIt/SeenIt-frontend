@@ -78,8 +78,9 @@ export default function HomePage() {
         {/* 내가 본 영화 섹션 */}
         <section className="movie-section">
           <h2 className="section-title">내가 본 영화</h2>
-          <button className="view-all-button">View All</button>
-
+              <button className="view-all-button" onClick={() => navigate('/My-movies')}>
+                  View All
+              </button>
           <Swiper
             modules={[EffectCoverflow]}
             effect="coverflow"
