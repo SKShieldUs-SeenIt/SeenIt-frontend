@@ -10,11 +10,13 @@ import WritePostPage from './pages/WritePostPage';
 import PostDetailPage from './pages/PostDetailPage';
 import SplashScreen from './components/splash/SplashScreen';
 import AllMoviesPage from './pages/AllMoviesPage';
+import MySeenMoviePage from './pages/MySeenMoviePage'
 
 import './App.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import './pages/MySeenMoviePage.css';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -48,7 +50,19 @@ export default function App() {
               </motion.div>
             }
           />
-
+        <Route
+            path="/My-movies"
+            element={
+              <motion.div
+                initial={{ x: '100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                // exit={{ x: '-100%', opacity: 0 }}
+                transition={{ duration: 0.7 }}
+              >
+                <MySeenMoviePage />
+              </motion.div>
+            }
+          />
           {/* 나머지는 기본 */}
           <Route path="/details" element={<DetailPage />} />
           <Route path="/details/:id" element={<DetailPage />} />
