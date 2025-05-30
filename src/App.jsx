@@ -11,6 +11,7 @@ import PostDetailPage from './pages/PostDetailPage';
 import SplashScreen from './components/splash/SplashScreen';
 import AllMoviesPage from './pages/AllMoviesPage';
 import MySeenMoviePage from './pages/MySeenMoviePage'
+import ScrollToTop from './components/common/ScrollToTop'; 
 
 import './App.css';
 import 'swiper/css';
@@ -46,6 +47,7 @@ export default function App() {
                 // exit={{ x: '-100%', opacity: 0 }}
                 transition={{ duration: 0.7 }}
               >
+                <ScrollToTop />
                 <AllMoviesPage />
               </motion.div>
             }
@@ -81,6 +83,7 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
+                <ScrollToTop />
                 <div style={{ padding: '20px' }}>
                   <h2>🚫 페이지를 찾을 수 없습니다</h2>
                 </div>
