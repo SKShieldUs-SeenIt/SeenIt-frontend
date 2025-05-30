@@ -24,7 +24,7 @@ export default function App() {
   const location = useLocation();
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 2000);
+    const timer = setTimeout(() => setShowSplash(false), 2500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -61,6 +61,7 @@ export default function App() {
                 // exit={{ x: '-100%', opacity: 0 }}
                 transition={{ duration: 0.7 }}
               >
+                <ScrollToTop />
                 <MySeenMoviePage />
               </motion.div>
             }

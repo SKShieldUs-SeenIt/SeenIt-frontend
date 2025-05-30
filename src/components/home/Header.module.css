@@ -2,16 +2,19 @@
   text-align: center;
   margin: 2rem 0;
   color: #eaecef;
+  position: relative; /* 추가 */
 }
 
 .header-subtitle {
+  position: absolute;  /* 오른쪽 상단으로 이동시키기 위해 */
+  top: 0.5rem;
+  right: 1rem;
   font-size: 1.125rem;
-  color: #4b5563;
+  color:  #f3f5f7;
 }
 
 .header-title {
   font-family: 'Anton', sans-serif;
   font-size: 7rem;
   font-weight: bold;
-
 }
