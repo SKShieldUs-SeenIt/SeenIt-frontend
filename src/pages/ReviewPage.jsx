@@ -25,6 +25,7 @@ function ReviewPage() {
   const [selectedReviewId, setSelectedReviewId] = useState(null);
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editingText, setEditingText] = useState("");
+  const [editingStars, setEditingStars] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
@@ -133,20 +134,19 @@ function ReviewPage() {
   };
 
   const handleEdit = (review) => {
-    setIsEditing(true);
-    setEditReviewId(review.id);
-    setShowReviewBox(true);
-    setReviewText(review.description);
-    setSelectedStars(review.stars.replace(/☆/g, "").length); 
+    setEditingReviewId(review.id);
+    setEditingText(review.description);
+    setEditingStars(review.stars);
   };
 
-  const handleSaveEdit = (id) => {
+  const handleSaveEdit = () => {
     setNewReviews((prev) =>
       prev.map((r) =>
-        r.id === id
+        r.id === editingReviewId
           ? {
               ...r,
               description: editingText,
+              stars: editingStars,
               createdAt: new Date().toLocaleString(),
             }
           : r
@@ -154,6 +154,7 @@ function ReviewPage() {
     );
     setEditingReviewId(null);
     setEditingText("");
+    setEditingStars(0);
   };
 
   const handleCancelEdit = () => {
@@ -165,12 +166,12 @@ function ReviewPage() {
 
   const [selectedStars, setSelectedStars] = useState(0);
 
-  const renderStarSelector = () => {
+  const renderStarSelector = (value, onChange) => {
     return (
       <div className={styles["star-selector"]} style={{ userSelect: "none" }}>
         {[1, 2, 3, 4, 5].map((star) => {
-          const isFull = selectedStars >= star;
-          const isHalf = selectedStars >= star - 0.5 && selectedStars < star;
+          const isFull = value >= star;
+          const isHalf = value >= star - 0.5 && value < star;
 
           return (
             <span
@@ -181,7 +182,6 @@ function ReviewPage() {
                 cursor: "pointer",
               }}
             >
-              {/* 왼쪽 반 클릭 영역 */}
               <span
                 style={{
                   position: "absolute",
@@ -191,9 +191,8 @@ function ReviewPage() {
                   height: "100%",
                   zIndex: 2,
                 }}
-                onClick={() => setSelectedStars(star - 0.5)}
+                onClick={() => onChange(star - 0.5)}
               />
-              {/* 오른쪽 반 클릭 영역 */}
               <span
                 style={{
                   position: "absolute",
@@ -203,16 +202,16 @@ function ReviewPage() {
                   height: "100%",
                   zIndex: 2,
                 }}
-                onClick={() => setSelectedStars(star)}
+                onClick={() => onChange(star)}
               />
-              {/* 별 렌더링 */}
-              <span
-                className={`${styles.star} ${
-                  isFull ? styles.full : isHalf ? styles.half : ""
-                }`}
-                style={{ pointerEvents: "none" }}
-              >
-                ★
+              <span style={{ pointerEvents: "none", color: "#f5c518" }}>
+                {isFull ? (
+                  <i className="fas fa-star" />
+                ) : isHalf ? (
+                  <i className="fas fa-star-half-alt" />
+                ) : (
+                  <i className="far fa-star" />
+                )}
               </span>
             </span>
           );
@@ -350,7 +349,7 @@ function ReviewPage() {
                 </div>
               </div>
               {/* <div className={styles["review-stars"]}>★★★★☆</div> */}
-              {renderStarSelector()}
+              {renderStarSelector(selectedStars, setSelectedStars)}
               <textarea
                 className={styles["review-textarea"]}
                 placeholder="Review Description..."
@@ -394,57 +393,67 @@ function ReviewPage() {
                     {review.username}
                   </span>
                 </div>
-                {review.isEditable && (
+
+                {review.isEditable && editingReviewId !== review.id && (
                   <div className={styles["review-actions"]}>
-                    {editingReviewId === review.id ? (
-                      <>
-                        <button
-                          className={`${styles.btn} ${styles.save}`}
-                          onClick={() => handleSaveEdit(review.id)}
-                        >
-                          save
-                        </button>
-                        <button
-                          className={`${styles.btn} ${styles.cancel}`}
-                          onClick={handleCancelEdit}
-                        >
-                          cancel
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className={`${styles.btn} ${styles.edit}`}
-                          onClick={() => handleEdit(review)}
-                        >
-                          edit
-                        </button>
-                        <button
-                          className={`${styles.btn} ${styles.delete}`}
-                          onClick={() => handleAskDelete(review.id)}
-                        >
-                          delete
-                        </button>
-                      </>
-                    )}
+                    <button
+                      className={`${styles.btn} ${styles.edit}`}
+                      onClick={() => handleEdit(review)}
+                    >
+                      edit
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.delete}`}
+                      onClick={() => handleAskDelete(review.id)}
+                    >
+                      delete
+                    </button>
                   </div>
                 )}
               </div>
-              <div className={styles["review-stars"]}>{renderStars(review.stars)}</div>
+
+              {/* ✅ 편집 중일 때는 수정 UI 보여줌 */}
               {editingReviewId === review.id ? (
-                <textarea
-                  className={styles["review-textarea"]}
-                  value={editingText}
-                  onChange={(e) => setEditingText(e.target.value)}
-                />
+                <>
+                  <div className={styles["review-stars"]}>
+                    {/* 별점 선택 UI */}
+                    {renderStarSelector(editingStars, setEditingStars)}
+                  </div>
+                  <textarea
+                    className={styles["review-textarea"]}
+                    value={editingText}
+                    onChange={(e) => setEditingText(e.target.value)}
+                  />
+                  <div className={styles["review-actions"]}>
+                    <button
+                      className={`${styles.btn} ${styles.save}`}
+                      onClick={handleSaveEdit}
+                    >
+                      save
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.cancel}`}
+                      onClick={handleCancelEdit}
+                    >
+                      cancel
+                    </button>
+                  </div>
+                </>
               ) : (
-                <div className={styles["review-desc"]}>
-                  {review.description}
-                </div>
+                <>
+                  <div className={styles["review-stars"]}>
+                    {renderStars(review.stars)}
+                  </div>
+                  <div className={styles["review-desc"]}>
+                    {review.description}
+                  </div>
+                  <div className={styles["review-footer"]}>
+                    <div className={styles["review-date"]}>
+                      {review.createdAt}
+                    </div>
+                  </div>
+                </>
               )}
-              <div className={styles["review-footer"]}>
-                <div className={styles["review-date"]}>{review.createdAt}</div>
-              </div>
             </motion.div>
           ))}
         </motion.div>
