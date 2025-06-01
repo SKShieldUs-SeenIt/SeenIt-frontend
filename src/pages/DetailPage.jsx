@@ -15,8 +15,18 @@ function DetailPage() {
       transition={{ duration: 1.2 }}
     >
       <div>
-        <div className={styles.header}>
-          <div className={styles["search-bar"]}>
+        <motion.div
+          className={styles.header}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.div
+            className={styles["search-bar"]}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+          >
             <input
               type="text"
               placeholder="Search movies..."
@@ -25,8 +35,8 @@ function DetailPage() {
             <button className={styles["search-btn"]}>
               <i className="fas fa-search"></i>
             </button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         <div className={styles.wrapper}>
           <div className={styles["left-section"]}>
