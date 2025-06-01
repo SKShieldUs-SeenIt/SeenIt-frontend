@@ -4,7 +4,6 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import SplashScreen from './components/splash/SplashScreen';
 import SocialLoginPage from './pages/SocialLoginPage';
-import SignupPage from './pages/SignupPage';
 import HomePage from './pages/HomePage';
 import DetailPage from './pages/DetailPage';
 import ReviewPage from './pages/ReviewPage';
@@ -14,6 +13,8 @@ import PostDetailPage from './pages/PostDetailPage';
 import AllMoviesPage from './pages/AllMoviesPage';
 import MySeenMoviePage from './pages/MySeenMoviePage';
 import ScrollToTop from './components/common/ScrollToTop';
+import SignupIDPage from './pages/SignupIdPage'; // 추가
+import SignupSplashScreen from './components/splash/SignupSplashScreen';
 
 import './App.css';
 import 'swiper/css';
@@ -44,7 +45,21 @@ export default function App() {
         <Routes location={location} key={location.pathname}>
           {/* 로그인 및 회원가입 흐름 */}
           <Route path="/login" element={<SocialLoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route
+            path="/signup/id"
+            element={
+              <motion.div
+                initial={{ x: '-100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                // exit={{ x: '100%', opacity: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <SignupIDPage />
+              </motion.div>
+            }
+          />
+          <Route path="/signup/splash" element={<SignupSplashScreen />} />
+
 
           {/* 메인 홈 */}
           <Route path="/home" element={<HomePage />} />

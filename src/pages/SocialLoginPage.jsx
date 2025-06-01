@@ -10,9 +10,8 @@ export default function SocialLoginPage() {
     console.log('카카오 로그인');
   };
 
-  const handleGoogleLogin = () => {
-    // TODO: 구글 로그인 로직 연결
-    console.log('구글 로그인');
+    const handleSignupClick = () => {
+    navigate('/signup/splash'); // 회원가입 스플래쉬 화면으로 이동
   };
 
   return (
@@ -22,9 +21,7 @@ export default function SocialLoginPage() {
 
       <div className="login-buttons">
         <button className="kakao-btn" onClick={handleKakaoLogin}>카카오로 로그인</button>
-          <button onClick={() => navigate('/signup')}>
-        📌 회원가입 테스트용 이동
-      </button>
+         <button onClick={handleSignupClick}>회원가입 테스트용 이동</button>
       </div>
     </div>
   );

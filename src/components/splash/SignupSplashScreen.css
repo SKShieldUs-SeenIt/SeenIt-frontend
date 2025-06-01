@@ -1,0 +1,32 @@
+.signup-splash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #111;
+  color: white;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.signup-text {
+  font-size: 3rem;
+  font-family: 'Anton', sans-serif;
+}
+
+.signup-subtitle {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
