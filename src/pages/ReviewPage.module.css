@@ -170,6 +170,7 @@
   color: #ccc;
   cursor: pointer;
   user-select: none;
+  width: 190px;
 }
 
 .star-selector .star {
@@ -177,6 +178,26 @@
 }
 
 .star-selector .selected {
+  color: gold;
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+  font-size: 2rem;
+  color: lightgray;
+}
+
+.star.full {
+  color: gold;
+}
+
+.star.half::before {
+  content: "★";
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
   color: gold;
 }
 
@@ -337,6 +358,13 @@
   font-size: 19px;
 }
 
+.confirm {
+  background-color: #4c9d62;
+  width: 70px;
+  height: 30px;
+  font-size: 15px;
+}
+
 .modal-close-btn {
   position: absolute;
   top: 3px;
@@ -351,3 +379,14 @@
   padding: 0;
 }
 
+.star-and-error {
+  display: flex;
+  align-items: center; /* 수직 중앙 정렬 */
+  gap: 8px; /* 별점과 메시지 사이 간격 */
+}
+
+.error-message {
+  color: rgb(228, 69, 69);
+  margin-top: 3px;
+  /* font-weight: bold; */
+}

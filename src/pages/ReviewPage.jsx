@@ -27,6 +27,7 @@ function ReviewPage() {
   const [editingText, setEditingText] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
+  const [showWarningModal, setShowWarningModal] = useState(false);
 
   const initialReviews = [
     {
@@ -72,7 +73,10 @@ function ReviewPage() {
   ];
 
   const handleSubmit = () => {
-    if (!reviewText.trim()) return;
+    if (selectedStars === 0) {
+      setShowWarningModal(true);
+      return;
+    }
 
     if (isEditing) {
       setNewReviews((prev) =>
@@ -116,6 +120,12 @@ function ReviewPage() {
     setNewReviews((prev) => prev.filter((r) => r.id !== selectedReviewId));
     setShowConfirm(false);
     setSelectedReviewId(null);
+
+    setEditingReviewId(null);
+    setEditingText("");
+    setEditReviewId(null);
+    setReviewText("");
+    setSelectedStars(0);
   };
 
   const handleCancelDelete = () => {
@@ -158,18 +168,56 @@ function ReviewPage() {
 
   const renderStarSelector = () => {
     return (
-      <div className={styles["star-selector"]}>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <span
-            key={star}
-            className={`${styles["star"]} ${
-              star <= selectedStars ? styles["selected"] : ""
-            }`}
-            onClick={() => setSelectedStars(star)}
-          >
-            ★
-          </span>
-        ))}
+      <div className={styles["star-selector"]} style={{ userSelect: "none" }}>
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isFull = selectedStars >= star;
+          const isHalf = selectedStars >= star - 0.5 && selectedStars < star;
+
+          return (
+            <span
+              key={star}
+              style={{
+                position: "relative",
+                display: "inline-block",
+                cursor: "pointer",
+              }}
+            >
+              {/* 왼쪽 반 클릭 영역 */}
+              <span
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  width: "50%",
+                  height: "100%",
+                  zIndex: 2,
+                }}
+                onClick={() => setSelectedStars(star - 0.5)}
+              />
+              {/* 오른쪽 반 클릭 영역 */}
+              <span
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  width: "50%",
+                  height: "100%",
+                  zIndex: 2,
+                }}
+                onClick={() => setSelectedStars(star)}
+              />
+              {/* 별 렌더링 */}
+              <span
+                className={`${styles.star} ${
+                  isFull ? styles.full : isHalf ? styles.half : ""
+                }`}
+                style={{ pointerEvents: "none" }}
+              >
+                ★
+              </span>
+            </span>
+          );
+        })}
       </div>
     );
   };
@@ -278,7 +326,13 @@ function ReviewPage() {
               <div className={styles["review-buttons"]}>
                 <button
                   className={`${styles.btn} ${styles.cancel}`}
-                  onClick={() => setShowReviewBox(false)}
+                  onClick={() => {
+                    setShowReviewBox(false);
+                    setReviewText("");
+                    setSelectedStars(0);
+                    setIsEditing(false);
+                    setEditReviewId(null);
+                  }}
                 >
                   cancel
                 </button>
@@ -389,6 +443,33 @@ function ReviewPage() {
                   onClick={handleCancelDelete}
                 >
                   No
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showWarningModal && (
+          <div className={styles["modal-overlay"]}>
+            <motion.div
+              className={styles["modal-content"]}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <button
+                className={styles["modal-close-btn"]}
+                onClick={() => setShowWarningModal(false)}
+              >
+                ×
+              </button>
+              <p>별점을 선택해주세요.</p>
+              <div className={styles["modal-buttons"]}>
+                <button
+                  className={`${styles.btn} ${styles.confirm}`}
+                  onClick={() => setShowWarningModal(false)}
+                >
+                  OK
                 </button>
               </div>
             </motion.div>
