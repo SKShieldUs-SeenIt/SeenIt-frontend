@@ -45,12 +45,7 @@ function WritePostsPage() {
           Posts
         </motion.h1>
 
-        <motion.div
-          className={styles["post-container"]}
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
-        >
+        <motion.div className={styles["post-container"]}>
           <motion.div
             className={styles["post-movie"]}
             initial={{ x: -100, opacity: 0 }}
@@ -70,7 +65,12 @@ function WritePostsPage() {
             </div>
           </motion.div>
 
-          <div className={styles["post-card"]}>
+          <motion.div
+            className={styles["post-card"]}
+            initial={{ y: -30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.4, delay:0.5 }}
+          >
             <div className={styles["post-header"]}>
               <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
               <span className={styles["user-name"]}>User Name</span>
@@ -95,7 +95,7 @@ function WritePostsPage() {
                 placeholder="Post Description..."
               ></textarea>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </motion.div>

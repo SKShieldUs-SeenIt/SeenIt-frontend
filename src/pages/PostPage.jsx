@@ -14,7 +14,7 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: -20 },
+  hidden: { opacity: 0, y: -100 },
   visible: {
     opacity: 1,
     y: 0,
@@ -93,7 +93,7 @@ function PostPage() {
             <motion.button
               className={`${styles.btn} ${styles.writePosts}`}
               onClick={() => navigate("/writePosts")}
-              initial={{ y: -10, scale: 0.8, opacity: 0 }}
+              initial={{ y: -30, scale: 0.8, opacity: 0 }}
               animate={{ y: 0, scale: 1, opacity: 1 }}
               whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
