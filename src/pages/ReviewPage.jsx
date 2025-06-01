@@ -23,6 +23,10 @@ function ReviewPage() {
   const [newReviews, setNewReviews] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editReviewId, setEditReviewId] = useState(null);
 
   const initialReviews = [
     {
@@ -70,18 +74,37 @@ function ReviewPage() {
   const handleSubmit = () => {
     if (!reviewText.trim()) return;
 
-    const newReview = {
-      id: Date.now(),
-      username: "User Name",
-      stars: "★★★★☆",
-      description: reviewText,
-      createdAt: new Date().toLocaleString(),
-      isEditable: true,
-    };
+    if (isEditing) {
+      setNewReviews((prev) =>
+        prev.map((r) =>
+          r.id === editReviewId
+            ? {
+                ...r,
+                description: reviewText,
+                stars:
+                  "★".repeat(selectedStars) + "☆".repeat(5 - selectedStars),
+                createdAt: new Date().toLocaleString(),
+              }
+            : r
+        )
+      );
+    } else {
+      const newReview = {
+        id: Date.now(),
+        username: "User Name",
+        stars: "★".repeat(selectedStars) + "☆".repeat(5 - selectedStars),
+        description: reviewText,
+        createdAt: new Date().toLocaleString(),
+        isEditable: true,
+      };
+      setNewReviews((prev) => [newReview, ...prev]);
+    }
 
-    setNewReviews((prev) => [newReview, ...prev]);
+    // 공통 초기화
     setReviewText("");
     setShowReviewBox(false);
+    setIsEditing(false);
+    setEditReviewId(null);
   };
 
   const handleAskDelete = (id) => {
@@ -90,7 +113,7 @@ function ReviewPage() {
   };
 
   const handleConfirmDelete = () => {
-    setNewReviews((prev) => prev.filter((review) => review.id !== selectedReviewId));
+    setNewReviews((prev) => prev.filter((r) => r.id !== selectedReviewId));
     setShowConfirm(false);
     setSelectedReviewId(null);
   };
@@ -100,7 +123,56 @@ function ReviewPage() {
     setSelectedReviewId(null);
   };
 
+  const handleEdit = (review) => {
+    setIsEditing(true);
+    setEditReviewId(review.id);
+    setShowReviewBox(true);
+    setReviewText(review.description);
+    setSelectedStars(review.stars.replace(/☆/g, "").length); // ★ 개수 세기
+  };
+
+  const handleSaveEdit = (id) => {
+    setNewReviews((prev) =>
+      prev.map((r) =>
+        r.id === id
+          ? {
+              ...r,
+              description: editingText,
+              createdAt: new Date().toLocaleString(),
+            }
+          : r
+      )
+    );
+    setEditingReviewId(null);
+    setEditingText("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingReviewId(null);
+    setEditingText("");
+  };
+
   const allReviews = [...newReviews, ...initialReviews];
+
+  const [selectedStars, setSelectedStars] = useState(0);
+
+  const renderStarSelector = () => {
+    return (
+      <div className={styles["star-selector"]}>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={`${styles["star"]} ${
+              star <= selectedStars ? styles["selected"] : ""
+            }`}
+            onClick={() => setSelectedStars(star)}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <motion.div
@@ -173,7 +245,7 @@ function ReviewPage() {
                 onClick={() => setShowReviewBox(true)}
                 initial={{ y: -10, scale: 0.8, opacity: 0 }}
                 animate={{ y: 0, scale: 1, opacity: 1 }}
-                whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
+                whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
               >
                 Write Review
@@ -195,7 +267,8 @@ function ReviewPage() {
                   <span className={styles["review-username"]}>User Name</span>
                 </div>
               </div>
-              <div className={styles["review-stars"]}>★★★★☆</div>
+              {/* <div className={styles["review-stars"]}>★★★★☆</div> */}
+              {renderStarSelector()}
               <textarea
                 className={styles["review-textarea"]}
                 placeholder="Review Description..."
@@ -235,20 +308,52 @@ function ReviewPage() {
                 </div>
                 {review.isEditable && (
                   <div className={styles["review-actions"]}>
-                    <button className={`${styles.btn} ${styles.edit}`}>
-                      edit
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.delete}`}
-                      onClick={() => handleAskDelete(review.id)}
-                    >
-                      delete
-                    </button>
+                    {editingReviewId === review.id ? (
+                      <>
+                        <button
+                          className={`${styles.btn} ${styles.save}`}
+                          onClick={() => handleSaveEdit(review.id)}
+                        >
+                          save
+                        </button>
+                        <button
+                          className={`${styles.btn} ${styles.cancel}`}
+                          onClick={handleCancelEdit}
+                        >
+                          cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          className={`${styles.btn} ${styles.edit}`}
+                          onClick={() => handleEdit(review)}
+                        >
+                          edit
+                        </button>
+                        <button
+                          className={`${styles.btn} ${styles.delete}`}
+                          onClick={() => handleAskDelete(review.id)}
+                        >
+                          delete
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
               <div className={styles["review-stars"]}>{review.stars}</div>
-              <div className={styles["review-desc"]}>{review.description}</div>
+              {editingReviewId === review.id ? (
+                <textarea
+                  className={styles["review-textarea"]}
+                  value={editingText}
+                  onChange={(e) => setEditingText(e.target.value)}
+                />
+              ) : (
+                <div className={styles["review-desc"]}>
+                  {review.description}
+                </div>
+              )}
               <div className={styles["review-footer"]}>
                 <div className={styles["review-date"]}>{review.createdAt}</div>
               </div>
@@ -265,6 +370,12 @@ function ReviewPage() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
+              <button
+                className={styles["modal-close-btn"]}
+                onClick={handleCancelDelete}
+              >
+                ×
+              </button>
               <p>리뷰를 삭제하시겠습니까?</p>
               <div className={styles["modal-buttons"]}>
                 <button
