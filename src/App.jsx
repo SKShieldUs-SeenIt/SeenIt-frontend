@@ -15,6 +15,7 @@ import ScrollToTop from './components/common/ScrollToTop';
 import SignupIDPage from './pages/SignupIdPage';
 import SignupSplashScreen from './components/splash/SignupSplashScreen';
 import SignupGenrePage from './pages/SignupGenrePage';
+import AuthCallback from './pages/AuthCallback'; // 경로는 실제 파일 경로에 맞게 수정
 
 import './App.css';
 import 'swiper/css';
@@ -55,7 +56,7 @@ export default function App() {
             path="/signup/id"
             element={
               <motion.div
-                initial={{ x: '-100%', opacity: 0 }}
+                initial={{ x: '100%', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.6 }}
               >
@@ -67,15 +68,17 @@ export default function App() {
               path="/signup/genre"
               element={
                 <motion.div
-                  initial={{ x: '-100%', opacity: 0 }}
+                  initial={{ x: '100%', opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ duration: 0.6 }}
+                  
                 >
                   <SignupGenrePage />
                 </motion.div>
               }
             />
           <Route path="/signup/splash" element={<SignupSplashScreen />} />
+          <Route path="/auth/kakao/callback" element={<AuthCallback />} />
 
           {/* 메인 홈 */}
           <Route path="/home" element={<HomePage />} />
