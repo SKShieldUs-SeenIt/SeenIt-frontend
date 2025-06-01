@@ -1,0 +1,58 @@
+/* SignupPage.module.css */
+.signupContainer {
+  max-width: 500px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: #1f1f1f;
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.signupTitle {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.signupForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.signupLabel {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.signupInput,
+.signupSelect {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.signupInput[type="file"] {
+  color: white;
+}
+
+.signupButton {
+  margin-top: 1rem;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #e50914;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.signupButton:hover {
+  background-color: #b20710;
+}
