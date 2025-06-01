@@ -5,9 +5,12 @@ import { useNavigate } from 'react-router-dom';
 
 export default function SocialLoginPage() {
       const navigate = useNavigate();
+     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+
   const handleKakaoLogin = () => {
     // TODO: 카카오 로그인 로직 연결
     console.log('카카오 로그인');
+        window.location.href = kakaoAuthUrl;
   };
 
     const handleSignupClick = () => {

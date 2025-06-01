@@ -18,7 +18,7 @@ export default function IDPage() {
   return (
     <div className="id-container">
       <div className="id-box">
-        <h2 className="id-title">먼저 아이디를 입력해주세요</h2>
+        <h2 className="id-title">먼저 아이디를 입력해주세요 :)</h2>
         <input
           type="text"
           className="id-input"
