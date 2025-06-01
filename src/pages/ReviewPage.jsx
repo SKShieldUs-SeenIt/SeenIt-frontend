@@ -33,7 +33,7 @@ function ReviewPage() {
     {
       id: 1,
       username: "User Name",
-      stars: "★★★★☆",
+      stars: 4.5,
       description: "Review Description...",
       createdAt: "2024-01-01 12:00",
       isEditable: false,
@@ -41,7 +41,7 @@ function ReviewPage() {
     {
       id: 2,
       username: "User Name",
-      stars: "★★★☆☆",
+      stars: 3,
       description: "Another review...",
       createdAt: "2024-01-02 13:00",
       isEditable: false,
@@ -49,7 +49,7 @@ function ReviewPage() {
     {
       id: 3,
       username: "User Name",
-      stars: "★★★★★",
+      stars: 5,
       description: "Loved it!",
       createdAt: "2024-01-03 14:00",
       isEditable: false,
@@ -57,7 +57,7 @@ function ReviewPage() {
     {
       id: 4,
       username: "User Name",
-      stars: "★★★☆☆",
+      stars: 3,
       description: "It was okay.",
       createdAt: "2024-01-04 15:00",
       isEditable: false,
@@ -65,7 +65,7 @@ function ReviewPage() {
     {
       id: 5,
       username: "User Name",
-      stars: "★★★★☆",
+      stars: 4,
       description: "Pretty good!",
       createdAt: "2024-01-05 16:00",
       isEditable: false,
@@ -85,8 +85,7 @@ function ReviewPage() {
             ? {
                 ...r,
                 description: reviewText,
-                stars:
-                  "★".repeat(selectedStars) + "☆".repeat(5 - selectedStars),
+                stars: selectedStars,
                 createdAt: new Date().toLocaleString(),
               }
             : r
@@ -96,7 +95,7 @@ function ReviewPage() {
       const newReview = {
         id: Date.now(),
         username: "User Name",
-        stars: "★".repeat(selectedStars) + "☆".repeat(5 - selectedStars),
+        stars: selectedStars,
         description: reviewText,
         createdAt: new Date().toLocaleString(),
         isEditable: true,
@@ -138,7 +137,7 @@ function ReviewPage() {
     setEditReviewId(review.id);
     setShowReviewBox(true);
     setReviewText(review.description);
-    setSelectedStars(review.stars.replace(/☆/g, "").length); // ★ 개수 세기
+    setSelectedStars(review.stars.replace(/☆/g, "").length); 
   };
 
   const handleSaveEdit = (id) => {
@@ -220,6 +219,41 @@ function ReviewPage() {
         })}
       </div>
     );
+  };
+
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <i
+          key={`full-${i}`}
+          className="fas fa-star"
+          style={{ color: "#f5c518" }}
+        ></i>
+      );
+    }
+    if (hasHalfStar) {
+      stars.push(
+        <i
+          key="half"
+          className="fas fa-star-half-alt"
+          style={{ color: "#f5c518" }}
+        ></i>
+      );
+    }
+    while (stars.length < 5) {
+      stars.push(
+        <i
+          key={`empty-${stars.length}`}
+          className="far fa-star"
+          style={{ color: "#f5c518" }}
+        ></i>
+      );
+    }
+    return stars;
   };
 
   return (
@@ -396,7 +430,7 @@ function ReviewPage() {
                   </div>
                 )}
               </div>
-              <div className={styles["review-stars"]}>{review.stars}</div>
+              <div className={styles["review-stars"]}>{renderStars(review.stars)}</div>
               {editingReviewId === review.id ? (
                 <textarea
                   className={styles["review-textarea"]}
