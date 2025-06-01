@@ -23,11 +23,46 @@ function ReviewPage() {
   const [newReviews, setNewReviews] = useState([]);
 
   const initialReviews = [
-    { id: 1, username: "User Name", stars: "★★★★☆", description: "Review Description...", createdAt: "2024-01-01 12:00" },
-    { id: 2, username: "User Name", stars: "★★★☆☆", description: "Another review...", createdAt: "2024-01-02 13:00" },
-    { id: 3, username: "User Name", stars: "★★★★★", description: "Loved it!", createdAt: "2024-01-03 14:00" },
-    { id: 4, username: "User Name", stars: "★★★☆☆", description: "It was okay.", createdAt: "2024-01-04 15:00" },
-    { id: 5, username: "User Name", stars: "★★★★☆", description: "Pretty good!", createdAt: "2024-01-05 16:00" },
+    {
+      id: 1,
+      username: "User Name",
+      stars: "★★★★☆",
+      description: "Review Description...",
+      createdAt: "2024-01-01 12:00",
+      isEditable: false,
+    },
+    {
+      id: 2,
+      username: "User Name",
+      stars: "★★★☆☆",
+      description: "Another review...",
+      createdAt: "2024-01-02 13:00",
+      isEditable: false,
+    },
+    {
+      id: 3,
+      username: "User Name",
+      stars: "★★★★★",
+      description: "Loved it!",
+      createdAt: "2024-01-03 14:00",
+      isEditable: false,
+    },
+    {
+      id: 4,
+      username: "User Name",
+      stars: "★★★☆☆",
+      description: "It was okay.",
+      createdAt: "2024-01-04 15:00",
+      isEditable: false,
+    },
+    {
+      id: 5,
+      username: "User Name",
+      stars: "★★★★☆",
+      description: "Pretty good!",
+      createdAt: "2024-01-05 16:00",
+      isEditable: false,
+    },
   ];
 
   const handleSubmit = () => {
@@ -39,6 +74,7 @@ function ReviewPage() {
       stars: "★★★★☆",
       description: reviewText,
       createdAt: new Date().toLocaleString(),
+      isEditable: true,
     };
 
     setNewReviews((prev) => [newReview, ...prev]);
@@ -47,6 +83,10 @@ function ReviewPage() {
   };
 
   const allReviews = [...newReviews, ...initialReviews];
+
+  const handleDelete = (id) => {
+    setNewReviews((prev) => prev.filter((review) => review.id !== id));
+  };
 
   return (
     <motion.div
@@ -109,9 +149,7 @@ function ReviewPage() {
               className={styles["review-poster"]}
             />
             <div className={styles["review-info"]}>
-              <div className={styles["review-movie-title"]}>
-                The Last of Us
-              </div>
+              <div className={styles["review-movie-title"]}>The Last of Us</div>
               <div className={styles["review-director"]}>
                 Directed by Neil Druckmann
               </div>
@@ -186,21 +224,22 @@ function ReviewPage() {
                     {review.username}
                   </span>
                 </div>
-                {index === 0 && (
+                {review.isEditable && (
                   <div className={styles["review-actions"]}>
                     <button className={`${styles.btn} ${styles.edit}`}>
                       edit
                     </button>
-                    <button className={`${styles.btn} ${styles.delete}`}>
+                    <button
+                      className={`${styles.btn} ${styles.delete}`}
+                      onClick={() => handleDelete(review.id)}
+                    >
                       delete
                     </button>
                   </div>
                 )}
               </div>
               <div className={styles["review-stars"]}>{review.stars}</div>
-              <div className={styles["review-desc"]}>
-                {review.description}
-              </div>
+              <div className={styles["review-desc"]}>{review.description}</div>
               <div className={styles["review-footer"]}>
                 <div className={styles["review-date"]}>{review.createdAt}</div>
               </div>
