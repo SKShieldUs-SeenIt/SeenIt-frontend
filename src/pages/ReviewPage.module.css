@@ -140,7 +140,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  
 }
 
 .user-icon {
@@ -150,6 +149,7 @@
 
 .review-username {
   font-weight: bold;
+  margin-left: 10px;
 }
 
 .review-date {

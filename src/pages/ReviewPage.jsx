@@ -14,11 +14,39 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: -100 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 function ReviewPage() {
   const [showReviewBox, setShowReviewBox] = useState(false);
+  const [reviewText, setReviewText] = useState("");
+  const [newReviews, setNewReviews] = useState([]);
+
+  const initialReviews = [
+    { id: 1, username: "User Name", stars: "★★★★☆", description: "Review Description...", createdAt: "2024-01-01 12:00" },
+    { id: 2, username: "User Name", stars: "★★★☆☆", description: "Another review...", createdAt: "2024-01-02 13:00" },
+    { id: 3, username: "User Name", stars: "★★★★★", description: "Loved it!", createdAt: "2024-01-03 14:00" },
+    { id: 4, username: "User Name", stars: "★★★☆☆", description: "It was okay.", createdAt: "2024-01-04 15:00" },
+    { id: 5, username: "User Name", stars: "★★★★☆", description: "Pretty good!", createdAt: "2024-01-05 16:00" },
+  ];
+
+  const handleSubmit = () => {
+    if (!reviewText.trim()) return;
+
+    const newReview = {
+      id: Date.now(),
+      username: "User Name",
+      stars: "★★★★☆",
+      description: reviewText,
+      createdAt: new Date().toLocaleString(),
+    };
+
+    setNewReviews((prev) => [newReview, ...prev]);
+    setReviewText("");
+    setShowReviewBox(false);
+  };
+
+  const allReviews = [...newReviews, ...initialReviews];
 
   return (
     <motion.div
@@ -27,6 +55,7 @@ function ReviewPage() {
       transition={{ duration: 1.2 }}
     >
       <div>
+        {/* Header */}
         <motion.div
           className={styles.header}
           initial={{ opacity: 0 }}
@@ -50,6 +79,7 @@ function ReviewPage() {
           </motion.div>
         </motion.div>
 
+        {/* Title */}
         <motion.h1
           className={styles["review-title"]}
           initial={{ y: -40, opacity: 0 }}
@@ -59,12 +89,14 @@ function ReviewPage() {
           Reviews
         </motion.h1>
 
+        {/* Review Container */}
         <motion.div
           className={styles["review-container"]}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
+          {/* Movie Info */}
           <motion.div
             className={styles["review-movie"]}
             initial={{ x: -100, opacity: 0 }}
@@ -77,13 +109,16 @@ function ReviewPage() {
               className={styles["review-poster"]}
             />
             <div className={styles["review-info"]}>
-              <div className={styles["review-movie-title"]}>The Last of Us</div>
+              <div className={styles["review-movie-title"]}>
+                The Last of Us
+              </div>
               <div className={styles["review-director"]}>
                 Directed by Neil Druckmann
               </div>
             </div>
           </motion.div>
 
+          {/* Write Review Button */}
           {!showReviewBox && (
             <div className={styles["write-review-button-container"]}>
               <motion.button
@@ -99,12 +134,13 @@ function ReviewPage() {
             </div>
           )}
 
+          {/* Review Input Box */}
           {showReviewBox && (
             <motion.div
               className={styles["review-box"]}
               initial={{ y: -30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.4, }}
+              transition={{ duration: 0.4 }}
             >
               <div className={styles["review-user"]}>
                 <div className={styles["user-info"]}>
@@ -116,6 +152,8 @@ function ReviewPage() {
               <textarea
                 className={styles["review-textarea"]}
                 placeholder="Review Description..."
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
               ></textarea>
               <div className={styles["review-buttons"]}>
                 <button
@@ -124,23 +162,29 @@ function ReviewPage() {
                 >
                   cancel
                 </button>
-                <button className={`${styles.btn} ${styles.submit}`}>
+                <button
+                  className={`${styles.btn} ${styles.submit}`}
+                  onClick={handleSubmit}
+                >
                   submit
                 </button>
               </div>
             </motion.div>
           )}
 
-          {[1, 2, 3, 4, 5].map((item, index) => (
+          {/* Review List */}
+          {allReviews.map((review, index) => (
             <motion.div
-              key={index}
+              key={review.id}
               className={styles["review-list-item"]}
               variants={itemVariants}
             >
               <div className={styles["review-user"]}>
                 <div className={styles["user-info"]}>
                   <i className="fas fa-user-circle" />
-                  <span className={styles["review-username"]}>User Name</span>
+                  <span className={styles["review-username"]}>
+                    {review.username}
+                  </span>
                 </div>
                 {index === 0 && (
                   <div className={styles["review-actions"]}>
@@ -153,10 +197,12 @@ function ReviewPage() {
                   </div>
                 )}
               </div>
-              <div className={styles["review-stars"]}>★★★★☆</div>
-              <div className={styles["review-desc"]}>Review Description...</div>
+              <div className={styles["review-stars"]}>{review.stars}</div>
+              <div className={styles["review-desc"]}>
+                {review.description}
+              </div>
               <div className={styles["review-footer"]}>
-                <div className={styles["review-date"]}>createdAt</div>
+                <div className={styles["review-date"]}>{review.createdAt}</div>
               </div>
             </motion.div>
           ))}
