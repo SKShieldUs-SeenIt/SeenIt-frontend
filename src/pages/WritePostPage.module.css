@@ -1,11 +1,32 @@
 .header {
-  width: 100vw;
+  position: relative;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 10px;
-  border-bottom: 3px solid white;
   box-sizing: border-box;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2.5px;
+  background-color: white;
+  transform: translateX(-50%);
+  animation: expand-line 0.8s ease-out forwards;
+}
+
+@keyframes expand-line {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 .search-bar {
@@ -47,6 +68,13 @@
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 40px;
+}
+
+.post-container {
+  padding: 10px 50px;
+  background-color: #26272e;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .post-movie {
@@ -119,11 +147,16 @@
   margin-left: 8px;
 }
 
+.post-buttons button:hover {
+  opacity: 0.9;
+}
+
 .btn-cancel {
   background-color: #888;
   color: white;
   width: 80px;
   height: 35px;
+  transition: background-color 0.2s;
 }
 
 .btn-submit {
@@ -131,6 +164,7 @@
   color: white;
   width: 80px;
   height: 35px;
+  transition: background-color 0.2s;
 }
 
 .post-body {

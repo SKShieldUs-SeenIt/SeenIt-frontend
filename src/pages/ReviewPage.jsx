@@ -89,7 +89,7 @@ function ReviewPage() {
               <motion.button
                 className={`${styles.btn} ${styles["write-review"]}`}
                 onClick={() => setShowReviewBox(true)}
-                initial={{ y: -10, scale: 0.8, opacity: 0 }} // x 대신 y를 사용해 위에서 시작
+                initial={{ y: -10, scale: 0.8, opacity: 0 }}
                 animate={{ y: 0, scale: 1, opacity: 1 }}
                 whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
