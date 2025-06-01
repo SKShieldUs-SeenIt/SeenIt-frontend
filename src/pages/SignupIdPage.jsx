@@ -9,7 +9,9 @@ export default function IDPage() {
 
   const handleNext = () => {
     if (userId.trim()) {
-      navigate('/signup/profile');
+      navigate('/signup/genre'); // 장르 선택 페이지로 이동
+    } else {
+      alert('아이디를 입력해주세요!');
     }
   };
 

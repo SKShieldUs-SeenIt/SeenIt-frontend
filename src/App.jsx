@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -13,8 +12,9 @@ import PostDetailPage from './pages/PostDetailPage';
 import AllMoviesPage from './pages/AllMoviesPage';
 import MySeenMoviePage from './pages/MySeenMoviePage';
 import ScrollToTop from './components/common/ScrollToTop';
-import SignupIDPage from './pages/SignupIdPage'; // 추가
+import SignupIDPage from './pages/SignupIdPage';
 import SignupSplashScreen from './components/splash/SignupSplashScreen';
+import SignupGenrePage from './pages/SignupGenrePage';
 
 import './App.css';
 import 'swiper/css';
@@ -23,19 +23,25 @@ import 'swiper/css/pagination';
 import './pages/MySeenMoviePage.css';
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    return !sessionStorage.getItem('splashShown');
+  });
+
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-       if (location.pathname === '/') {
-      navigate('/login');
+    if (showSplash) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+        sessionStorage.setItem('splashShown', 'true');
+        if (location.pathname === '/') {
+          navigate('/login');
+        }
+      }, 2500);
+      return () => clearTimeout(timer);
     }
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [showSplash, location, navigate]);
 
   return (
     <AnimatePresence mode="wait">
@@ -51,15 +57,25 @@ export default function App() {
               <motion.div
                 initial={{ x: '-100%', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                // exit={{ x: '100%', opacity: 0 }}
                 transition={{ duration: 0.6 }}
               >
                 <SignupIDPage />
               </motion.div>
             }
           />
+          <Route
+              path="/signup/genre"
+              element={
+                <motion.div
+                  initial={{ x: '-100%', opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <SignupGenrePage />
+                </motion.div>
+              }
+            />
           <Route path="/signup/splash" element={<SignupSplashScreen />} />
-
 
           {/* 메인 홈 */}
           <Route path="/home" element={<HomePage />} />
