@@ -1,0 +1,99 @@
+/* src/components/search/SearchPopup.module.css */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.searchPopup {
+  background-color: #141414;
+  width: 90%;
+  max-width: 1100px;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.searchInput {
+  flex-grow: 1;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: none;
+  font-size: 1rem;
+  background-color: #333;
+  color: white;
+  outline: none;
+  margin-right: 1rem;
+}
+
+.searchInput::placeholder {
+  color: #aaa;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.closeBtn:hover {
+  color: white;
+}
+
+.popupTitle {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.swiper {
+  overflow: visible;
+  padding: 10px 0;
+  
+}
+
+.slide {
+  width: 180px;
+}
+
+.detailBtnWrapper {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.detailBtn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  background-color: #e50914;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.detailBtn:hover {
+  background-color: #f40612;
+}
+/* SearchPopup.module.css */
+
+.slide :global(.movie-card:hover) {
+  transform: none !important;
+  box-shadow: none !important;
+}

@@ -10,6 +10,7 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import { EffectCoverflow } from 'swiper/modules';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
   const [showSearchPopup, setShowSearchPopup] = useState(false);
@@ -25,6 +26,7 @@ export default function HomePage() {
     { id: 9, title: 'Batman Begins', rating: 4.4 },
     { id: 10, title: 'Following', rating: 3.8 },
   ];
+  const navigate = useNavigate();
 
   return (
     <div className="homepage-container">
@@ -45,17 +47,22 @@ export default function HomePage() {
         {/* 최신 영화 섹션 */}
         <section className="movie-section">
           <h2 className="section-title">최신 영화</h2>
+              <button className="view-all-button" onClick={() => navigate('/all-movies')}>
+                  View All
+              </button>
+
           <Swiper
             modules={[EffectCoverflow]}
             effect="coverflow"
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={5}
+            initialSlide={Math.floor(dummyMovies.length / 2)}
             coverflowEffect={{
-              rotate: 30,
+              rotate: 10,
               stretch: 0,
               depth: 80,
-              modifier: 1,
+              modifier: -1,
               slideShadows: false,
             }}
             className="swiper-container"
@@ -71,13 +78,16 @@ export default function HomePage() {
         {/* 내가 본 영화 섹션 */}
         <section className="movie-section">
           <h2 className="section-title">내가 본 영화</h2>
+              <button className="view-all-button" onClick={() => navigate('/My-movies')}>
+                  View All
+              </button>
           <Swiper
             modules={[EffectCoverflow]}
             effect="coverflow"
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={5}
-            spaceBetween={10}
+            initialSlide={Math.floor(dummyMovies.length / 2)}
             coverflowEffect={{
               rotate: 10,
               stretch: 0,
