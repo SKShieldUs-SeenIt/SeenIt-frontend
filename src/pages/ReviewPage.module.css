@@ -247,7 +247,7 @@
 }
 
 .btn.edit {
-  background-color: #888;
+  background-color: #4e8cff;
   color: white;
   width: 40px;
   height: 25px;
@@ -259,7 +259,7 @@
 }
 
 .btn.delete {
-  background-color: #777;
+  background-color: #ff5c5c;
   color: white;
   width: 50px;
   height: 25px;
