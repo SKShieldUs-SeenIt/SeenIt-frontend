@@ -23,7 +23,7 @@ body {
   bottom: 0;
   left: 50%;
   width: 0;
-  height: 3px;
+  height: 2.5px;
   background-color: white;
   transform: translateX(-50%);
   animation: expand-line 0.8s ease-out forwards;

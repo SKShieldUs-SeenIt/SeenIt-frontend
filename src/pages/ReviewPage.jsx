@@ -1,4 +1,4 @@
-import "./ReviewPage.css";
+import styles from "./ReviewPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import React, { useState } from "react";
 
@@ -7,34 +7,34 @@ function ReviewPage() {
 
   return (
     <div>
-      <div className="header">
-        <div className="search-bar">
+      <div className={styles.header}>
+        <div className={styles["search-bar"]}>
           <input
             type="text"
             placeholder="Search movies..."
-            className="search-input"
+            className={styles["search-input"]}
           />
-          <button className="search-btn">
+          <button className={styles["search-btn"]}>
             <i className="fas fa-search"></i>
           </button>
         </div>
       </div>
-      <h1 className="review-title">Reviews</h1>
 
-      <div className="review-container">
-        <div className="review-movie">
-          <img src={moviePoster} alt="movie" className="review-poster" />
-          <div className="review-info">
-            <div className="review-movie-title">The Last of Us</div>
-            <div className="review-director">Directed by Neil Druckmann</div>
+      <h1 className={styles["review-title"]}>Reviews</h1>
+
+      <div className={styles["review-container"]}>
+        <div className={styles["review-movie"]}>
+          <img src={moviePoster} alt="movie" className={styles["review-poster"]} />
+          <div className={styles["review-info"]}>
+            <div className={styles["review-movie-title"]}>The Last of Us</div>
+            <div className={styles["review-director"]}>Directed by Neil Druckmann</div>
           </div>
         </div>
 
-        {/* 👉 Write Review 버튼 */}
         {!showReviewBox && (
-          <div className="write-review-button-container">
+          <div className={styles["write-review-button-container"]}>
             <button
-              className="btn write-review"
+              className={`${styles.btn} ${styles["write-review"]}`}
               onClick={() => setShowReviewBox(true)}
             >
               Write Review
@@ -42,50 +42,49 @@ function ReviewPage() {
           </div>
         )}
 
-        {/* 👉 리뷰 박스 */}
         {showReviewBox && (
-          <div className="review-box">
-            <div className="review-user">
-              <div className="user-info">
-                <i className="fas fa-user-circle user-icon"></i>
-                <span className="review-username">User Name</span>
+          <div className={styles["review-box"]}>
+            <div className={styles["review-user"]}>
+              <div className={styles["user-info"]}>
+                <i className="fas fa-user-circle" />
+                <span className={styles["review-username"]}>User Name</span>
               </div>
             </div>
-            <div className="review-stars">★★★★☆</div>
+            <div className={styles["review-stars"]}>★★★★☆</div>
             <textarea
-              className="review-textarea"
+              className={styles["review-textarea"]}
               placeholder="Review Description..."
             ></textarea>
-            <div className="review-buttons">
+            <div className={styles["review-buttons"]}>
               <button
-                className="btn cancel"
+                className={`${styles.btn} ${styles.cancel}`}
                 onClick={() => setShowReviewBox(false)}
               >
                 cancel
               </button>
-              <button className="btn submit">submit</button>
+              <button className={`${styles.btn} ${styles.submit}`}>submit</button>
             </div>
           </div>
         )}
 
         {[1, 2].map((item, index) => (
-          <div key={index} className="review-list-item">
-            <div className="review-user">
-              <div className="user-info">
-                <i className="fas fa-user-circle user-icon"></i>
-                <span className="review-username">User Name</span>
+          <div key={index} className={styles["review-list-item"]}>
+            <div className={styles["review-user"]}>
+              <div className={styles["user-info"]}>
+                <i className="fas fa-user-circle" />
+                <span className={styles["review-username"]}>User Name</span>
               </div>
               {index === 0 && (
-                <div className="review-actions">
-                  <button className="btn edit">edit</button>
-                  <button className="btn delete">delete</button>
+                <div className={styles["review-actions"]}>
+                  <button className={`${styles.btn} ${styles.edit}`}>edit</button>
+                  <button className={`${styles.btn} ${styles.delete}`}>delete</button>
                 </div>
               )}
             </div>
-            <div className="review-stars">★★★★☆</div>
-            <div className="review-desc">Review Description...</div>
-            <div className="review-footer">
-              <div className="review-date">createdAt</div>
+            <div className={styles["review-stars"]}>★★★★☆</div>
+            <div className={styles["review-desc"]}>Review Description...</div>
+            <div className={styles["review-footer"]}>
+              <div className={styles["review-date"]}>createdAt</div>
             </div>
           </div>
         ))}
