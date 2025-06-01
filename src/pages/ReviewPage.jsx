@@ -21,6 +21,8 @@ function ReviewPage() {
   const [showReviewBox, setShowReviewBox] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [newReviews, setNewReviews] = useState([]);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState(null);
 
   const initialReviews = [
     {
@@ -82,11 +84,23 @@ function ReviewPage() {
     setShowReviewBox(false);
   };
 
-  const allReviews = [...newReviews, ...initialReviews];
-
-  const handleDelete = (id) => {
-    setNewReviews((prev) => prev.filter((review) => review.id !== id));
+  const handleAskDelete = (id) => {
+    setSelectedReviewId(id);
+    setShowConfirm(true);
   };
+
+  const handleConfirmDelete = () => {
+    setNewReviews((prev) => prev.filter((review) => review.id !== selectedReviewId));
+    setShowConfirm(false);
+    setSelectedReviewId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirm(false);
+    setSelectedReviewId(null);
+  };
+
+  const allReviews = [...newReviews, ...initialReviews];
 
   return (
     <motion.div
@@ -96,12 +110,7 @@ function ReviewPage() {
     >
       <div>
         {/* Header */}
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
+        <motion.div className={styles.header}>
           <motion.div
             className={styles["search-bar"]}
             initial={{ opacity: 0, scale: 0.8 }}
@@ -211,7 +220,7 @@ function ReviewPage() {
           )}
 
           {/* Review List */}
-          {allReviews.map((review, index) => (
+          {allReviews.map((review) => (
             <motion.div
               key={review.id}
               className={styles["review-list-item"]}
@@ -231,7 +240,7 @@ function ReviewPage() {
                     </button>
                     <button
                       className={`${styles.btn} ${styles.delete}`}
-                      onClick={() => handleDelete(review.id)}
+                      onClick={() => handleAskDelete(review.id)}
                     >
                       delete
                     </button>
@@ -246,6 +255,34 @@ function ReviewPage() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Delete Confirm Modal */}
+        {showConfirm && (
+          <div className={styles["modal-overlay"]}>
+            <motion.div
+              className={styles["modal-content"]}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <p>리뷰를 삭제하시겠습니까?</p>
+              <div className={styles["modal-buttons"]}>
+                <button
+                  className={`${styles.btn} ${styles.confirm}`}
+                  onClick={handleConfirmDelete}
+                >
+                  Yes
+                </button>
+                <button
+                  className={`${styles.btn} ${styles.cancel}`}
+                  onClick={handleCancelDelete}
+                >
+                  No
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
       </div>
     </motion.div>
   );
