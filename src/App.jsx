@@ -13,6 +13,7 @@ import AllMoviesPage from './pages/AllMoviesPage';
 import MySeenMoviePage from './pages/MySeenMoviePage'
 import ScrollToTop from './components/common/ScrollToTop'; 
 import ProfilePage from './pages/ProfilePage';
+import EditPostPage from './pages/EditPostPage';
 
 import './App.css';
 import 'swiper/css';
@@ -76,6 +77,7 @@ export default function App() {
           <Route path="/postDetails" element={<PostDetailPage />} />
           <Route path="/postDetails/:id" element={<PostDetailPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/editPost/:id" element={<EditPostPage />} />
 
           {/* 404 */}
           <Route

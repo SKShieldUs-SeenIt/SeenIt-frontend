@@ -91,7 +91,12 @@ function PostDetailPage() {
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
         >
           <div className={styles["post-buttons"]}>
-            <button className={styles["btn-edit"]}>edit</button>
+            <button
+              className={styles["btn-edit"]}
+              onClick={() => navigate(`/editPost/${post.id}`, { state: post })}
+            >
+              edit
+            </button>
             <button
               className={styles["btn-delete"]}
               onClick={() => setShowDeleteModal(true)}
