@@ -338,15 +338,15 @@
   margin-bottom: 10px;
 }
 
-.confirm {
+.modal-buttons .confirm {
   background-color: #4c9d62;
   width: 70px;
   height: 30px;
   font-size: 19px;
 }
 
-.cancel {
-  background-color: #5d5b5b;
+.modal-buttons .cancel {
+  background-color: #888;
   width: 70px;
   height: 30px;
 }
@@ -356,13 +356,6 @@
   width: 70px;
   height: 30px;
   font-size: 19px;
-}
-
-.confirm {
-  background-color: #4c9d62;
-  width: 70px;
-  height: 30px;
-  font-size: 15px;
 }
 
 .modal-close-btn {

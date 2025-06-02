@@ -1,7 +1,7 @@
 import styles from "./PostDetailPage.module.css";
 import { motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const containerVariants = {
   hidden: {},
@@ -24,11 +24,26 @@ const replyItemVariants = {
 
 function PostDetailPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const post = location.state;
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const confirmDelete = () => {
+    const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+    const updatedPosts = savedPosts.filter((p) => p.id !== post.id);
+    localStorage.setItem("posts", JSON.stringify(updatedPosts));
+    setShowDeleteModal(false);
+    navigate("/posts"); // 삭제 후 목록으로
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+  };
 
   return (
     <motion.div
@@ -77,7 +92,12 @@ function PostDetailPage() {
         >
           <div className={styles["post-buttons"]}>
             <button className={styles["btn-edit"]}>edit</button>
-            <button className={styles["btn-delete"]}>delete</button>
+            <button
+              className={styles["btn-delete"]}
+              onClick={() => setShowDeleteModal(true)}
+            >
+              delete
+            </button>
           </div>
           <div className={styles["post-header"]}>
             <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
@@ -87,9 +107,7 @@ function PostDetailPage() {
           <div className={styles["post-content"]}>
             <div className={styles["post-main-title"]}>{post.title}</div>
             <div className={styles["created-at"]}>{post.createdAt}</div>
-            <div className={styles["post-description"]}>
-              {post.description}
-            </div>
+            <div className={styles["post-description"]}>{post.description}</div>
           </div>
 
           {/* 댓글 영역 (예시 댓글 하드코딩) */}
@@ -143,6 +161,39 @@ function PostDetailPage() {
                 )}
               </motion.div>
             ))}
+
+            {showDeleteModal && (
+              <div className={styles["modal-overlay"]}>
+                <motion.div
+                  className={styles["modal-content"]}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <button
+                    className={styles["modal-close-btn"]}
+                    onClick={cancelDelete}
+                  >
+                    ×
+                  </button>
+                  <p>정말로 이 게시글을 삭제하시겠습니까?</p>
+                  <div className={styles["modal-buttons"]}>
+                    <button
+                      className={`${styles.btn} ${styles.confirm}`}
+                      onClick={confirmDelete}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.cancel}`}
+                      onClick={cancelDelete}
+                    >
+                      No
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       </div>

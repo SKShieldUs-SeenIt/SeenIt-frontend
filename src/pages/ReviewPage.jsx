@@ -369,8 +369,6 @@ function ReviewPage() {
                     setShowReviewBox(false);
                     setReviewText("");
                     setSelectedStars(0);
-                    setIsEditing(false);
-                    setEditReviewId(null);
                   }}
                 >
                   cancel
