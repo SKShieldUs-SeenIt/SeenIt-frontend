@@ -29,6 +29,7 @@ function ReviewPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const [showEditWarningModal, setShowEditWarningModal] = useState(false);
 
   const initialReviews = [
     {
@@ -323,7 +324,13 @@ function ReviewPage() {
             <div className={styles["write-review-button-container"]}>
               <motion.button
                 className={`${styles.btn} ${styles["write-review"]}`}
-                onClick={() => setShowReviewBox(true)}
+                onClick={() => {
+                  if (editingReviewId !== null) {
+                    setShowEditWarningModal(true);
+                  } else {
+                    setShowReviewBox(true);
+                  }
+                }}
                 initial={{ y: -10, scale: 0.8, opacity: 0 }}
                 animate={{ y: 0, scale: 1, opacity: 1 }}
                 whileHover={{ scale: 1.1 }}
@@ -511,6 +518,33 @@ function ReviewPage() {
                 <button
                   className={`${styles.btn} ${styles.confirm}`}
                   onClick={() => setShowWarningModal(false)}
+                >
+                  OK
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showEditWarningModal && (
+          <div className={styles["modal-overlay"]}>
+            <motion.div
+              className={styles["modal-content"]}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <button
+                className={styles["modal-close-btn"]}
+                onClick={() => setShowEditWarningModal(false)}
+              >
+                ×
+              </button>
+              <p>수정 중인 리뷰가 있습니다. 먼저 저장하거나 취소해주세요.</p>
+              <div className={styles["modal-buttons"]}>
+                <button
+                  className={`${styles.btn} ${styles.confirm}`}
+                  onClick={() => setShowEditWarningModal(false)}
                 >
                   OK
                 </button>
