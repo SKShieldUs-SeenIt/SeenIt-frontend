@@ -1,12 +1,14 @@
 import styles from "./PostDetailPage.module.css";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const containerVariants = {
   hidden: {},
   visible: {
     transition: {
       staggerChildren: 0.3,
-      delayChildren: 0.4, // 댓글 전체의 시작 타이밍을 늦춤
+      delayChildren: 0.4,
     },
   },
 };
@@ -21,6 +23,13 @@ const replyItemVariants = {
 };
 
 function PostDetailPage() {
+  const location = useLocation();
+  const post = location.state;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
@@ -57,7 +66,7 @@ function PostDetailPage() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          Posts
+          Post Detail
         </motion.h1>
 
         <motion.div
@@ -72,18 +81,18 @@ function PostDetailPage() {
           </div>
           <div className={styles["post-header"]}>
             <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
-            <span className={styles["user-name"]}>User Name</span>
+            <span className={styles["user-name"]}>{post.username}</span>
           </div>
 
           <div className={styles["post-content"]}>
-            <div className={styles["post-main-title"]}>Post Title</div>
-            <div className={styles["created-at"]}>createdAt</div>
+            <div className={styles["post-main-title"]}>{post.title}</div>
+            <div className={styles["created-at"]}>{post.createdAt}</div>
             <div className={styles["post-description"]}>
-              Post Description...
+              {post.description}
             </div>
           </div>
 
-          {/* 댓글 영역 */}
+          {/* 댓글 영역 (예시 댓글 하드코딩) */}
           <motion.div
             className={styles["reply-section"]}
             variants={containerVariants}
@@ -112,7 +121,6 @@ function PostDetailPage() {
                   Reply description...
                 </div>
 
-                {/* 대댓글 (sub-reply) */}
                 {index === 0 && (
                   <div className={styles["sub-reply"]}>
                     <i

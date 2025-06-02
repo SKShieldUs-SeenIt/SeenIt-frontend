@@ -73,6 +73,7 @@ export default function App() {
           <Route path="/posts" element={<PostPage />} />
           <Route path="/writePosts" element={<WritePostPage />} />
           <Route path="/postDetails" element={<PostDetailPage />} />
+          <Route path="/postDetails/:id" element={<PostDetailPage />} />
 
           {/* 404 */}
           <Route

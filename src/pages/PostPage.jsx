@@ -139,7 +139,17 @@ function PostPage() {
               key={index}
               className={styles["post-list-item"]}
               variants={itemVariants}
-              onClick={() => navigate(`/postDetails`)}
+              onClick={() =>
+                navigate(`/postDetails/${post.id}`, {
+                  state: {
+                    id: post.id,
+                    username: post.username,
+                    title: post.title,
+                    description: post.description,
+                    createdAt: post.createdAt,
+                  },
+                })
+              }
             >
               <div className={styles["post-user"]}>
                 <div className={styles["user-info"]}>
@@ -164,7 +174,17 @@ function PostPage() {
               key={item.id}
               className={styles["post-list-item"]}
               variants={itemVariants}
-              onClick={() => navigate(`/postDetails/${item.id}`)} // 예시로 post ID 추가
+              onClick={() =>
+                navigate(`/postDetails/${item.id}`, {
+                  state: {
+                    id: item.id,
+                    username: item.username,
+                    title: item.title,
+                    description: item.description,
+                    createdAt: item.createdAt,
+                  },
+                })
+              }
             >
               <div className={styles["post-user"]}>
                 <div className={styles["user-info"]}>
