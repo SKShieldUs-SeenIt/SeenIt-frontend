@@ -1,56 +1,59 @@
+// src/redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// 카카오 토큰 받아오기
-export const fetchKakaoToken = createAsyncThunk(
-  'auth/fetchKakaoToken',
+export const fetchKakaoLogin = createAsyncThunk(
+  'auth/fetchKakaoLogin',
   async (code, thunkAPI) => {
     try {
-      const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
-      const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
-
       const response = await axios.post(
-        `https://kauth.kakao.com/oauth/token`,
-        new URLSearchParams({
-          grant_type: 'authorization_code',
-          client_id: REST_API_KEY,
-          redirect_uri: REDIRECT_URI,
-          code,
-        }),
-        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        `${import.meta.env.VITE_API_BASE_URL}/auth/kakao`,
+        { code }
       );
-
-      return response.data;
+      return response.data; // 로그인 응답 데이터
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      console.error('카카오 로그인 실패:', error);
+      return thunkAPI.rejectWithValue(error.response?.data || '카카오 로그인 오류');
     }
   }
 );
 
+const initialState = {
+  isAuthenticated: false,
+  user: null,
+  token: null,
+  loading: false,
+  error: null,
+};
+
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    accessToken: null,
-    refreshToken: null,
-    isLoading: false,
-    error: null,
+  initialState,
+  reducers: {
+    logout(state) {
+      state.isAuthenticated = false;
+      state.user = null;
+      state.token = null;
+    },
   },
-  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchKakaoToken.pending, (state) => {
-        state.isLoading = true;
+      .addCase(fetchKakaoLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(fetchKakaoToken.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.accessToken = action.payload.access_token;
-        state.refreshToken = action.payload.refresh_token;
+      .addCase(fetchKakaoLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       })
-      .addCase(fetchKakaoToken.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
+      .addCase(fetchKakaoLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || '카카오 로그인 실패';
       });
   },
 });
 
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

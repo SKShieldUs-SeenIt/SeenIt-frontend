@@ -78,7 +78,7 @@ export default function App() {
               }
             />
           <Route path="/signup/splash" element={<SignupSplashScreen />} />
-          <Route path="/auth/kakao/callback" element={<AuthCallback />} />
+          <Route path="/kakao/callback" element={<AuthCallback />} />
 
           {/* 메인 홈 */}
           <Route path="/home" element={<HomePage />} />

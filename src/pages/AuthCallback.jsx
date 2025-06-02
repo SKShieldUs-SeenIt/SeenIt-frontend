@@ -1,26 +1,22 @@
+// src/pages/AuthCallback.jsx
 import React, { useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { fetchKakaoToken } from '../reducers/authSlice';
+import { fetchKakaoLogin } from '../reducers/authSlice';
 
 export default function AuthCallback() {
-  const [searchParams] = useSearchParams();
-  const code = searchParams.get('code');
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+
     if (code) {
-      dispatch(fetchKakaoToken(code)).then((res) => {
-        if (res.meta.requestStatus === 'fulfilled') {
-          navigate('/home');
-        } else {
-          alert('로그인 실패');
-          navigate('/login');
-        }
-      });
+      console.log('인가 코드:', code);
+      dispatch(fetchKakaoLogin(code));
+    } else {
+      console.error('카카오 인가 코드 없음');
     }
-  }, [code]);
+  }, [dispatch]);
 
   return <div>로그인 중입니다...</div>;
 }
