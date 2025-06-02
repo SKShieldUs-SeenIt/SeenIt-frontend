@@ -7,9 +7,7 @@ import { motion } from "framer-motion";
 function WritePostsPage() {
   const navigate = useNavigate();
 
-  // 모달 상태
   const [showWarningModal, setShowWarningModal] = useState(false);
-  // 입력 상태
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
@@ -18,8 +16,17 @@ function WritePostsPage() {
       setShowWarningModal(true);
       return;
     }
-    // 정상 제출 처리 (예: API 호출, 상태 저장 등)
-    alert("Submitted!"); // 임시
+
+    navigate("/posts", {
+      state: {
+        newPost: {
+          title,
+          description,
+          username: "User Name", // 필요시 동적으로
+          createdAt: new Date().toLocaleString(), // 혹은 원하는 형식
+        },
+      },
+    });
   };
 
   return (

@@ -1,8 +1,8 @@
 import styles from "./PostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import React from "react";
+import { useEffect, useState } from "react";
 
 const containerVariants = {
   hidden: {},
@@ -24,6 +24,14 @@ const itemVariants = {
 
 function PostPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    if (location.state?.newPost) {
+      setPosts((prevPosts) => [location.state.newPost, ...prevPosts]);
+    }
+  }, [location.state]);
 
   return (
     <motion.div
@@ -101,6 +109,31 @@ function PostPage() {
               Write Post
             </motion.button>
           </div>
+
+          {posts.map((post, index) => (
+            <motion.div
+              key={index}
+              className={styles["post-list-item"]}
+              variants={itemVariants}
+              onClick={() => navigate(`/postDetails`)}
+            >
+              <div className={styles["post-user"]}>
+                <div className={styles["user-info"]}>
+                  <i
+                    className={`fas fa-user-circle ${styles["user-icon"]}`}
+                  ></i>
+                  <span className={styles["post-username"]}>
+                    {post.username}
+                  </span>
+                </div>
+              </div>
+              <div className={styles["post-title"]}>{post.title}</div>
+              <div className={styles["post-desc"]}>{post.description}</div>
+              <div className={styles["post-footer"]}>
+                <div className={styles["post-date"]}>{post.createdAt}</div>
+              </div>
+            </motion.div>
+          ))}
 
           {[1, 2, 3, 4, 5].map((item, index) => (
             <motion.div
