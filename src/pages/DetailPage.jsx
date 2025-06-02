@@ -103,7 +103,7 @@ function DetailPage() {
 
             <div className={styles["vote-counts"]}>
               <div>
-                Like
+                Review
                 <br />
                 <motion.span
                   className={styles.count}
