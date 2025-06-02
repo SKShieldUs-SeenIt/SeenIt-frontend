@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import styles from "./WritePostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import { useNavigate } from "react-router-dom";
@@ -5,6 +6,21 @@ import { motion } from "framer-motion";
 
 function WritePostsPage() {
   const navigate = useNavigate();
+
+  // 모달 상태
+  const [showWarningModal, setShowWarningModal] = useState(false);
+  // 입력 상태
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const handleSubmit = () => {
+    if (title.trim() === "" || description.trim() === "") {
+      setShowWarningModal(true);
+      return;
+    }
+    // 정상 제출 처리 (예: API 호출, 상태 저장 등)
+    alert("Submitted!"); // 임시
+  };
 
   return (
     <motion.div
@@ -69,7 +85,7 @@ function WritePostsPage() {
             className={styles["post-card"]}
             initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.4, delay:0.5 }}
+            transition={{ duration: 0.4, delay: 0.5 }}
           >
             <div className={styles["post-header"]}>
               <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
@@ -81,22 +97,59 @@ function WritePostsPage() {
                 >
                   cancel
                 </button>
-                <button className={styles["btn-submit"]}>submit</button>
+                <button className={styles["btn-submit"]} onClick={handleSubmit}>
+                  submit
+                </button>
               </div>
             </div>
 
             <div className={styles["post-body"]}>
               <div className={styles["title-row"]}>
                 <div className={styles["title-label"]}>Title:</div>
-                <input type="text" className={styles["title-input"]} />
+                <input
+                  type="text"
+                  className={styles["title-input"]}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
               </div>
               <textarea
                 className={styles["description-textarea"]}
                 placeholder="Post Description..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               ></textarea>
             </div>
           </motion.div>
         </motion.div>
+
+        {/* 경고 모달 */}
+        {showWarningModal && (
+          <div className={styles["modal-overlay"]}>
+            <motion.div
+              className={styles["modal-content"]}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <button
+                className={styles["modal-close-btn"]}
+                onClick={() => setShowWarningModal(false)}
+              >
+                ×
+              </button>
+              <p>제목 또는 내용을 입력해주세요.</p>
+              <div className={styles["modal-buttons"]}>
+                <button
+                  className={`${styles.btn} ${styles.confirm}`}
+                  onClick={() => setShowWarningModal(false)}
+                >
+                  OK
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
       </div>
     </motion.div>
   );
