@@ -12,6 +12,7 @@ import SplashScreen from './components/splash/SplashScreen';
 import AllMoviesPage from './pages/AllMoviesPage';
 import MySeenMoviePage from './pages/MySeenMoviePage'
 import ScrollToTop from './components/common/ScrollToTop'; 
+import ProfilePage from './pages/ProfilePage';
 
 import './App.css';
 import 'swiper/css';
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="/writePosts" element={<WritePostPage />} />
           <Route path="/postDetails" element={<PostDetailPage />} />
           <Route path="/postDetails/:id" element={<PostDetailPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
           {/* 404 */}
           <Route

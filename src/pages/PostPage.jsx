@@ -184,7 +184,7 @@ function PostPage() {
                     createdAt: item.createdAt,
                   },
                 })
-              }
+              } // 예시로 post ID 추가
             >
               <div className={styles["post-user"]}>
                 <div className={styles["user-info"]}>
