@@ -26,8 +26,8 @@ function ReviewPage() {
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editingText, setEditingText] = useState("");
   const [editingStars, setEditingStars] = useState(0);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editReviewId, setEditReviewId] = useState(null);
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [editReviewId, setEditReviewId] = useState(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showEditWarningModal, setShowEditWarningModal] = useState(false);
 
@@ -80,10 +80,10 @@ function ReviewPage() {
       return;
     }
 
-    if (isEditing) {
+    if (editingReviewId != null) {
       setNewReviews((prev) =>
         prev.map((r) =>
-          r.id === editReviewId
+          r.id === editingReviewId
             ? {
                 ...r,
                 description: reviewText,
@@ -105,11 +105,11 @@ function ReviewPage() {
       setNewReviews((prev) => [newReview, ...prev]);
     }
 
-    // 공통 초기화
     setReviewText("");
+    setSelectedStars(0);
     setShowReviewBox(false);
-    setIsEditing(false);
-    setEditReviewId(null);
+    setEditingReviewId(null);
+    setEditingText("");
   };
 
   const handleAskDelete = (id) => {
@@ -124,7 +124,6 @@ function ReviewPage() {
 
     setEditingReviewId(null);
     setEditingText("");
-    setEditReviewId(null);
     setReviewText("");
     setSelectedStars(0);
   };
