@@ -84,6 +84,15 @@ function PostDetailPage() {
           Post Detail
         </motion.h1>
 
+        <div className={styles["back-to-list-wrapper"]}>
+          <button
+            className={styles["back-to-list-btn"]}
+            onClick={() => navigate("/posts")}
+          >
+            Back to Posts
+          </button>
+        </div>
+
         <motion.div
           className={styles["post-detail-container"]}
           initial={{ opacity: 0, y: -50 }}
