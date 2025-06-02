@@ -1,15 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./WritePostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
 function WritePostsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    // 페이지 새로 고침 시 input 필드를 비워줍니다.
+    setTitle("");
+    setDescription("");
+  }, []);
 
   const handleSubmit = () => {
     if (title.trim() === "" || description.trim() === "") {
@@ -17,16 +24,20 @@ function WritePostsPage() {
       return;
     }
 
-    navigate("/posts", {
-      state: {
-        newPost: {
-          title,
-          description,
-          username: "User Name", // 필요시 동적으로
-          createdAt: new Date().toLocaleString(), // 혹은 원하는 형식
-        },
-      },
-    });
+    const newPost = {
+      id: Date.now(), // 고유 ID
+      title,
+      description,
+      username: "User Name", 
+      createdAt: new Date().toLocaleString(),
+    };
+
+    const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+    const updatedPosts = [newPost, ...savedPosts];
+
+    localStorage.setItem("posts", JSON.stringify(updatedPosts));
+
+    navigate("/posts", { state: { newPost } });
   };
 
   return (

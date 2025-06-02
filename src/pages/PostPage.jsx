@@ -24,14 +24,38 @@ const itemVariants = {
 
 function PostPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    if (location.state?.newPost) {
-      setPosts((prevPosts) => [location.state.newPost, ...prevPosts]);
-    }
-  }, [location.state]);
+    // localStorage.removeItem("posts");
+    const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+    setPosts(savedPosts);
+  }, []);
+
+  const postsList = [
+    {
+      id: 1,
+      username: "User 1",
+      title: "Post Title 1",
+      description: "Description for Post 1",
+      createdAt: "2025-06-01",
+    },
+    {
+      id: 2,
+      username: "User 2",
+      title: "Post Title 2",
+      description: "Description for Post 2",
+      createdAt: "2025-06-02",
+    },
+    {
+      id: 3,
+      username: "User 3",
+      title: "Post Title 3",
+      description: "Description for Post 3",
+      createdAt: "2025-06-03",
+    },
+    // 추가적으로 더 데이터를 넣을 수 있음
+  ];
 
   return (
     <motion.div
@@ -135,25 +159,27 @@ function PostPage() {
             </motion.div>
           ))}
 
-          {[1, 2, 3, 4, 5].map((item, index) => (
+          {postsList.map((item) => (
             <motion.div
-              key={index}
+              key={item.id}
               className={styles["post-list-item"]}
               variants={itemVariants}
-              onClick={() => navigate(`/postDetails`)}
+              onClick={() => navigate(`/postDetails/${item.id}`)} // 예시로 post ID 추가
             >
               <div className={styles["post-user"]}>
                 <div className={styles["user-info"]}>
                   <i
                     className={`fas fa-user-circle ${styles["user-icon"]}`}
                   ></i>
-                  <span className={styles["post-username"]}>User Name</span>
+                  <span className={styles["post-username"]}>
+                    {item.username}
+                  </span>
                 </div>
               </div>
-              <div className={styles["post-title"]}>Post Title</div>
-              <div className={styles["post-desc"]}>Post Description...</div>
+              <div className={styles["post-title"]}>{item.title}</div>
+              <div className={styles["post-desc"]}>{item.description}</div>
               <div className={styles["post-footer"]}>
-                <div className={styles["post-date"]}>createdAt</div>
+                <div className={styles["post-date"]}>{item.createdAt}</div>
               </div>
             </motion.div>
           ))}
