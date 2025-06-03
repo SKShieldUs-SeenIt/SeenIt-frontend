@@ -30,10 +30,14 @@ function PostDetailPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [newReply, setNewReply] = useState("");
+  const [replies, setReplies] = useState([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    const savedReplies =
+      JSON.parse(localStorage.getItem(`replies-${post.id}`)) || [];
+    setReplies(savedReplies);
+  }, [post.id]);
 
   const confirmDelete = () => {
     const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
@@ -45,6 +49,23 @@ function PostDetailPage() {
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
+  };
+
+  const handleSubmitReply = () => {
+    if (!newReply.trim()) return;
+
+    const newReplyObj = {
+      id: Date.now(),
+      content: newReply,
+      username: "User Name", // 나중에 유저 연결 시 바꿔줘!
+    };
+
+    const updatedReplies = [...replies, newReplyObj];
+    setReplies(updatedReplies);
+    localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
+
+    setNewReply("");
+    setShowReplyInput(false);
   };
 
   return (
@@ -165,11 +186,7 @@ function PostDetailPage() {
                 <div className={styles["reply-btn-group"]}>
                   <button
                     className={styles["submit-reply-btn"]}
-                    onClick={() => {
-                      alert("댓글 등록 기능은 아직 연결 안 됐어용 🐣");
-                      setShowReplyInput(false);
-                      setNewReply("");
-                    }}
+                    onClick={handleSubmitReply}
                   >
                     submit
                   </button>
@@ -186,6 +203,20 @@ function PostDetailPage() {
               </motion.div>
             )}
           </div>
+
+          {replies.map((reply) => (
+            <motion.div
+              key={reply.id}
+              className={styles["reply-card"]}
+              variants={replyItemVariants}
+            >
+              <div className={styles["reply-header"]}>
+                <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
+                <span className={styles["user-name"]}>{reply.username}</span>
+              </div>
+              <div className={styles["reply-description"]}>{reply.content}</div>
+            </motion.div>
+          ))}
 
           {/* 댓글 영역 (예시 댓글 하드코딩) */}
           <motion.div
