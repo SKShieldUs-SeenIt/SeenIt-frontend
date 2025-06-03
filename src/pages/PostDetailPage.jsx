@@ -34,6 +34,8 @@ function PostDetailPage() {
   const [replies, setReplies] = useState([]);
   const [showReplyDeleteModal, setShowReplyDeleteModal] = useState(false);
   const [selectedReplyId, setSelectedReplyId] = useState(null);
+  const [editReplyId, setEditReplyId] = useState(null);
+  const [editReplyContent, setEditReplyContent] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -72,13 +74,35 @@ function PostDetailPage() {
   };
 
   const handleConfirmReplyDelete = () => {
-  const updatedReplies = replies.filter((r) => r.id !== selectedReplyId);
-  setReplies(updatedReplies);
-  localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
-  setShowReplyDeleteModal(false);
-  setSelectedReplyId(null);
-};
+    const updatedReplies = replies.filter((r) => r.id !== selectedReplyId);
+    setReplies(updatedReplies);
+    localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
+    setShowReplyDeleteModal(false);
+    setSelectedReplyId(null);
+  };
 
+  // 수정 시작할 때 호출
+  const handleEditClick = (reply) => {
+    setEditReplyId(reply.id); // 현재 수정 중인 댓글 ID 저장
+    setEditReplyContent(reply.content); // 기존 내용 textarea에 넣기
+  };
+
+  // 수정 저장할 때 호출
+  const handleSaveEdit = () => {
+    setReplies((prev) =>
+      prev.map((r) =>
+        r.id === editReplyId ? { ...r, content: editReplyContent } : r
+      )
+    );
+    setEditReplyId(null);
+    setEditReplyContent("");
+  };
+
+  // 수정 취소할 때 호출
+  const handleCancelEdit = () => {
+    setEditReplyId(null);
+    setEditReplyContent("");
+  };
 
   return (
     <motion.div
@@ -224,20 +248,56 @@ function PostDetailPage() {
             >
               <div className={styles["reply-header"]}>
                 <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
-                <span className={styles["user-name"]}>{reply.username}</span>
-                <div className={styles["reply-buttons"]}>
-                  <button
-                    className={styles["btn-delete"]}
-                    onClick={() => {
-                      setSelectedReplyId(reply.id);
-                      setShowReplyDeleteModal(true);
-                    }}
-                  >
-                    delete
-                  </button>
-                </div>
+                <span className={styles["user-name"]}>User Name</span>
+                {/* 수정 중일 땐 버튼 안 보이게 */}
+                {editReplyId !== reply.id && (
+                  <div className={styles["reply-buttons"]}>
+                    <button
+                      className={styles["btn-edit"]}
+                      onClick={() => handleEditClick(reply)}
+                    >
+                      edit
+                    </button>
+                    <button
+                      className={styles["btn-delete"]}
+                      onClick={() => {
+                        setSelectedReplyId(reply.id);
+                        setShowReplyDeleteModal(true);
+                      }}
+                    >
+                      delete
+                    </button>
+                  </div>
+                )}
               </div>
-              <div className={styles["reply-description"]}>{reply.content}</div>
+
+              {editReplyId === reply.id ? (
+                <>
+                  <textarea
+                    className={styles["reply-description-input"]}
+                    value={editReplyContent}
+                    onChange={(e) => setEditReplyContent(e.target.value)}
+                  />
+                  <div className={styles["reply-btn-group"]}>
+                    <button
+                      className={styles["submit-reply-btn"]}
+                      onClick={handleSaveEdit}
+                    >
+                      save
+                    </button>
+                    <button
+                      className={styles["cancel-reply-btn"]}
+                      onClick={handleCancelEdit}
+                    >
+                      cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className={styles["reply-description"]}>
+                  {reply.content}
+                </div>
+              )}
             </motion.div>
           ))}
 
@@ -259,12 +319,6 @@ function PostDetailPage() {
                     className={`fas fa-user-circle ${styles["user-icon"]}`}
                   ></i>
                   <span className={styles["user-name"]}>User Name</span>
-                  {index === 0 && (
-                    <div className={styles["reply-buttons"]}>
-                      <button className={styles["btn-edit"]}>edit</button>
-                      <button className={styles["btn-delete"]}>delete</button>
-                    </div>
-                  )}
                 </div>
                 <div className={styles["reply-description"]}>
                   Reply description...
