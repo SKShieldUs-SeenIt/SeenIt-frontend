@@ -2,6 +2,7 @@ import styles from "./PostDetailPage.module.css";
 import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import DeleteModal from "../components/modal/DeleteModal";
 
 const containerVariants = {
   hidden: {},
@@ -31,6 +32,8 @@ function PostDetailPage() {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [newReply, setNewReply] = useState("");
   const [replies, setReplies] = useState([]);
+  const [showReplyDeleteModal, setShowReplyDeleteModal] = useState(false);
+  const [selectedReplyId, setSelectedReplyId] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -68,11 +71,14 @@ function PostDetailPage() {
     setShowReplyInput(false);
   };
 
-  const handleDeleteReply = (id) => {
-    const updatedReplies = replies.filter((reply) => reply.id !== id);
-    setReplies(updatedReplies);
-    localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
-  };
+  const handleConfirmReplyDelete = () => {
+  const updatedReplies = replies.filter((r) => r.id !== selectedReplyId);
+  setReplies(updatedReplies);
+  localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
+  setShowReplyDeleteModal(false);
+  setSelectedReplyId(null);
+};
+
 
   return (
     <motion.div
@@ -222,7 +228,10 @@ function PostDetailPage() {
                 <div className={styles["reply-buttons"]}>
                   <button
                     className={styles["btn-delete"]}
-                    onClick={() => handleDeleteReply(reply.id)}
+                    onClick={() => {
+                      setSelectedReplyId(reply.id);
+                      setShowReplyDeleteModal(true);
+                    }}
                   >
                     delete
                   </button>
@@ -285,36 +294,22 @@ function PostDetailPage() {
             ))}
 
             {showDeleteModal && (
-              <div className={styles["modal-overlay"]}>
-                <motion.div
-                  className={styles["modal-content"]}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <button
-                    className={styles["modal-close-btn"]}
-                    onClick={cancelDelete}
-                  >
-                    ×
-                  </button>
-                  <p>게시글을 삭제하시겠습니까?</p>
-                  <div className={styles["modal-buttons"]}>
-                    <button
-                      className={`${styles.btn} ${styles.confirm}`}
-                      onClick={confirmDelete}
-                    >
-                      Yes
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.cancel}`}
-                      onClick={cancelDelete}
-                    >
-                      No
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
+              <DeleteModal
+                message="게시글을 삭제하시겠습니까?"
+                onConfirm={confirmDelete}
+                onCancel={cancelDelete}
+              />
+            )}
+
+            {showReplyDeleteModal && (
+              <DeleteModal
+                message="댓글을 삭제하시겠습니까?"
+                onConfirm={handleConfirmReplyDelete}
+                onCancel={() => {
+                  setShowReplyDeleteModal(false);
+                  setSelectedReplyId(null);
+                }}
+              />
             )}
           </motion.div>
         </motion.div>
