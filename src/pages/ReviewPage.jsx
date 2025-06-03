@@ -2,6 +2,7 @@ import styles from "./ReviewPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import WarningModal from "../components/modal/WarningModal";
 
 const containerVariants = {
   hidden: {},
@@ -497,57 +498,17 @@ function ReviewPage() {
         )}
 
         {showWarningModal && (
-          <div className={styles["modal-overlay"]}>
-            <motion.div
-              className={styles["modal-content"]}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <button
-                className={styles["modal-close-btn"]}
-                onClick={() => setShowWarningModal(false)}
-              >
-                ×
-              </button>
-              <p>별점을 선택해주세요.</p>
-              <div className={styles["modal-buttons"]}>
-                <button
-                  className={`${styles.btn} ${styles.confirm}`}
-                  onClick={() => setShowWarningModal(false)}
-                >
-                  OK
-                </button>
-              </div>
-            </motion.div>
-          </div>
+          <WarningModal
+            message="별점을 선택해주세요."
+            onClose={() => setShowWarningModal(false)}
+          />
         )}
 
         {showEditWarningModal && (
-          <div className={styles["modal-overlay"]}>
-            <motion.div
-              className={styles["modal-content"]}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <button
-                className={styles["modal-close-btn"]}
-                onClick={() => setShowEditWarningModal(false)}
-              >
-                ×
-              </button>
-              <p>수정 중인 리뷰가 있습니다. 먼저 저장하거나 취소해주세요.</p>
-              <div className={styles["modal-buttons"]}>
-                <button
-                  className={`${styles.btn} ${styles.confirm}`}
-                  onClick={() => setShowEditWarningModal(false)}
-                >
-                  OK
-                </button>
-              </div>
-            </motion.div>
-          </div>
+          <WarningModal
+            message="수정 중인 리뷰가 있습니다. 먼저 저장하거나 취소해주세요."
+            onClose={() => setShowEditWarningModal(false)}
+          />
         )}
       </div>
     </motion.div>

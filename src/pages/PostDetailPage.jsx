@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DeleteModal from "../components/modal/DeleteModal";
+import WarningModal from "../components/modal/WarningModal";
 
 const containerVariants = {
   hidden: {},
@@ -46,6 +47,7 @@ function PostDetailPage() {
     subReplyId: null,
   });
   const [showSubReplyDeleteModal, setShowSubReplyDeleteModal] = useState(false);
+  const [showEmptyReplyModal, setShowEmptyReplyModal] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -71,12 +73,15 @@ function PostDetailPage() {
   };
 
   const handleSubmitReply = () => {
-    if (!newReply.trim()) return;
+    if (!newReply.trim()) {
+      setShowEmptyReplyModal(true);
+      return;
+    }
 
     const newReplyObj = {
       id: Date.now(),
       content: newReply,
-      username: "User Name", // 나중에 유저 연결 시 바꿔줘!
+      username: "User Name",
     };
 
     const updatedReplies = [...replies, newReplyObj];
@@ -462,7 +467,10 @@ function PostDetailPage() {
                     <button
                       className={styles["submit-reply-btn"]}
                       onClick={() => {
-                        if (!subReplyText.trim()) return;
+                        if (!subReplyText.trim()) {
+                          setShowEmptyReplyModal(true);
+                          return;
+                        }
                         const updatedReplies = replies.map((r) => {
                           if (r.id === reply.id) {
                             const newSubReply = {
@@ -575,6 +583,13 @@ function PostDetailPage() {
                   setShowSubReplyDeleteModal(false);
                   setSelectedSubReply({ parentId: null, subReplyId: null });
                 }}
+              />
+            )}
+
+            {showEmptyReplyModal  && (
+              <WarningModal
+                message="댓글을 입력해주세요."
+                onClose={() => setShowEmptyReplyModal(false)}
               />
             )}
           </motion.div>
