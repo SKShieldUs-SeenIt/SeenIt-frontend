@@ -38,6 +38,14 @@ function PostDetailPage() {
   const [editReplyContent, setEditReplyContent] = useState("");
   const [activeReplyBox, setActiveReplyBox] = useState(null);
   const [subReplyText, setSubReplyText] = useState("");
+  const [editSubReplyId, setEditSubReplyId] = useState(null);
+  const [editSubReplyContent, setEditSubReplyContent] = useState("");
+  const [editParentReplyId, setEditParentReplyId] = useState(null);
+  const [selectedSubReply, setSelectedSubReply] = useState({
+    parentId: null,
+    subReplyId: null,
+  });
+  const [showSubReplyDeleteModal, setShowSubReplyDeleteModal] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -88,8 +96,8 @@ function PostDetailPage() {
   };
 
   const handleEditClick = (reply) => {
-    setEditReplyId(reply.id); 
-    setEditReplyContent(reply.content); 
+    setEditReplyId(reply.id);
+    setEditReplyContent(reply.content);
   };
 
   const handleSaveEdit = () => {
@@ -102,10 +110,61 @@ function PostDetailPage() {
     setEditReplyContent("");
   };
 
-  // 수정 취소할 때 호출
   const handleCancelEdit = () => {
     setEditReplyId(null);
     setEditReplyContent("");
+  };
+
+  const handleEditSubReplyClick = (parentId, subReply) => {
+    setEditParentReplyId(parentId);
+    setEditSubReplyId(subReply.id);
+    setEditSubReplyContent(subReply.content);
+  };
+
+  const handleCancelSubReplyEdit = () => {
+    setEditSubReplyId(null);
+    setEditParentReplyId(null);
+    setEditSubReplyContent("");
+  };
+
+  const handleSaveSubReplyEdit = () => {
+    const updatedReplies = replies.map((r) => {
+      if (r.id === editParentReplyId) {
+        const updatedSubReplies = r.replies.map((s) =>
+          s.id === editSubReplyId ? { ...s, content: editSubReplyContent } : s
+        );
+        return { ...r, replies: updatedSubReplies };
+      }
+      return r;
+    });
+    setReplies(updatedReplies);
+    localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
+    setEditSubReplyId(null);
+    setEditParentReplyId(null);
+    setEditSubReplyContent("");
+  };
+
+  const handleDeleteSubReply = (parentId, subReplyId) => {
+    setSelectedSubReply({ parentId, subReplyId });
+    setShowSubReplyDeleteModal(true);
+  };
+
+  const confirmDeleteSubReply = () => {
+    const { parentId, subReplyId } = selectedSubReply;
+    const updatedReplies = replies.map((r) => {
+      if (r.id === parentId) {
+        return {
+          ...r,
+          replies: r.replies.filter((s) => s.id !== subReplyId),
+        };
+      }
+      return r;
+    });
+
+    setReplies(updatedReplies);
+    localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
+    setShowSubReplyDeleteModal(false);
+    setSelectedSubReply({ parentId: null, subReplyId: null });
   };
 
   return (
@@ -316,10 +375,60 @@ function PostDetailPage() {
                         className={`fas fa-user-circle ${styles["user-icon"]}`}
                       ></i>
                       <span className={styles["user-name"]}>User Name</span>
+
+                      {editSubReplyId !== subReply.id ||
+                      editParentReplyId !== reply.id ? (
+                        <div className={styles["reply-buttons"]}>
+                          <button
+                            className={styles["btn-edit"]}
+                            onClick={() =>
+                              handleEditSubReplyClick(reply.id, subReply)
+                            }
+                          >
+                            edit
+                          </button>
+                          <button
+                            className={styles["btn-delete"]}
+                            onClick={() =>
+                              handleDeleteSubReply(reply.id, subReply.id)
+                            }
+                          >
+                            delete
+                          </button>
+                        </div>
+                      ) : null}
                     </div>
-                    <div className={styles["reply-description"]}>
-                      {subReply.content}
-                    </div>
+
+                    {editSubReplyId === subReply.id &&
+                    editParentReplyId === reply.id ? (
+                      <>
+                        <textarea
+                          className={styles["reply-description-input"]}
+                          value={editSubReplyContent}
+                          onChange={(e) =>
+                            setEditSubReplyContent(e.target.value)
+                          }
+                        />
+                        <div className={styles["reply-btn-group"]}>
+                          <button
+                            className={styles["submit-reply-btn"]}
+                            onClick={handleSaveSubReplyEdit}
+                          >
+                            save
+                          </button>
+                          <button
+                            className={styles["cancel-reply-btn"]}
+                            onClick={handleCancelSubReplyEdit}
+                          >
+                            cancel
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className={styles["reply-description"]}>
+                        {subReply.content}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -454,6 +563,17 @@ function PostDetailPage() {
                 onCancel={() => {
                   setShowReplyDeleteModal(false);
                   setSelectedReplyId(null);
+                }}
+              />
+            )}
+
+            {showSubReplyDeleteModal && (
+              <DeleteModal
+                message="댓글을 삭제하시겠습니까?"
+                onConfirm={confirmDeleteSubReply}
+                onCancel={() => {
+                  setShowSubReplyDeleteModal(false);
+                  setSelectedSubReply({ parentId: null, subReplyId: null });
                 }}
               />
             )}
