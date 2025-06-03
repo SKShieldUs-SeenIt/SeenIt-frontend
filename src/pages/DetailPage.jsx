@@ -3,10 +3,17 @@ import styles from "./DetailPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import CommonHeader from "../components/common/CommonHeader";
 
 function DetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const commonMotion = {
+    initial: { x: -100, opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+    transition: { delay: 0.4, duration: 0.5 },
+  };
 
   return (
     <motion.div
@@ -15,36 +22,13 @@ function DetailPage() {
       transition={{ duration: 1.2 }}
     >
       <div>
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.div
-            className={styles["search-bar"]}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-          >
-            <input
-              type="text"
-              placeholder="Search movies..."
-              className={styles["search-input"]}
-            />
-            <button className={styles["search-btn"]}>
-              <i className="fas fa-search"></i>
-            </button>
-          </motion.div>
-        </motion.div>
+        <CommonHeader /> 
 
         <div className={styles.wrapper}>
           <div className={styles["left-section"]}>
             <motion.div
               className={styles["poster-title-row"]}
-              initial={{ x: -100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              {...commonMotion}
             >
               <img
                 src={moviePoster}
@@ -62,18 +46,14 @@ function DetailPage() {
 
             <motion.h1
               className={styles["desc-title"]}
-              initial={{ x: -100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              {...commonMotion}
             >
               Detail
             </motion.h1>
 
             <motion.div
               className={styles["movie-desc"]}
-              initial={{ x: -100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              {...commonMotion}
             >
               Acolle vis laties handyered and lots fo the peplifiamls dee and
               you.
@@ -131,7 +111,7 @@ function DetailPage() {
             <div className={styles["button-post"]}>
               <div className={styles["button-label"]}>View Posts</div>
               <motion.button
-                className={`${styles.btn} ${styles.post}`}
+                className={`${styles.btn} ${styles["btn-action"]}`}
                 whileHover={{ scale: 1.55 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate("/posts")}
@@ -143,7 +123,7 @@ function DetailPage() {
             <div className={styles["button-review"]}>
               <div className={styles["button-label"]}>View Reviews</div>
               <motion.button
-                className={`${styles.btn} ${styles.review}`}
+                className={`${styles.btn} ${styles["btn-action"]}`}
                 whileHover={{ scale: 1.55 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate("/reviews")}

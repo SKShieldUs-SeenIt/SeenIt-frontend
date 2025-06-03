@@ -3,6 +3,8 @@ import moviePoster from "../assets/movie.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import CommonHeader from "../components/common/CommonHeader";
+import CommonMovieInfo from "../components/common/CommonMovieInfo";
 
 const containerVariants = {
   hidden: {},
@@ -64,62 +66,13 @@ function PostPage() {
       transition={{ duration: 1.2 }}
     >
       <div>
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.div
-            className={styles["search-bar"]}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-          >
-            <input
-              type="text"
-              placeholder="Search movies..."
-              className={styles["search-input"]}
-            />
-            <button className={styles["search-btn"]}>
-              <i className="fas fa-search"></i>
-            </button>
-          </motion.div>
-        </motion.div>
-
-        <motion.h1
-          className={styles["post-title-main"]}
-          initial={{ y: -40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          Posts
-        </motion.h1>
-
-        <motion.div
-          className={styles["post-container"]}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.div
-            className={styles["post-movie"]}
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <img
-              src={moviePoster}
-              alt="movie"
-              className={styles["post-poster"]}
-            />
-            <div className={styles["post-info"]}>
-              <div className={styles["post-movie-title"]}>The Last of Us</div>
-              <div className={styles["post-director"]}>
-                Directed by Neil Druckmann
-              </div>
-            </div>
-          </motion.div>
+        <CommonHeader title="Posts" />
+        <motion.div className={styles["post-container"]}>
+          <CommonMovieInfo
+            title="The Last of Us"
+            director="Neil Druckmann"
+            poster={moviePoster}
+          />
 
           <div className={styles["write-post-container"]}>
             <motion.button

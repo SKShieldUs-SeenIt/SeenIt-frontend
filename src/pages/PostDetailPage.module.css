@@ -1,72 +1,3 @@
-.header {
-  position: relative;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 10px;
-  box-sizing: border-box;
-}
-
-.header::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2.5px;
-  background-color: white;
-  transform: translateX(-50%);
-  animation: expand-line 0.8s ease-out forwards;
-}
-
-@keyframes expand-line {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-
-.search-input {
-  width: 550px;
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 25px;
-  border: none;
-  outline: none;
-  margin-left: 40px;
-}
-
-.search-input::placeholder {
-  color: #cccccc;
-}
-
-.search-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: white;
-  margin-top: 5px;
-  
-}
-
-.search-btn i {
-  font-size: 1.5rem;
-  border: none;
-  color: white;
-  margin-left: -10px;
-}
-
-
 .post-detail-container {
   width: calc(100% - 80px);
   margin: 0px 40px;
@@ -237,6 +168,14 @@
   margin-top: 10px;
 }
 
+.btn {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
 .submit-reply-btn {
   background-color: #4caf50;
   color: white;
@@ -246,6 +185,7 @@
   cursor: pointer;
   font-size: 15px;
   height: 30px;
+  transition: background-color 0.2s, opacity 0.2s;
 }
 
 .cancel-reply-btn {
@@ -257,6 +197,12 @@
   cursor: pointer;
   font-size: 15px;
   height: 30px;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.submit-reply-btn:hover,
+.cancel-reply-btn:hover {
+  opacity: 0.9;
 }
 
 .reply-section {

@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DeleteModal from "../components/modal/DeleteModal";
 import WarningModal from "../components/modal/WarningModal";
+import CommonHeader from "../components/common/CommonHeader";
 
 const containerVariants = {
   hidden: {},
@@ -179,37 +180,7 @@ function PostDetailPage() {
       transition={{ duration: 1.2 }}
     >
       <div>
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.div
-            className={styles["search-bar"]}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-          >
-            <input
-              type="text"
-              placeholder="Search movies..."
-              className={styles["search-input"]}
-            />
-            <button className={styles["search-btn"]}>
-              <i className="fas fa-search"></i>
-            </button>
-          </motion.div>
-        </motion.div>
-
-        <motion.h1
-          className={styles["post-detail-title"]}
-          initial={{ y: -40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          Post Detail
-        </motion.h1>
+        <CommonHeader title="Post Detail" />
 
         <motion.div
           className={styles["back-to-list-wrapper"]}

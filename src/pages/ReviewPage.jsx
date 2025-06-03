@@ -3,6 +3,8 @@ import moviePoster from "../assets/movie.jpg";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import WarningModal from "../components/modal/WarningModal";
+import CommonHeader from "../components/common/CommonHeader";
+import CommonMovieInfo from "../components/common/CommonMovieInfo";
 
 const containerVariants = {
   hidden: {},
@@ -263,61 +265,13 @@ function ReviewPage() {
       transition={{ duration: 1.2 }}
     >
       <div>
-        {/* Header */}
-        <motion.div className={styles.header}>
-          <motion.div
-            className={styles["search-bar"]}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-          >
-            <input
-              type="text"
-              placeholder="Search movies..."
-              className={styles["search-input"]}
-            />
-            <button className={styles["search-btn"]}>
-              <i className="fas fa-search"></i>
-            </button>
-          </motion.div>
-        </motion.div>
-
-        {/* Title */}
-        <motion.h1
-          className={styles["review-title"]}
-          initial={{ y: -40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          Reviews
-        </motion.h1>
-
-        {/* Review Container */}
-        <motion.div
-          className={styles["review-container"]}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Movie Info */}
-          <motion.div
-            className={styles["review-movie"]}
-            initial={{ x: -100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <img
-              src={moviePoster}
-              alt="movie"
-              className={styles["review-poster"]}
-            />
-            <div className={styles["review-info"]}>
-              <div className={styles["review-movie-title"]}>The Last of Us</div>
-              <div className={styles["review-director"]}>
-                Directed by Neil Druckmann
-              </div>
-            </div>
-          </motion.div>
+        <CommonHeader title="Reviews" />
+        <motion.div className={styles["review-container"]}>
+          <CommonMovieInfo
+            title="The Last of Us"
+            director="Neil Druckmann"
+            poster={moviePoster}
+          />
 
           {/* Write Review Button */}
           {!showReviewBox && (
