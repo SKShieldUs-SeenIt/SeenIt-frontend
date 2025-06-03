@@ -68,6 +68,12 @@ function PostDetailPage() {
     setShowReplyInput(false);
   };
 
+  const handleDeleteReply = (id) => {
+    const updatedReplies = replies.filter((reply) => reply.id !== id);
+    setReplies(updatedReplies);
+    localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
@@ -213,6 +219,14 @@ function PostDetailPage() {
               <div className={styles["reply-header"]}>
                 <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
                 <span className={styles["user-name"]}>{reply.username}</span>
+                <div className={styles["reply-buttons"]}>
+                  <button
+                    className={styles["btn-delete"]}
+                    onClick={() => handleDeleteReply(reply.id)}
+                  >
+                    delete
+                  </button>
+                </div>
               </div>
               <div className={styles["reply-description"]}>{reply.content}</div>
             </motion.div>
