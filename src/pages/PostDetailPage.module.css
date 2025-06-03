@@ -193,6 +193,70 @@
   color: #ddd;
 }
 
+
+.reply-header-top {
+  margin-top: 30px;
+}
+
+.write-reply-btn {
+  background-color: #4b6cb7;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.write-reply-btn:hover {
+  background-color: #3a5197;
+}
+
+.reply-description-input {
+  width: 100%;
+  height: 130px;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  resize: none;
+  background-color: #3a3a3a;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  margin-top: 20px;
+  box-sizing: border-box;
+}
+
+.reply-btn-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.submit-reply-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 3px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  height: 30px;
+}
+
+.cancel-reply-btn {
+  background-color: #888;
+  color: white;
+  padding: 3px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  height: 30px;
+}
+
 .reply-section {
   display: flex;
   flex-direction: column;
