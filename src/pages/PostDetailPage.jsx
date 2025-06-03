@@ -36,12 +36,18 @@ function PostDetailPage() {
   const [selectedReplyId, setSelectedReplyId] = useState(null);
   const [editReplyId, setEditReplyId] = useState(null);
   const [editReplyContent, setEditReplyContent] = useState("");
+  const [activeReplyBox, setActiveReplyBox] = useState(null);
+  const [subReplyText, setSubReplyText] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
     const savedReplies =
       JSON.parse(localStorage.getItem(`replies-${post.id}`)) || [];
-    setReplies(savedReplies);
+    const enrichedReplies = savedReplies.map((r) => ({
+      ...r,
+      replies: r.replies || [],
+    }));
+    setReplies(enrichedReplies);
   }, [post.id]);
 
   const confirmDelete = () => {
@@ -81,13 +87,11 @@ function PostDetailPage() {
     setSelectedReplyId(null);
   };
 
-  // 수정 시작할 때 호출
   const handleEditClick = (reply) => {
-    setEditReplyId(reply.id); // 현재 수정 중인 댓글 ID 저장
-    setEditReplyContent(reply.content); // 기존 내용 textarea에 넣기
+    setEditReplyId(reply.id); 
+    setEditReplyContent(reply.content); 
   };
 
-  // 수정 저장할 때 호출
   const handleSaveEdit = () => {
     setReplies((prev) =>
       prev.map((r) =>
@@ -195,7 +199,7 @@ function PostDetailPage() {
                 className={styles["write-reply-btn"]}
                 onClick={() => setShowReplyInput(true)}
               >
-                Write a Reply
+                Write Reply
               </button>
             )}
 
@@ -297,6 +301,94 @@ function PostDetailPage() {
                 <div className={styles["reply-description"]}>
                   {reply.content}
                 </div>
+              )}
+
+              {reply.replies?.map((subReply) => (
+                <div key={subReply.id} className={styles["sub-reply"]}>
+                  <i
+                    className={`fas fa-level-up-alt fa-rotate-90 ${styles["reply-arrow"]}`}
+                  ></i>
+                  <div
+                    className={`${styles["reply-card"]} ${styles["nested"]}`}
+                  >
+                    <div className={styles["reply-header"]}>
+                      <i
+                        className={`fas fa-user-circle ${styles["user-icon"]}`}
+                      ></i>
+                      <span className={styles["user-name"]}>User Name</span>
+                    </div>
+                    <div className={styles["reply-description"]}>
+                      {subReply.content}
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* 답글 쓰기 버튼 */}
+              {activeReplyBox !== reply.id ? (
+                <button
+                  className={styles["sub-reply-btn"]}
+                  onClick={() => {
+                    setActiveReplyBox(reply.id);
+                    setSubReplyText("");
+                  }}
+                >
+                  Write Reply
+                </button>
+              ) : (
+                <motion.div className={styles["reply-card"]}>
+                  <div className={styles["reply-header"]}>
+                    <i
+                      className={`fas fa-user-circle ${styles["user-icon"]}`}
+                    ></i>
+                    <span className={styles["user-name"]}>User Name</span>
+                  </div>
+                  <textarea
+                    className={styles["reply-description-input"]}
+                    placeholder="답글을 입력하세요..."
+                    value={subReplyText}
+                    onChange={(e) => setSubReplyText(e.target.value)}
+                  />
+                  <div className={styles["reply-btn-group"]}>
+                    <button
+                      className={styles["submit-reply-btn"]}
+                      onClick={() => {
+                        if (!subReplyText.trim()) return;
+                        const updatedReplies = replies.map((r) => {
+                          if (r.id === reply.id) {
+                            const newSubReply = {
+                              id: Date.now(),
+                              content: subReplyText,
+                            };
+                            return {
+                              ...r,
+                              replies: [...(r.replies || []), newSubReply],
+                            };
+                          }
+                          return r;
+                        });
+                        setReplies(updatedReplies);
+                        localStorage.setItem(
+                          `replies-${post.id}`,
+                          JSON.stringify(updatedReplies)
+                        );
+                        setSubReplyText("");
+                        setActiveReplyBox(null);
+                      }}
+                    >
+                      submit
+                    </button>
+                    <button
+                      className={styles["cancel-reply-btn"]}
+                      onClick={() => {
+                        setActiveReplyBox(null);
+                        setSubReplyText("");
+                      }}
+                    >
+                      cancel
+                    </button>
+                  </div>
+                </motion.div>
               )}
             </motion.div>
           ))}

@@ -322,6 +322,24 @@
   gap: 10px; 
 }
 
+.sub-reply-btn {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: block;
+  margin-left: auto;
+}
+
+.sub-reply-btn:hover {
+  background-color: #e0e0e0;
+}
+
 .reply-arrow {
   font-size: 1rem;
   color: #999;
@@ -332,22 +350,3 @@
   flex: 1;
   background-color: rgba(55, 55, 55, 0.848);
 }
-
-/* .confirm,
-.cancel {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 70px;
-  height: 30px;
-  background-color: #4c9d62; 
-  color: white;
-  font-size: 15px;
-  font-weight: 500;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  box-sizing: border-box;
-} */
