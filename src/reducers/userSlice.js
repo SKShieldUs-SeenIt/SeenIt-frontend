@@ -28,6 +28,15 @@ const userSlice = createSlice({
       state.error = null;
       localStorage.removeItem('jwtToken');
     },
+      updateUserSuccess(state, action) {
+      state.user = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    updateUserFailure(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -36,6 +45,8 @@ export const {
   fetchUserSuccess,
   fetchUserFailure,
   clearUser,
+   updateUserSuccess,
+  updateUserFailure,
 } = userSlice.actions;
 
 export default userSlice.reducer;
