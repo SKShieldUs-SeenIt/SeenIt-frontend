@@ -4,7 +4,9 @@ import SearchBar from '../components/home/SearchBar';
 import MovieCard from '../components/home/MovieCard';
 import SearchPopup from '../components/search/SearchPopup';
 import './HomePage.css';
-
+import { fetchUserInfo } from '../actions/userAction';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -27,7 +29,11 @@ export default function HomePage() {
     { id: 10, title: 'Following', rating: 3.8 },
   ];
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(() => {
 
+    dispatch(fetchUserInfo());
+  }, [dispatch]);
   return (
     <div className="homepage-container">
       {showSearchPopup && (

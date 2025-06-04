@@ -18,7 +18,7 @@ import SignupIDPage from './pages/SignupIdPage';
 import SignupSplashScreen from './components/splash/SignupSplashScreen';
 import SignupGenrePage from './pages/SignupGenrePage';
 import AuthCallback from './pages/AuthCallback'; // 경로는 실제 파일 경로에 맞게 수정
-
+import SignupCompletePage from './pages/SignupCompletePage';
 import './App.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -79,8 +79,11 @@ export default function App() {
                 </motion.div>
               }
             />
+          <Route path="/signup/complete" element={<SignupCompletePage />} />
+
           <Route path="/signup/splash" element={<SignupSplashScreen />} />
           <Route path="/kakao/callback" element={<AuthCallback />} />
+
 
           {/* 메인 홈 */}
           <Route path="/home" element={<HomePage />} />
