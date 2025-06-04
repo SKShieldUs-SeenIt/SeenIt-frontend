@@ -1,0 +1,31 @@
+.movie-section {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.poster {
+  width: 150px;
+  height: auto;
+  border: 1px solid #ccc;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.movie-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+  margin-top: 150px;
+}
+
+.director {
+  font-size: 0.9rem;
+  color: #cccccc;
+  margin-top: 10px;
+}

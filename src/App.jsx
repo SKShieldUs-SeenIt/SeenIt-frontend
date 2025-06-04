@@ -10,6 +10,10 @@ import PostPage from './pages/PostPage';
 import WritePostPage from './pages/WritePostPage';
 import PostDetailPage from './pages/PostDetailPage';
 import AllMoviesPage from './pages/AllMoviesPage';
+import MySeenMoviePage from './pages/MySeenMoviePage'
+import ScrollToTop from './components/common/ScrollToTop'; 
+import ProfilePage from './pages/ProfilePage';
+import EditPostPage from './pages/EditPostPage';
 import MySeenMoviePage from './pages/MySeenMoviePage';
 import ScrollToTop from './components/common/ScrollToTop';
 import SignupIDPage from './pages/SignupIdPage';
@@ -120,6 +124,9 @@ export default function App() {
           <Route path="/posts" element={<PostPage />} />
           <Route path="/writePosts" element={<WritePostPage />} />
           <Route path="/postDetails" element={<PostDetailPage />} />
+          <Route path="/postDetails/:id" element={<PostDetailPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/editPost/:id" element={<EditPostPage />} />
 
           {/* 404 페이지 */}
           <Route

@@ -1,97 +1,8 @@
-.header {
-  width: 100vw;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 10px;
-  border-bottom: 3px solid white;
-  box-sizing: border-box;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-
-.search-input {
-  width: 550px;
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 25px;
-  border: none;
-  outline: none;
-  margin-left: 40px;
-}
-
-.search-input::placeholder {
-  color: #cccccc;
-}
-
-.search-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: white;
-  margin-top: 5px;
-}
-
-.search-btn i {
-  font-size: 1.5rem;
-  border: none;
-  color: white;
-  margin-left: -10px;
-}
-
-.post-title-main {
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 40px;
-}
-
 .post-container {
   padding: 10px 50px;
   background-color: #26272e;
   color: white;
   font-family: 'Segoe UI', sans-serif;
-}
-
-.post-title-page {
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.post-movie {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.post-poster {
-  width: 150px;
-  height: auto;
-  border: 1px solid #ccc;
-}
-
-.post-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.post-movie-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: white;
-  margin-top: 150px;
-}
-
-.post-director {
-  font-size: 0.9rem;
-  color: #cccccc;
-  margin-top: 10px;
 }
 
 .write-post-container {
@@ -114,7 +25,7 @@
 .btn.writePosts {
   background-color: #2e3eb8;
   color: white;
-  width: 100px;
+  width: 120px;
   height: 35px;
   transition: background-color 0.2s;
 }
