@@ -1,0 +1,48 @@
+/* SplashScreen.css */
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: black;
+  color: white;
+}
+
+.splash-text {
+  font-size: 5rem;
+  font-family: 'Anton', sans-serif;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.splash-subtitle {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  color: #cccccc;
+  animation: fadeIn 2.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

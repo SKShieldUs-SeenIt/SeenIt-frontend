@@ -1,0 +1,114 @@
+.post-container {
+  padding: 10px 50px;
+  background-color: #26272e;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.write-post-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: normal;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.btn.writePosts {
+  background-color: #2e3eb8;
+  color: white;
+  width: 120px;
+  height: 35px;
+  transition: background-color 0.2s;
+}
+
+.btn.writePosts:hover {
+  opacity: 0.9;
+}
+
+.btn.edit {
+  background-color: #888;
+  color: white;
+  width: 60px;
+  height: 25px;
+}
+
+.btn.delete {
+  background-color: #f44336;
+  color: white;
+  width: 60px;
+  height: 25px;
+}
+
+.post-list-item {
+  background: #333;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-list-item:hover {
+  border: 1px solid #aaa;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.post-user {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.post-username {
+  font-weight: bold;
+}
+
+.post-actions .btn {
+  margin-left: 8px;
+  transition: background-color 0.2s;
+}
+
+.post-actions .btn:hover {
+  opacity: 0.9;
+}
+
+.post-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.post-desc {
+  margin: 10px 0;
+  color: #ddd;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.post-date {
+  margin-left: auto;
+}
