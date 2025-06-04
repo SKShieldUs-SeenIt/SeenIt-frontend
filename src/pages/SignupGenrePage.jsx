@@ -1,11 +1,14 @@
 // src/pages/signup/SignupGenrePage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './SignupGenrePage.css';
 
 export default function SignupGenrePage() {
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const location = useLocation();
   const navigate = useNavigate();
+
+  const nickname = location.state?.nickname || ''; // 이전 페이지에서 전달받은 닉네임
 
   const genres = ['액션', '로맨스', '코미디', '스릴러', 'SF', '애니메이션', '다큐멘터리', '드라마'];
 
@@ -20,7 +23,14 @@ export default function SignupGenrePage() {
       alert('최소 한 개의 장르를 선택해주세요!');
       return;
     }
-    navigate('/signup/complete'); // 완료 화면으로 이동
+
+    // 다음 페이지로 nickname + 장르 배열 전달
+    navigate('/signup/complete', {
+      state: {
+        nickname,
+        genres: selectedGenres,
+      },
+    });
   };
 
   return (

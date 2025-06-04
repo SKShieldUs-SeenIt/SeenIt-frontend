@@ -26,7 +26,7 @@
 }
 
 .id-input {
-  width: 100%;
+  width: 93%;
   padding: 12px;
   font-size: 1rem;
   border: none;
@@ -34,10 +34,11 @@
   margin-bottom: 1.5rem;
   background-color: #2a2a2a;
   color: #fff;
+  
 }
 
 .id-input::placeholder {
-  color: #aaa;
+  color: #dbd6d6;
 }
 
 .id-next-btn {

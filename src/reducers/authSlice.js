@@ -1,28 +1,9 @@
-// src/redux/slices/authSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-export const fetchKakaoLogin = createAsyncThunk(
-  'auth/fetchKakaoLogin',
-  async (code, thunkAPI) => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/kakao`,
-        { code }
-      );
-      return response.data; // 로그인 응답 데이터
-    } catch (error) {
-      console.error('카카오 로그인 실패:', error);
-      return thunkAPI.rejectWithValue(error.response?.data || '카카오 로그인 오류');
-    }
-  }
-);
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isAuthenticated: false,
-  user: null,
   token: null,
-  loading: false,
+  user: null, // 필요 시 사용자 정보 저장
   error: null,
 };
 
@@ -30,30 +11,29 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    // 로그인 성공 시 호출되어 토큰을 저장하는 액션
+    setToken(state, action) {
+      state.isAuthenticated = true;
+      state.token = action.payload.accessToken;  // 액세스 토큰 저장
+      state.user = action.payload.user || null; // 사용자 정보 (필요 시)
+      state.error = null;
+    },
+    
+    // 로그아웃 시 호출되어 인증 상태 초기화
     logout(state) {
       state.isAuthenticated = false;
-      state.user = null;
       state.token = null;
+      state.user = null;
+      state.error = null;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchKakaoLogin.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchKakaoLogin.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isAuthenticated = true;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-      })
-      .addCase(fetchKakaoLogin.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || '카카오 로그인 실패';
-      });
+    
+    // 로그인 오류 처리 (예: 토큰 발급 실패, 네트워크 오류 등)
+    setAuthError(state, action) {
+      state.error = action.payload;
+      state.isAuthenticated = false;
+    },
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { setToken, logout, setAuthError } = authSlice.actions;
 export default authSlice.reducer;

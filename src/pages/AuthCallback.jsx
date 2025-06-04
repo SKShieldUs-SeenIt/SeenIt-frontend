@@ -1,22 +1,32 @@
-// src/pages/AuthCallback.jsx
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchKakaoLogin } from '../reducers/authSlice';
+// src/pages/KakaoCallback.jsx
 
-export default function AuthCallback() {
+import { useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setToken, setAuthError } from '../reducers/authSlice';
+
+export default function KakaoCallback() {
+  const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
+    const token = searchParams.get('token');
 
-    if (code) {
-      console.log('인가 코드:', code);
-      dispatch(fetchKakaoLogin(code));
+    if (token) {
+      dispatch(setToken(token)); // Redux 저장
+      localStorage.setItem('jwtToken', token); // localStorage도 선택적 저장
+      navigate('/home');
     } else {
-      console.error('카카오 인가 코드 없음');
+      dispatch(setAuthError('토큰이 전달되지 않았습니다.'));
+      navigate('/login');
     }
-  }, [dispatch]);
+  }, [searchParams, dispatch, navigate]);
 
-  return <div>로그인 중입니다...</div>;
+  return (
+    <div className="login-container">
+      <h1 className="login-title">SeenIt?</h1>
+      <p className="login-subtitle">로그인 처리 중입니다...</p>
+    </div>
+  );
 }

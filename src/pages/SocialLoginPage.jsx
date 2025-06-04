@@ -1,20 +1,17 @@
-// src/pages/SocialLoginPage.jsx
 import React from 'react';
 import './SocialLoginPage.css';
 import { useNavigate } from 'react-router-dom';
 
 export default function SocialLoginPage() {
-      const navigate = useNavigate();
-     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_REST_API_KEY}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+  const navigate = useNavigate();
 
   const handleKakaoLogin = () => {
-    // TODO: 카카오 로그인 로직 연결
-    console.log('카카오 로그인');
-        window.location.href = kakaoAuthUrl;
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+    window.location.href = KAKAO_AUTH_URL;
   };
 
-    const handleSignupClick = () => {
-    navigate('/signup/splash'); // 회원가입 스플래쉬 화면으로 이동
+  const handleSignupClick = () => {
+    navigate('/signup/splash');
   };
 
   return (
@@ -24,7 +21,7 @@ export default function SocialLoginPage() {
 
       <div className="login-buttons">
         <button className="kakao-btn" onClick={handleKakaoLogin}>카카오로 로그인</button>
-         <button onClick={handleSignupClick}>회원가입 테스트용 이동</button>
+        <button onClick={handleSignupClick}>회원가입 테스트용 이동</button>
       </div>
     </div>
   );
