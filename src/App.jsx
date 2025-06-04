@@ -14,8 +14,6 @@ import MySeenMoviePage from './pages/MySeenMoviePage'
 import ScrollToTop from './components/common/ScrollToTop'; 
 import ProfilePage from './pages/ProfilePage';
 import EditPostPage from './pages/EditPostPage';
-import MySeenMoviePage from './pages/MySeenMoviePage';
-import ScrollToTop from './components/common/ScrollToTop';
 import SignupIDPage from './pages/SignupIdPage';
 import SignupSplashScreen from './components/splash/SignupSplashScreen';
 import SignupGenrePage from './pages/SignupGenrePage';
