@@ -1,19 +1,25 @@
-// src/App.jsx
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import SplashScreen from './components/splash/SplashScreen';
+import SocialLoginPage from './pages/SocialLoginPage';
 import HomePage from './pages/HomePage';
 import DetailPage from './pages/DetailPage';
 import ReviewPage from './pages/ReviewPage';
 import PostPage from './pages/PostPage';
 import WritePostPage from './pages/WritePostPage';
 import PostDetailPage from './pages/PostDetailPage';
-import SplashScreen from './components/splash/SplashScreen';
 import AllMoviesPage from './pages/AllMoviesPage';
 import MySeenMoviePage from './pages/MySeenMoviePage'
 import ScrollToTop from './components/common/ScrollToTop'; 
 import ProfilePage from './pages/ProfilePage';
 import EditPostPage from './pages/EditPostPage';
+import MySeenMoviePage from './pages/MySeenMoviePage';
+import ScrollToTop from './components/common/ScrollToTop';
+import SignupIDPage from './pages/SignupIdPage';
+import SignupSplashScreen from './components/splash/SignupSplashScreen';
+import SignupGenrePage from './pages/SignupGenrePage';
+import AuthCallback from './pages/AuthCallback'; // 경로는 실제 파일 경로에 맞게 수정
 
 import './App.css';
 import 'swiper/css';
@@ -22,13 +28,25 @@ import 'swiper/css/pagination';
 import './pages/MySeenMoviePage.css';
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    return !sessionStorage.getItem('splashShown');
+  });
+
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 2500);
-    return () => clearTimeout(timer);
-  }, []);
+    if (showSplash) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+        sessionStorage.setItem('splashShown', 'true');
+        if (location.pathname === '/') {
+          navigate('/login');
+        }
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [showSplash, location, navigate]);
 
   return (
     <AnimatePresence mode="wait">
@@ -36,17 +54,46 @@ export default function App() {
         <SplashScreen key="splash" />
       ) : (
         <Routes location={location} key={location.pathname}>
-          {/* HomePage (기존 애니메이션 유지) */}
-          <Route path="/" element={<HomePage />} />
+          {/* 로그인 및 회원가입 흐름 */}
+          <Route path="/login" element={<SocialLoginPage />} />
+          <Route
+            path="/signup/id"
+            element={
+              <motion.div
+                initial={{ x: '100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <SignupIDPage />
+              </motion.div>
+            }
+          />
+          <Route
+              path="/signup/genre"
+              element={
+                <motion.div
+                  initial={{ x: '100%', opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.6 }}
+                  
+                >
+                  <SignupGenrePage />
+                </motion.div>
+              }
+            />
+          <Route path="/signup/splash" element={<SignupSplashScreen />} />
+          <Route path="/kakao/callback" element={<AuthCallback />} />
 
-          {/* View All: 오른쪽에서 왼쪽으로 슬라이드 등장 */}
+          {/* 메인 홈 */}
+          <Route path="/home" element={<HomePage />} />
+
+          {/* 전체 영화 보기 */}
           <Route
             path="/all-movies"
             element={
               <motion.div
                 initial={{ x: '100%', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                // exit={{ x: '-100%', opacity: 0 }}
                 transition={{ duration: 0.7 }}
               >
                 <ScrollToTop />
@@ -54,13 +101,14 @@ export default function App() {
               </motion.div>
             }
           />
-        <Route
+
+          {/* 내가 본 영화 보기 */}
+          <Route
             path="/My-movies"
             element={
               <motion.div
                 initial={{ x: '100%', opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                // exit={{ x: '-100%', opacity: 0 }}
                 transition={{ duration: 0.7 }}
               >
                 <ScrollToTop />
@@ -68,7 +116,8 @@ export default function App() {
               </motion.div>
             }
           />
-          {/* 나머지는 기본 */}
+
+          {/* 세부 페이지들 */}
           <Route path="/details" element={<DetailPage />} />
           <Route path="/details/:id" element={<DetailPage />} />
           <Route path="/reviews" element={<ReviewPage />} />
@@ -79,7 +128,7 @@ export default function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/editPost/:id" element={<EditPostPage />} />
 
-          {/* 404 */}
+          {/* 404 페이지 */}
           <Route
             path="*"
             element={
