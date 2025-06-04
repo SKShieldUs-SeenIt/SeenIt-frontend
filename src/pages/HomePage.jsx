@@ -31,7 +31,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log('[HomePage] useEffect 실행됨 ✅'); // ⬅️ 이거 찍히는지 확인
+
     dispatch(fetchUserInfo());
   }, [dispatch]);
   return (

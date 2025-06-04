@@ -222,3 +222,28 @@
   align-items: center; 
   gap : 10px;
 }
+.genreButtonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.genreButton {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.genreButton:hover {
+  background-color: #ddd;
+}
+
+.selected {
+  background-color: #2c7dfa;
+  color: #fff;
+  border-color: #2c7dfa;
+}
