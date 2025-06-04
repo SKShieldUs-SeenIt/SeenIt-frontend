@@ -1,45 +1,41 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./WritePostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
 
-function WritePostsPage() {
+function EditPostPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const post = location.state;
 
+  const [title, setTitle] = useState(post.title);
+  const [description, setDescription] = useState(post.description);
   const [showWarningModal, setShowWarningModal] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
 
-  useEffect(() => {
-    // 페이지 새로 고침 시 input 필드를 비워줍니다.
-    setTitle("");
-    setDescription("");
-  }, []);
-
-  const handleSubmit = () => {
+  const handleUpdate = () => {
     if (title.trim() === "" || description.trim() === "") {
       setShowWarningModal(true);
       return;
     }
 
-    const newPost = {
-      id: Date.now(), // 고유 ID
+    const updatedPost = {
+      ...post,
       title,
       description,
-      username: "User Name",
-      createdAt: new Date().toLocaleString(),
     };
 
     const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-    const updatedPosts = [newPost, ...savedPosts];
+    const newPosts = savedPosts.map((p) =>
+      p.id === post.id ? updatedPost : p
+    );
 
-    localStorage.setItem("posts", JSON.stringify(updatedPosts));
+    localStorage.setItem("posts", JSON.stringify(newPosts));
 
-    navigate("/posts", { state: { newPost } });
+    navigate(`/postDetails/${post.id}`, { state: updatedPost });
   };
 
   return (
@@ -49,7 +45,7 @@ function WritePostsPage() {
       transition={{ duration: 1.2 }}
     >
       <div>
-        <CommonHeader title="Posts" />
+        <CommonHeader title="Edit Post" />
         <motion.div className={styles["post-container"]}>
           <CommonMovieInfo
             title="The Last of Us"
@@ -65,16 +61,16 @@ function WritePostsPage() {
           >
             <div className={styles["post-header"]}>
               <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
-              <span className={styles["user-name"]}>User Name</span>
+              <span className={styles["user-name"]}>{post.username}</span>
               <div className={styles["post-buttons"]}>
                 <button
                   className={styles["btn-cancel"]}
-                  onClick={() => navigate("/posts")}
+                  onClick={() => navigate(-1)}
                 >
                   cancel
                 </button>
-                <button className={styles["btn-submit"]} onClick={handleSubmit}>
-                  submit
+                <button className={styles["btn-submit"]} onClick={handleUpdate}>
+                  save
                 </button>
               </div>
             </div>
@@ -99,36 +95,15 @@ function WritePostsPage() {
           </motion.div>
         </motion.div>
 
-        {/* 경고 모달 */}
         {showWarningModal && (
-          <div className={styles["modal-overlay"]}>
-            <motion.div
-              className={styles["modal-content"]}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <button
-                className={styles["modal-close-btn"]}
-                onClick={() => setShowWarningModal(false)}
-              >
-                ×
-              </button>
-              <p>제목 또는 내용을 입력해주세요.</p>
-              <div className={styles["modal-buttons"]}>
-                <button
-                  className={`${styles.btn} ${styles.confirm}`}
-                  onClick={() => setShowWarningModal(false)}
-                >
-                  OK
-                </button>
-              </div>
-            </motion.div>
-          </div>
+          <WarningModal
+            message="제목 또는 내용을 입력해주세요."
+            onClose={() => setShowWarningModal(false)}
+          />
         )}
       </div>
     </motion.div>
   );
 }
 
-export default WritePostsPage;
+export default EditPostPage;
