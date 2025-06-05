@@ -53,22 +53,23 @@ export default function HomePage() {
             View All
           </button>
 
-          <Swiper
-            modules={[EffectCoverflow]}
-            effect="coverflow"
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView={5}
-            initialSlide={Math.floor(popularMovies.length / 2)}
-            coverflowEffect={{
-              rotate: 10,
-              stretch: 0,
-              depth: 80,
-              modifier: -1,
-              slideShadows: false,
-            }}
-            className="swiper-container"
-          >
+              <Swiper
+                key={popularMovies.length} // 👈 Swiper를 새로 마운트하게 만듦
+                modules={[EffectCoverflow]}
+                effect="coverflow"
+                grabCursor={true}
+                centeredSlides={true}
+                slidesPerView={5}
+                initialSlide={Math.floor(popularMovies.length / 2)}
+                coverflowEffect={{
+                  rotate: 10,
+                  stretch: 0,
+                  depth: 80,
+                  modifier: -1,
+                  slideShadows: false,
+                }}
+                className="swiper-container"
+              >
             {popularMovies.map((movie) => (
               <SwiperSlide key={movie.id} className="custom-slide">
                 <MovieCard
