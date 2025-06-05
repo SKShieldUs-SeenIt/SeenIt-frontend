@@ -338,83 +338,89 @@ function ReviewPage() {
             </motion.div>
           )}
 
-          {/* Review List */}
-          {allReviews.map((review) => (
-            <motion.div
-              key={review.id}
-              className={styles["review-list-item"]}
-              variants={itemVariants}
-            >
-              <div className={styles["review-user"]}>
-                <div className={styles["user-info"]}>
-                  <i className="fas fa-user-circle" />
-                  <span className={styles["review-username"]}>
-                    {review.username}
-                  </span>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Review List */}
+            {allReviews.map((review) => (
+              <motion.div
+                key={review.id}
+                className={styles["review-list-item"]}
+                variants={itemVariants}
+              >
+                <div className={styles["review-user"]}>
+                  <div className={styles["user-info"]}>
+                    <i className="fas fa-user-circle" />
+                    <span className={styles["review-username"]}>
+                      {review.username}
+                    </span>
+                  </div>
+
+                  {review.isEditable && editingReviewId !== review.id && (
+                    <div className={styles["review-actions"]}>
+                      <button
+                        className={`${styles.btn} ${styles.edit}`}
+                        onClick={() => handleEdit(review)}
+                      >
+                        edit
+                      </button>
+                      <button
+                        className={`${styles.btn} ${styles.delete}`}
+                        onClick={() => handleAskDelete(review.id)}
+                      >
+                        delete
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                {review.isEditable && editingReviewId !== review.id && (
-                  <div className={styles["review-actions"]}>
-                    <button
-                      className={`${styles.btn} ${styles.edit}`}
-                      onClick={() => handleEdit(review)}
-                    >
-                      edit
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.delete}`}
-                      onClick={() => handleAskDelete(review.id)}
-                    >
-                      delete
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* ✅ 편집 중일 때는 수정 UI 보여줌 */}
-              {editingReviewId === review.id ? (
-                <>
-                  <div className={styles["review-stars"]}>
-                    {/* 별점 선택 UI */}
-                    {renderStarSelector(editingStars, setEditingStars)}
-                  </div>
-                  <textarea
-                    className={styles["review-textarea"]}
-                    value={editingText}
-                    onChange={(e) => setEditingText(e.target.value)}
-                  />
-                  <div className={styles["review-actions"]}>
-                    <button
-                      className={`${styles.btn} ${styles.save}`}
-                      onClick={handleSaveEdit}
-                    >
-                      save
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.cancel}`}
-                      onClick={handleCancelEdit}
-                    >
-                      cancel
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className={styles["review-stars"]}>
-                    {renderStars(review.stars)}
-                  </div>
-                  <div className={styles["review-desc"]}>
-                    {review.description}
-                  </div>
-                  <div className={styles["review-footer"]}>
-                    <div className={styles["review-date"]}>
-                      {review.createdAt}
+                {/* ✅ 편집 중일 때는 수정 UI 보여줌 */}
+                {editingReviewId === review.id ? (
+                  <>
+                    <div className={styles["review-stars"]}>
+                      {/* 별점 선택 UI */}
+                      {renderStarSelector(editingStars, setEditingStars)}
                     </div>
-                  </div>
-                </>
-              )}
-            </motion.div>
-          ))}
+                    <textarea
+                      className={styles["review-textarea"]}
+                      value={editingText}
+                      onChange={(e) => setEditingText(e.target.value)}
+                    />
+                    <div className={styles["review-actions"]}>
+                      <button
+                        className={`${styles.btn} ${styles.save}`}
+                        onClick={handleSaveEdit}
+                      >
+                        save
+                      </button>
+                      <button
+                        className={`${styles.btn} ${styles.cancel}`}
+                        onClick={handleCancelEdit}
+                      >
+                        cancel
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={styles["review-stars"]}>
+                      {renderStars(review.stars)}
+                    </div>
+                    <div className={styles["review-desc"]}>
+                      {review.description}
+                    </div>
+                    <div className={styles["review-footer"]}>
+                      <div className={styles["review-date"]}>
+                        {review.createdAt}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
 
         {/* Delete Confirm Modal */}

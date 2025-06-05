@@ -9,23 +9,11 @@ function DetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
-  const [averageScore, setAverageScore] = useState(null);
-  const [reviewCount, setReviewCount] = useState(0);
 
   useEffect(() => {
     // 영화 상세 정보 가져오기
     axios.get(`/api/movies/tmdb/${id}`).then((res) => {
       setMovie(res.data);
-    });
-
-    // 평균 별점 가져오기
-    axios.get(`/api/ratings/movies/${id}/average`).then((res) => {
-      setAverageScore(res.data.averageScore);
-    });
-
-    // 리뷰 개수 가져오기
-    axios.get(`/api/reviews/movies/${id}/count`).then((res) => {
-      setReviewCount(res.data);
     });
   }, [id]);
 
@@ -132,10 +120,15 @@ function DetailPage() {
               transition={{ type: "spring", stiffness: 100, delay: 0.6 }}
             >
               <div className={styles["rating-score"]}>
-                {averageScore ? averageScore.toFixed(1) : "없음"}
+                {movie.userAverageRating !== null &&
+                movie.userAverageRating !== undefined
+                  ? movie.userAverageRating.toFixed(1)
+                  : "없음"}
               </div>
               <div className={styles.stars}>
-                {averageScore ? renderStars(averageScore) : "별점 없음"}
+                {movie.userAverageRating
+                  ? renderStars(movie.userAverageRating)
+                  : "별점 없음"}
               </div>
             </motion.div>
 
@@ -149,7 +142,7 @@ function DetailPage() {
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 60, delay: 0.8 }}
                 >
-                  {reviewCount}
+                  {movie.reviewCount}
                 </motion.span>
               </div>
               <div>
