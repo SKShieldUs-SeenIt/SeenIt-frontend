@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styles from "./DetailPage.module.css";
-import moviePoster from "../assets/movie.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -10,17 +9,67 @@ function DetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
+  const [averageScore, setAverageScore] = useState(null);
+  const [reviewCount, setReviewCount] = useState(0);
 
   useEffect(() => {
-    axios
-      .get(`/api/movies/tmdb/${id}`)
-      .then((res) => setMovie(res.data))
-      .catch((err) =>
-        console.error("영화 정보를 불러오는 데 실패했어요!", err)
-      );
+    // 영화 상세 정보 가져오기
+    axios.get(`/api/movies/tmdb/${id}`).then((res) => {
+      setMovie(res.data);
+    });
+
+    // 평균 별점 가져오기
+    axios.get(`/api/ratings/movies/${id}/average`).then((res) => {
+      setAverageScore(res.data.averageScore);
+    });
+
+    // 리뷰 개수 가져오기
+    axios.get(`/api/reviews/movies/${id}/count`).then((res) => {
+      setReviewCount(res.data);
+    });
   }, [id]);
 
   if (!movie) return <div>로딩 중...</div>;
+
+  const renderStars = (score) => {
+    const fullStars = Math.floor(score);
+    const halfStar = score % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
+
+    const stars = [];
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <i
+          key={`full-${i}`}
+          className="fas fa-star"
+          style={{ color: "#FFD700", marginRight: "2px" }}
+        ></i>
+      );
+    }
+
+    if (halfStar) {
+      stars.push(
+        <i
+          key="half"
+          className="fas fa-star-half-alt"
+          style={{ color: "#FFD700", marginRight: "2px" }}
+        ></i>
+      );
+    }
+
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(
+        <i
+          key={`empty-${i}`}
+          className="far fa-star"
+          style={{ color: "#FFD700", marginRight: "2px" }}
+        ></i>
+      );
+    }
+
+    return stars;
+  };
 
   const commonMotion = {
     initial: { x: -100, opacity: 0 },
@@ -52,7 +101,10 @@ function DetailPage() {
                 {/* <div className={styles['movie-title']}>The Last of Us (ID: {id})</div> */}
                 <div className={styles["movie-title"]}>{movie.title}</div>
                 <div className={styles["director-name"]}>
-                  <span><i className="fas fa-film"></i>&nbsp;&nbsp;</span>{movie.releaseDate}
+                  <span>
+                    <i className="fas fa-film"></i>&nbsp;&nbsp;
+                  </span>
+                  {movie.releaseDate}
                 </div>
               </div>
             </motion.div>
@@ -79,8 +131,12 @@ function DetailPage() {
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 100, delay: 0.6 }}
             >
-              <div className={styles["rating-score"]}>4.0</div>
-              <div className={styles.stars}>★★★★☆</div>
+              <div className={styles["rating-score"]}>
+                {averageScore ? averageScore.toFixed(1) : "없음"}
+              </div>
+              <div className={styles.stars}>
+                {averageScore ? renderStars(averageScore) : "별점 없음"}
+              </div>
             </motion.div>
 
             <div className={styles["vote-counts"]}>
@@ -93,7 +149,7 @@ function DetailPage() {
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 60, delay: 0.8 }}
                 >
-                  5
+                  {reviewCount}
                 </motion.span>
               </div>
               <div>
