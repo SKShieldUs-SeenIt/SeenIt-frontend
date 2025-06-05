@@ -1,12 +1,14 @@
 // src/pages/signup/SignupCompletePage.jsx
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './SignupCompletePage.css';
+import { useDispatch } from 'react-redux';
+import { updateUserInfo } from '../actions/userAction'; // ✅ 이미 만든 액션 사용
 
 export default function SignupCompletePage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { nickname, genres } = location.state || {};
 
   useEffect(() => {
@@ -18,17 +20,8 @@ export default function SignupCompletePage() {
 
     const completeSignup = async () => {
       try {
-        const token = localStorage.getItem('jwtToken');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-        const payload = {
-          name: nickname,
-          preferredGenres: genres, // ✅ 리스트 그대로 전송
-        };
-
-        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/user/me`, payload);
-
-        console.log('✅ 회원정보 업데이트 완료');
+        await dispatch(updateUserInfo(nickname, genres));
+        console.log('✅ 회원가입 정보 업데이트 완료');
         setTimeout(() => navigate('/home'), 2000);
       } catch (err) {
         console.error('❌ 업데이트 실패:', err);
@@ -38,13 +31,12 @@ export default function SignupCompletePage() {
     };
 
     completeSignup();
-  }, [nickname, genres, navigate]);
+  }, [nickname, genres, navigate, dispatch]);
 
   return (
     <div className="signup-complete-container">
-      <h1 className="signup-complete-title">🎉 회원가입이 완료되었습니다!</h1>
+      <h1 className="signup-complete-title"> 회원가입이 완료되었습니다!</h1>
       <p className="signup-complete-subtitle">잠시 후 홈으로 이동합니다...</p>
     </div>
   );
 }
-    
