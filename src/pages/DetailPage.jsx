@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./DetailPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
 import CommonHeader from "../components/common/CommonHeader";
 
 function DetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [movie, setMovie] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`/api/movies/tmdb/${id}`)
+      .then((res) => setMovie(res.data))
+      .catch((err) =>
+        console.error("영화 정보를 불러오는 데 실패했어요!", err)
+      );
+  }, [id]);
+
+  if (!movie) return <div>로딩 중...</div>;
 
   const commonMotion = {
     initial: { x: -100, opacity: 0 },
@@ -22,7 +35,7 @@ function DetailPage() {
       transition={{ duration: 1.2 }}
     >
       <div>
-        <CommonHeader /> 
+        <CommonHeader />
 
         <div className={styles.wrapper}>
           <div className={styles["left-section"]}>
@@ -31,36 +44,25 @@ function DetailPage() {
               {...commonMotion}
             >
               <img
-                src={moviePoster}
-                alt="Movie Poster"
+                src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
+                alt={movie.title}
                 className={styles.poster}
               />
               <div className={styles["title-block"]}>
                 {/* <div className={styles['movie-title']}>The Last of Us (ID: {id})</div> */}
-                <div className={styles["movie-title"]}>The Last of Us</div>
+                <div className={styles["movie-title"]}>{movie.title}</div>
                 <div className={styles["director-name"]}>
-                  Directed by Neil Druckmann
+                  <span><i className="fas fa-film"></i>&nbsp;&nbsp;</span>{movie.releaseDate}
                 </div>
               </div>
             </motion.div>
 
-            <motion.h1
-              className={styles["desc-title"]}
-              {...commonMotion}
-            >
-              Detail
+            <motion.h1 className={styles["desc-title"]} {...commonMotion}>
+              줄거리
             </motion.h1>
 
-            <motion.div
-              className={styles["movie-desc"]}
-              {...commonMotion}
-            >
-              Acolle vis laties handyered and lots fo the peplifiamls dee and
-              you.
-              <br />
-              When teeting beting usact the ahony fleationalns unginis on atyns
-              ralted to eeteror's aapoital, you the locem and clay oick tosed
-              not petting the rate colenorsies.
+            <motion.div className={styles["movie-desc"]} {...commonMotion}>
+              {movie.overview}
             </motion.div>
           </div>
 
