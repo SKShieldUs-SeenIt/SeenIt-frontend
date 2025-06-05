@@ -5,18 +5,14 @@ import './MovieCard.css';
 export default function MovieCard({ title, rating, summary, posterPath, tmdbId }) {
   const navigate = useNavigate();
 
+  // console.log("🧩 MovieCard props:", { title, rating, summary, posterPath, tmdbId });
+
   const handleClick = () => {
-    
-    if (tmdbId) {
-      navigate(`/details/${tmdbId}`);
-      console.log("tmdb")
-    } else {
-      console.warn('❌ TMDB ID 없음: 페이지 이동 불가');
-    }
+    if (tmdbId) navigate(`/details/${tmdbId}`);
   };
 
   return (
-    <div className="movie-card" onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className="movie-card" onClick={handleClick}>
       {posterPath ? (
         <img className="movie-image" src={posterPath} alt={title} />
       ) : (
@@ -28,3 +24,4 @@ export default function MovieCard({ title, rating, summary, posterPath, tmdbId }
     </div>
   );
 }
+

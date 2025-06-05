@@ -1,26 +1,37 @@
-
+// src/reducers/searchSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-
-const initialState = {
-  keyword: '',
-  results: [],
-};
 
 const searchSlice = createSlice({
   name: 'search',
-  initialState,
+  initialState: {
+    results: [],
+    loading: false,
+    error: null,
+  },
   reducers: {
-    setKeyword: (state, action) => {
-      state.keyword = action.payload;
+    fetchSearchStart: (state) => {
+      state.loading = true;
+      state.error = null;
     },
-    setResults: (state, action) => {
+    fetchSearchSuccess: (state, action) => {
       state.results = action.payload;
+      state.loading = false;
     },
-    clearResults: (state) => {
+    fetchSearchFailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    clearSearchResults: (state) => {
       state.results = [];
     },
   },
 });
 
-export const { setKeyword, setResults, clearResults } = searchSlice.actions;
+export const {
+  fetchSearchStart,
+  fetchSearchSuccess,
+  fetchSearchFailure,
+  clearSearchResults,
+} = searchSlice.actions;
+
 export default searchSlice.reducer;

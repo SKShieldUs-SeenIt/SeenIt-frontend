@@ -4,32 +4,45 @@ import {
   fetchPopularMoviesStart,
   fetchPopularMoviesSuccess,
   fetchPopularMoviesFailure,
+  fetchSearchMoviesStart,
+  fetchSearchMoviesSuccess,
+  fetchSearchMoviesFailure,
 } from '../reducers/movieSlice';
 
 export const fetchPopularMovies = (count = 10) => async (dispatch) => {
   dispatch(fetchPopularMoviesStart());
-
   try {
     const token = localStorage.getItem('jwtToken');
-    console.log('📦 [fetchPopularMovies] 시작, 요청 개수:', count);
-    console.log('🔐 [fetchPopularMovies] JWT 토큰:', token);
-
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
-
-    const url = `${import.meta.env.VITE_API_BASE_URL}/api/movies/popular`;
-    console.log('🌐 [fetchPopularMovies] 요청 URL:', url);
-
-    const response = await axios.get(url, {
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/popular`, {
       params: { count },
     });
-
-    console.log('✅ [fetchPopularMovies] 응답 데이터:', response.data);
+            console.log('✅ [fetchPopularMovies] 응답 데이터:', response.data);
 
     dispatch(fetchPopularMoviesSuccess(response.data));
   } catch (error) {
-    console.error('❌ [fetchPopularMovies] 요청 실패:', error);
     dispatch(fetchPopularMoviesFailure(error.message));
+  }
+};
+
+// 🔍 검색용 액션 추가
+export const fetchSearchMovies = (title, page = 0, size = 20) => async (dispatch) => {
+  dispatch(fetchSearchMoviesStart());
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/movies/search`, {
+      params: {
+        title,
+        page,
+        size,
+        sortBy: 'voteAverage',
+        sortDirection: 'desc',
+      },
+    });
+
+    dispatch(fetchSearchMoviesSuccess(response.data.content)); // 💡 content 배열만 사용
+  } catch (error) {
+    dispatch(fetchSearchMoviesFailure(error.message));
   }
 };
