@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+// src/pages/HomePage.jsx
+import React, { useEffect, useState } from 'react';
 import Header from '../components/home/Header';
 import SearchBar from '../components/home/SearchBar';
 import MovieCard from '../components/home/MovieCard';
 import SearchPopup from '../components/search/SearchPopup';
 import './HomePage.css';
 import { fetchUserInfo } from '../actions/userAction';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { fetchPopularMovies } from '../actions/movieAction';
+import { useDispatch, useSelector } from 'react-redux';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -16,24 +17,17 @@ import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
   const [showSearchPopup, setShowSearchPopup] = useState(false);
-    const dummyMovies = [
-    { id: 1, title: 'Inception', rating: 4.8 },
-    { id: 2, title: 'Interstellar', rating: 4.7 },
-    { id: 3, title: 'Tenet', rating: 4.2 },
-    { id: 4, title: 'The Dark Knight', rating: 4.9 },
-    { id: 5, title: 'Dunkirk', rating: 4.0 },
-    { id: 6, title: 'Memento', rating: 4.3 },
-    { id: 7, title: 'The Prestige', rating: 4.6 },
-    { id: 8, title: 'Oppenheimer', rating: 4.5 },
-    { id: 9, title: 'Batman Begins', rating: 4.4 },
-    { id: 10, title: 'Following', rating: 3.8 },
-  ];
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  useEffect(() => {
 
+  // ✅ store에서 가져오기
+  const popularMovies = useSelector((state) => state.movies.popular);
+
+  useEffect(() => {
     dispatch(fetchUserInfo());
+    dispatch(fetchPopularMovies(10)); // 🎯 action 사용
   }, [dispatch]);
+
   return (
     <div className="homepage-container">
       {showSearchPopup && (
@@ -49,13 +43,15 @@ export default function HomePage() {
         <Header />
         <SearchBar onClick={() => setShowSearchPopup(true)} />
 
-
         {/* 최신 영화 섹션 */}
         <section className="movie-section">
-          <h2 className="section-title">최신 영화</h2>
-              <button className="view-all-button" onClick={() => navigate('/all-movies')}>
-                  View All
-              </button>
+          <h2 className="section-title">인기 영화</h2>
+          <button
+            className="view-all-button"
+            onClick={() => navigate('/all-movies')}
+          >
+            View All
+          </button>
 
           <Swiper
             modules={[EffectCoverflow]}
@@ -63,7 +59,7 @@ export default function HomePage() {
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={5}
-            initialSlide={Math.floor(dummyMovies.length / 2)}
+            initialSlide={Math.floor(popularMovies.length / 2)}
             coverflowEffect={{
               rotate: 10,
               stretch: 0,
@@ -73,27 +69,40 @@ export default function HomePage() {
             }}
             className="swiper-container"
           >
-            {dummyMovies.map((_, i) => (
-              <SwiperSlide key={i} className="custom-slide">
-                <MovieCard />
+            {popularMovies.map((movie) => (
+              <SwiperSlide key={movie.id} className="custom-slide">
+                <MovieCard
+                  title={movie.title}
+                  rating={movie.userAverageRating}
+                  summary={`리뷰 수: ${movie.reviewCount || 0}`}
+                  posterPath={
+                    movie.posterPath
+                      ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                      : null
+                  }
+                  tmdbId={movie.tmdbId}
+                />
               </SwiperSlide>
             ))}
           </Swiper>
         </section>
 
-        {/* 내가 본 영화 섹션 */}
+        {/* 내가 본 영화 섹션 (dummy) */}
         <section className="movie-section">
           <h2 className="section-title">내가 본 영화</h2>
-              <button className="view-all-button" onClick={() => navigate('/My-movies')}>
-                  View All
-              </button>
+          <button
+            className="view-all-button"
+            onClick={() => navigate('/My-movies')}
+          >
+            View All
+          </button>
           <Swiper
             modules={[EffectCoverflow]}
             effect="coverflow"
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={5}
-            initialSlide={Math.floor(dummyMovies.length / 2)}
+            initialSlide={2}
             coverflowEffect={{
               rotate: 10,
               stretch: 0,
@@ -103,16 +112,19 @@ export default function HomePage() {
             }}
             className="swiper-container"
           >
-            {dummyMovies.map((_, i) => (
+            {[1, 2, 3, 4, 5].map((i) => (
               <SwiperSlide key={`watched-${i}`} className="custom-slide">
-                <MovieCard />
+                <MovieCard
+                  title={`본 영화 ${i}`}
+                  rating={4.2}
+                  summary={`리뷰 수: 5`}
+                  posterPath={null}
+                />
               </SwiperSlide>
             ))}
           </Swiper>
         </section>
       </motion.div>
     </div>
-    
   );
-  
 }
