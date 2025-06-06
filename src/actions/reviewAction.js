@@ -1,3 +1,4 @@
+// src/actions/reviewAction.js
 import axios from "axios";
 import {
   fetchReviewsStart,
@@ -7,6 +8,11 @@ import {
   updateReviewSuccess,
   deleteReviewSuccess,
 } from "../reducers/reviewSlice";
+
+const token = localStorage.getItem("jwt");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
 
 // 리뷰 전체 조회
 export const fetchReviews = (movieId) => async (dispatch) => {
@@ -21,17 +27,12 @@ export const fetchReviews = (movieId) => async (dispatch) => {
 
 // 리뷰 추가
 export const addReview = (movieId, content, rating) => async (dispatch) => {
-  const token = localStorage.getItem("jwt");
   try {
-    const response = await axios.post(
-      "/api/reviews",
-      { movieId, content, rating },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.post("/api/reviews", {
+      movieId,
+      content,
+      rating,
+    });
     dispatch(addReviewSuccess(response.data));
   } catch (error) {
     console.error(error);
@@ -40,17 +41,11 @@ export const addReview = (movieId, content, rating) => async (dispatch) => {
 
 // 리뷰 수정
 export const updateReview = (reviewId, content, rating) => async (dispatch) => {
-  const token = localStorage.getItem("jwt");
   try {
-    const response = await axios.put(
-      `/api/reviews/${reviewId}`,
-      { content, rating },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.put(`/api/reviews/${reviewId}`, {
+      content,
+      rating,
+    });
     dispatch(updateReviewSuccess(response.data));
   } catch (error) {
     console.error(error);
@@ -59,13 +54,8 @@ export const updateReview = (reviewId, content, rating) => async (dispatch) => {
 
 // 리뷰 삭제
 export const deleteReview = (reviewId) => async (dispatch) => {
-  const token = localStorage.getItem("jwt");
   try {
-    await axios.delete(`/api/reviews/${reviewId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await axios.delete(`/api/reviews/${reviewId}`);
     dispatch(deleteReviewSuccess(reviewId));
   } catch (error) {
     console.error(error);
