@@ -1,6 +1,9 @@
 import styles from "./ReviewPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
@@ -29,10 +32,28 @@ function ReviewPage() {
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editingText, setEditingText] = useState("");
   const [editingStars, setEditingStars] = useState(0);
-  // const [isEditing, setIsEditing] = useState(false);
-  // const [editReviewId, setEditReviewId] = useState(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showEditWarningModal, setShowEditWarningModal] = useState(false);
+
+  const { id } = useParams();
+
+  const [movie, setMovie] = useState(null);
+  const [reviews, setReviews] = useState([]);
+
+  // useEffect에서 API 호출
+  useEffect(() => {
+    if (!id) return;
+
+    // 영화 정보 불러오기
+    axios.get(`/api/movies/${id}`).then((res) => {
+      setMovie(res.data);
+    });
+
+    // 리뷰 목록 불러오기
+    axios.get(`/api/reviews/movies/${id}`).then((res) => {
+      setReviews(res.data);
+    });
+  }, [id]);
 
   const initialReviews = [
     {
@@ -267,11 +288,17 @@ function ReviewPage() {
       <div>
         <CommonHeader title="Reviews" />
         <motion.div className={styles["review-container"]}>
-          <CommonMovieInfo
-            title="The Last of Us"
-            director="Neil Druckmann"
-            poster={moviePoster}
-          />
+          {movie && (
+            <CommonMovieInfo
+              title={movie.title}
+              director={movie.releaseDate || "Unknown"}
+              poster={
+                movie.posterPath
+                  ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                  : moviePoster
+              }
+            />
+          )}
 
           {/* Write Review Button */}
           {!showReviewBox && (

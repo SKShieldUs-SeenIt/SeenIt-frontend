@@ -9,11 +9,13 @@ function DetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
+  const [movieId, setMovieId] = useState(null);
 
   useEffect(() => {
     // 영화 상세 정보 가져오기
     axios.get(`/api/movies/tmdb/${id}`).then((res) => {
       setMovie(res.data);
+      setMovieId(res.data.id);
     });
   }, [id]);
 
@@ -177,7 +179,7 @@ function DetailPage() {
                 className={`${styles.btn} ${styles["btn-action"]}`}
                 whileHover={{ scale: 1.55 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/reviews")}
+                onClick={() => navigate(`/reviews/${movieId}`)}
               >
                 Go to Reviews
               </motion.button>

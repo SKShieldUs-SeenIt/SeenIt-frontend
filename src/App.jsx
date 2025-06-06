@@ -121,7 +121,7 @@ export default function App() {
           {/* 세부 페이지들 */}
           <Route path="/details" element={<DetailPage />} />
           <Route path="/details/:id" element={<DetailPage />} />
-          <Route path="/reviews" element={<ReviewPage />} />
+          <Route path="/reviews/:id" element={<ReviewPage />} />
           <Route path="/posts" element={<PostPage />} />
           <Route path="/writePosts" element={<WritePostPage />} />
           <Route path="/postDetails" element={<PostDetailPage />} />
