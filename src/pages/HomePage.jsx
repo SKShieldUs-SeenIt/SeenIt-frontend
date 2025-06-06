@@ -110,6 +110,12 @@ export default function HomePage() {
         {/* 🎯 내가 평점 준 영화 */}
         <section className="movie-section">
           <h2 className="section-title">내가 평점 준 영화</h2>
+                    <button
+            className="view-all-button"
+            onClick={() => navigate('/My-movies')}
+          >
+            View All
+          </button>
           <Swiper
             key={`rated-${ratedMovies.length}`}
             modules={[EffectCoverflow]}
@@ -131,11 +137,16 @@ export default function HomePage() {
               <SwiperSlide key={`rated-${idx}`} className="custom-slide">
                 <MovieCard
                   title={movie.movieTitle}
-                  posterPath={movie.moviePosterPath}
-                  rating={movie.rating}
+                  posterPath={
+                    movie.moviePosterPath
+                      ? `https://image.tmdb.org/t/p/w500${movie.moviePosterPath}`
+                      : null
+                  }                  rating={movie.rating}
                   combinedRating={movie.score}
+                  isUserRated={true}   
+
                   tmdbId={movie.tmdbId ?? movie.movieId}
-                  hideReviewCount={true} // ✅ 이 줄 추가
+                  hideReviewCount={true} 
 
                 />
               </SwiperSlide>

@@ -1,10 +1,9 @@
 /* src/components/home/MovieCard.css */
 
-
 .movie-card {
   position: relative;
-  width: 200px; /* ⬆️ 더 넓게 */
-  height: 320px; /* ⬆️ 더 길게 */
+  width: 200px;
+  height: 320px;
   border-radius: 12px;
   overflow: hidden;
   background-color: #000;
@@ -12,10 +11,9 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-
 .movie-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); /* ⬅️ 그림자 강도 UP */
+  transform: scale(1.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
 }
 
 .movie-image {
@@ -26,25 +24,55 @@
   transition: opacity 0.3s ease;
 }
 
+.rating-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* 🟡 전체 평균 평점 배지 */
+.rating-badge.global-rating {
+  background-color: #ffcc00;
+  color: #000;
+}
+
+/* 💙 내가 준 평점 배지 */
+.rating-badge.user-rating {
+  background-color: #2980b9;
+  color: #fff;
+}
+
+.movie-card:hover .rating-badge {
+  transform: scale(1.1);
+}
+
+/* 📊 정보 오버레이 */
 .movie-info-overlay {
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 10px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+  padding: 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
   color: #fff;
   box-sizing: border-box;
 }
 
 .movie-title {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: bold;
   margin-bottom: 4px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
 .movie-rating,
 .movie-summary {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #ddd;
   margin: 2px 0;
   line-height: 1.2;
