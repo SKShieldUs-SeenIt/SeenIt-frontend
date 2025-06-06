@@ -7,6 +7,9 @@ import {
   fetchSearchMoviesStart,
   fetchSearchMoviesSuccess,
   fetchSearchMoviesFailure,
+   fetchUserRatedMoviesStart,
+  fetchUserRatedMoviesSuccess,
+  fetchUserRatedMoviesFailure,
 } from '../reducers/movieSlice';
 
 export const fetchPopularMovies = (count = 10) => async (dispatch) => {
@@ -54,5 +57,27 @@ export const fetchSearchMovies = (title, page = 0, size = 20) => async (dispatch
   } catch (error) {
     console.error('❌ [fetchSearchMovies] 실패:', error);
     dispatch(fetchSearchMoviesFailure(error.message));
+  }
+};
+export const fetchUserRatedMovies = (userId) => async (dispatch) => {
+  dispatch(fetchUserRatedMoviesStart());
+
+  try {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
+    const url = `${import.meta.env.VITE_API_BASE_URL}/api/ratings/users/${userId}`;
+    console.log(`📡 [fetchUserRatedMovies] 요청 URL: ${url}`);
+
+    const res = await axios.get(url);
+
+    console.log('✅ [fetchUserRatedMovies] 응답 데이터:', res.data.content); // 🎯 여기!
+    
+    dispatch(fetchUserRatedMoviesSuccess(res.data.content));
+  } catch (error) {
+    console.error('❌ [fetchUserRatedMovies] 요청 실패:', error);
+    dispatch(fetchUserRatedMoviesFailure(error.message));
   }
 };

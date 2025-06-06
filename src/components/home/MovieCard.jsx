@@ -15,15 +15,21 @@ export default function MovieCard({ title, combinedRating, reviewCount, posterPa
   };
 
   return (
-    <div className="movie-card" onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <div className="movie-card" onClick={handleClick}>
       {posterPath ? (
         <img className="movie-image" src={posterPath} alt={title} />
       ) : (
         <div className="movie-image placeholder">이미지 없음</div>
       )}
-      <h3 className="movie-title">{title}</h3>
-      <p className="movie-rating">평점: {combinedRating ?? 'N/A'}</p>
-      <p className="movie-summary">리뷰 수: {reviewCount ?? 0}</p>
+      <div className="movie-info-overlay">
+        <h3 className="movie-title">{title}</h3>
+        {combinedRating !== undefined && (
+          <p className="movie-rating">평점: {combinedRating}</p>
+        )}
+        {reviewCount !== undefined && (
+          <p className="movie-summary">리뷰 수: {reviewCount}</p>
+        )}
+      </div>
     </div>
   );
 }
