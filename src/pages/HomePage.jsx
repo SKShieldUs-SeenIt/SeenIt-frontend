@@ -74,8 +74,8 @@ export default function HomePage() {
               <SwiperSlide key={movie.id} className="custom-slide">
                 <MovieCard
                   title={movie.title}
-                  rating={movie.userAverageRating}
-                  summary={`리뷰 수: ${movie.reviewCount || 0}`}
+                  combinedRating={movie.combinedRating}
+                  reviewCount={movie.reviewCount}
                   posterPath={
                     movie.posterPath
                       ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
@@ -90,7 +90,7 @@ export default function HomePage() {
 
         {/* 내가 본 영화 섹션 (dummy) */}
         <section className="movie-section">
-          <h2 className="section-title">내가 본 영화</h2>
+          <h2 className="section-title">내가 활동한 영화 목록</h2>
           <button
             className="view-all-button"
             onClick={() => navigate('/My-movies')}
