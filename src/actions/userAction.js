@@ -17,7 +17,7 @@ export const fetchUserInfo = () => async (dispatch) => {
 
   if (!token) {
     console.warn('[fetchUserInfo] ❌ 토큰 없음 - 요청 중단');
-    return;
+    return null; // 명시적으로 null 반환
   }
 
   try {
@@ -34,12 +34,16 @@ export const fetchUserInfo = () => async (dispatch) => {
 
     console.log('[fetchUserInfo] ✅ 유저 정보:', res.data);
     dispatch(fetchUserSuccess(res.data));
+
+    return res.data; // ✅ 유저 정보 return 추가
   } catch (error) {
     console.error('[fetchUserInfo] ❌ /me 요청 실패:', error);
     dispatch(fetchUserFailure(error.message));
     localStorage.removeItem('jwtToken');
+    return null; // 실패 시에도 명시적 반환
   }
 };
+
 
 /**
  * ✏️ 사용자 정보 수정 (PUT /api/user/me)
