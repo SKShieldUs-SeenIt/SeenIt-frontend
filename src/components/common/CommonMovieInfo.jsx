@@ -12,7 +12,12 @@ export default function CommonMovieInfo({ title, director, poster }) {
       <img src={poster} alt="movie" className={styles["poster"]} />
       <div className={styles["info"]}>
         <div className={styles["movie-title"]}>{title}</div>
-        <div className={styles["director"]}>Directed by {director}</div>
+        <div className={styles["director"]}>
+          <span>
+            <i className="fas fa-film"></i>&nbsp;&nbsp;
+          </span>
+          {director}
+        </div>
       </div>
     </motion.div>
   );

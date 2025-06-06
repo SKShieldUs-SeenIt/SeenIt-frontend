@@ -48,6 +48,7 @@ function ReviewPage() {
 
   const dispatch = useDispatch();
   const reviewsFromRedux = useSelector((state) => state.reviews.reviews);
+  const user = useSelector((state) => state.user.user);
 
   const memoizedReviews = useMemo(() => reviewsFromRedux, [reviewsFromRedux]);
 
@@ -330,7 +331,7 @@ function ReviewPage() {
               <div className={styles["review-user"]}>
                 <div className={styles["user-info"]}>
                   <i className="fas fa-user-circle" />
-                  <span className={styles["review-username"]}>User Name</span>
+                  <span className={styles["review-username"]}>{user.name}</span>
                 </div>
               </div>
               {/* <div className={styles["review-stars"]}>★★★★☆</div> */}
