@@ -51,11 +51,11 @@ function WritePostsPage() {
       <div>
         <CommonHeader title="Posts" />
         <motion.div className={styles["post-container"]}>
-          <CommonMovieInfo
+          {/* <CommonMovieInfo
             title="The Last of Us"
             director="Neil Druckmann"
             poster={moviePoster}
-          />
+          /> */}
 
           <motion.div
             className={styles["post-card"]}

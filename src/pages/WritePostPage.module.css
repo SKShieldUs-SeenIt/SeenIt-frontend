@@ -1,3 +1,11 @@
+.post-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%; /* 중요 */
+}
+
 .post-container {
   padding: 10px 50px;
   background-color: #26272e;
@@ -11,6 +19,9 @@
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  min-height: 400px;
+  display: flex;    
+  flex-direction: column; 
 }
 
 .post-header {
@@ -89,7 +100,7 @@
 }
 
 .description-textarea {
-  height: 160px;
+  flex-grow: 1;
   padding: 12px;
   border: none;
   border-radius: 6px;
