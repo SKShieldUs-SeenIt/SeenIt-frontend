@@ -14,63 +14,83 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import { EffectCoverflow } from 'swiper/modules';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
   const [showSearchPopup, setShowSearchPopup] = useState(false);
+  const [backgroundPoster, setBackgroundPoster] = useState(null);
+  const [hoverTimer, setHoverTimer] = useState(null);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // ✅ store에서 상태 불러오기
   const popularMovies = useSelector((state) => state.movies.popular);
   const ratedMovies = useSelector((state) => state.movies.ratedMovies);
 
-  // ✅ 초기 유저 정보 + 인기 영화
   useEffect(() => {
-    dispatch(fetchUserInfo());
+    dispatch(fetchUserInfo()).then((user) => {
+      if (user?.userId) {
+        dispatch(fetchUserRatedMovies(user.userId));
+      }
+    });
     dispatch(fetchPopularMovies(10));
   }, [dispatch]);
 
-  // ✅ 유저 로드 완료 후 ratedMovies 요청
- useEffect(() => {
-  dispatch(fetchUserInfo()).then((user) => {
-    if (user?.userId) {
-      console.log('✅ userId 추출됨:', user.userId);
-      dispatch(fetchUserRatedMovies(user.userId));
-    } else {
-      console.warn('⚠️ userId 없음 - 평점 영화 못 불러옴');
-    }
-  });
+  const handleCardHoverStart = (posterUrl) => {
+    const timer = setTimeout(() => {
+      setBackgroundPoster(posterUrl);
+    }, 300);
+    setHoverTimer(timer);
+  };
 
-  dispatch(fetchPopularMovies(10));
-}, [dispatch]);
-
+  const handleCardHoverEnd = () => {
+    clearTimeout(hoverTimer);
+    setBackgroundPoster(null);
+  };
 
   return (
     <div className="homepage-container">
-      {showSearchPopup && (
-        <SearchPopup onClose={() => setShowSearchPopup(false)} />
-      )}
+      {/* 🎬 배경 포스터 */}
+  <AnimatePresence>
+    {backgroundPoster && (
+      <motion.div
+        key={backgroundPoster}
+        className="background-fade-image"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+        style={{
+          backgroundImage: `url(${backgroundPoster})`,
+        }}
+      />
+    )}
+  </AnimatePresence>
+
+      {showSearchPopup && <SearchPopup onClose={() => setShowSearchPopup(false)} />}
 
       <motion.div
         className="homepage"
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
+        style={{ position: 'relative', zIndex: 2 }}
       >
         <Header />
         <SearchBar onClick={() => setShowSearchPopup(true)} />
 
-        {/* 🎬 인기 영화 섹션 */}
+        {/* 🎬 인기 영화 */}
         <section className="movie-section">
-          <h2 className="section-title">인기 영화</h2>
-          <button
-            className="view-all-button"
-            onClick={() => navigate('/all-movies')}
-          >
-            View All
-          </button>
+          <div className="section-header"> {/* ✅ header 묶음 */}
+    <h2 className="section-title">인기 영화</h2>
+    <button
+      className="view-all-button"
+      onClick={() => navigate('/all-movies')}
+    >
+      View All
+    </button>
+  </div>
 
           <Swiper
             key={`popular-${popularMovies.length}`}
@@ -101,21 +121,26 @@ export default function HomePage() {
                   combinedRating={movie.combinedRating}
                   reviewCount={movie.reviewCount}
                   tmdbId={movie.tmdbId}
+                  onHoverStart={handleCardHoverStart}
+                  onHoverEnd={handleCardHoverEnd}
                 />
               </SwiperSlide>
             ))}
           </Swiper>
         </section>
 
-        {/* 🎯 내가 평점 준 영화 */}
+        {/* ⭐ 내가 평점 준 영화 */}
         <section className="movie-section">
-          <h2 className="section-title">내가 평점 준 영화</h2>
-                    <button
-            className="view-all-button"
-            onClick={() => navigate('/My-movies')}
-          >
-            View All
-          </button>
+ <div className="section-header"> {/* ✅ header 묶음 */}
+    <h2 className="section-title">내가 평점 준 영화</h2>
+    <button
+      className="view-all-button"
+      onClick={() => navigate('/My-movies')}
+    >
+      View All
+    </button>
+  </div>
+
           <Swiper
             key={`rated-${ratedMovies.length}`}
             modules={[EffectCoverflow]}
@@ -141,12 +166,13 @@ export default function HomePage() {
                     movie.moviePosterPath
                       ? `https://image.tmdb.org/t/p/w500${movie.moviePosterPath}`
                       : null
-                  }                  
-                  isUserRated={true}   
-                  score={movie.score} // ✅ 따로 넘긴다
+                  }
+                  isUserRated={true}
+                  score={movie.score}
                   tmdbId={movie.tmdbId ?? movie.movieId}
-                  hideReviewCount={true} 
-
+                  hideReviewCount={true}
+                  onHoverStart={handleCardHoverStart}
+                  onHoverEnd={handleCardHoverEnd}
                 />
               </SwiperSlide>
             ))}
