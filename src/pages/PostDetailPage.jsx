@@ -1,10 +1,12 @@
 import styles from "./PostDetailPage.module.css";
 import { motion } from "framer-motion";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import DeleteModal from "../components/modal/DeleteModal";
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
+import { fetchPostByCode } from "../actions/postAction";
 
 const containerVariants = {
   hidden: {},
@@ -26,9 +28,7 @@ const replyItemVariants = {
 };
 
 function PostDetailPage() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const post = location.state;
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
@@ -50,16 +50,16 @@ function PostDetailPage() {
   const [showSubReplyDeleteModal, setShowSubReplyDeleteModal] = useState(false);
   const [showEmptyReplyModal, setShowEmptyReplyModal] = useState(false);
 
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const [post, setPost] = useState(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    const savedReplies =
-      JSON.parse(localStorage.getItem(`replies-${post.id}`)) || [];
-    const enrichedReplies = savedReplies.map((r) => ({
-      ...r,
-      replies: r.replies || [],
-    }));
-    setReplies(enrichedReplies);
-  }, [post.id]);
+    dispatch(fetchPostByCode(id))
+      .then((data) => setPost(data))
+      .catch((err) => console.error("게시글 로딩 실패", err));
+  }, [dispatch, id]);
 
   const confirmDelete = () => {
     const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
@@ -216,16 +216,20 @@ function PostDetailPage() {
               delete
             </button>
           </div>
-          <div className={styles["post-header"]}>
-            <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
-            <span className={styles["user-name"]}>{post.username}</span>
-          </div>
+          {post && (
+            <>
+              <div className={styles["post-header"]}>
+                <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
+                <span className={styles["user-name"]}>{post.user?.name}</span>
+              </div>
 
-          <div className={styles["post-content"]}>
-            <div className={styles["post-main-title"]}>{post.title}</div>
-            <div className={styles["created-at"]}>{post.createdAt}</div>
-            <div className={styles["post-description"]}>{post.description}</div>
-          </div>
+              <div className={styles["post-content"]}>
+                <div className={styles["post-main-title"]}>{post.title}</div>
+                <div className={styles["created-at"]}>{post.createdAt}</div>
+                <div className={styles["post-description"]}>{post.body}</div>
+              </div>
+            </>
+          )}
 
           {/* 댓글 입력창 토글 버튼 + 입력창 */}
           <div className={styles["reply-header-top"]}>
@@ -557,7 +561,7 @@ function PostDetailPage() {
               />
             )}
 
-            {showEmptyReplyModal  && (
+            {showEmptyReplyModal && (
               <WarningModal
                 message="댓글을 입력해주세요."
                 onClose={() => setShowEmptyReplyModal(false)}

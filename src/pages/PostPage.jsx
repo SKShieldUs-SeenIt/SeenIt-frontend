@@ -29,10 +29,11 @@ const itemVariants = {
 function PostPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts.posts); 
+  const posts = useSelector((state) => state.posts.posts);
+  const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
-    dispatch(fetchAllPosts()); 
+    dispatch(fetchAllPosts());
   }, [dispatch]);
 
   return (
@@ -44,11 +45,11 @@ function PostPage() {
       <div>
         <CommonHeader title="Posts" />
         <motion.div className={styles["post-container"]}>
-          <CommonMovieInfo
+          {/* <CommonMovieInfo
             title="The Last of Us"
             director="Neil Druckmann"
             poster={moviePoster}
-          />
+          /> */}
 
           <div className={styles["write-post-container"]}>
             <motion.button
@@ -73,17 +74,7 @@ function PostPage() {
                 key={post.id}
                 className={styles["post-list-item"]}
                 variants={itemVariants}
-                onClick={() =>
-                  navigate(`/postDetails/${post.id}`, {
-                    state: {
-                      id: post.id,
-                      username: post.username,
-                      title: post.title,
-                      description: post.description,
-                      createdAt: post.createdAt,
-                    },
-                  })
-                }
+                onClick={() => navigate(`/postDetails/${post.code}`)}
               >
                 <div className={styles["post-user"]}>
                   <div className={styles["user-info"]}>
@@ -91,7 +82,7 @@ function PostPage() {
                       className={`fas fa-user-circle ${styles["user-icon"]}`}
                     ></i>
                     <span className={styles["post-username"]}>
-                      {post.username}
+                      {post.user.name}
                     </span>
                   </div>
                 </div>
