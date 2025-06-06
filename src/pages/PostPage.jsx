@@ -1,10 +1,12 @@
 import styles from "./PostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllPosts } from "../actions/postAction";
 
 const containerVariants = {
   hidden: {},
@@ -26,38 +28,12 @@ const itemVariants = {
 
 function PostPage() {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([]);
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state.posts.posts); 
 
   useEffect(() => {
-    // localStorage.removeItem("posts");
-    const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-    setPosts(savedPosts);
-  }, []);
-
-  const postsList = [
-    {
-      id: 1,
-      username: "User 1",
-      title: "Post Title 1",
-      description: "Description for Post 1",
-      createdAt: "2025-06-01",
-    },
-    {
-      id: 2,
-      username: "User 2",
-      title: "Post Title 2",
-      description: "Description for Post 2",
-      createdAt: "2025-06-02",
-    },
-    {
-      id: 3,
-      username: "User 3",
-      title: "Post Title 3",
-      description: "Description for Post 3",
-      createdAt: "2025-06-03",
-    },
-    // 추가적으로 더 데이터를 넣을 수 있음
-  ];
+    dispatch(fetchAllPosts()); 
+  }, [dispatch]);
 
   return (
     <motion.div
@@ -87,62 +63,27 @@ function PostPage() {
             </motion.button>
           </div>
 
-          {posts.map((post, index) => (
-            <motion.div
-              key={index}
-              className={styles["post-list-item"]}
-              variants={itemVariants}
-              onClick={() =>
-                navigate(`/postDetails/${post.id}`, {
-                  state: {
-                    id: post.id,
-                    username: post.username,
-                    title: post.title,
-                    description: post.description,
-                    createdAt: post.createdAt,
-                  },
-                })
-              }
-            >
-              <div className={styles["post-user"]}>
-                <div className={styles["user-info"]}>
-                  <i
-                    className={`fas fa-user-circle ${styles["user-icon"]}`}
-                  ></i>
-                  <span className={styles["post-username"]}>
-                    {post.username}
-                  </span>
-                </div>
-              </div>
-              <div className={styles["post-title"]}>{post.title}</div>
-              <div className={styles["post-desc"]}>{post.description}</div>
-              <div className={styles["post-footer"]}>
-                <div className={styles["post-date"]}>{post.createdAt}</div>
-              </div>
-            </motion.div>
-          ))}
-
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {postsList.map((item) => (
+            {posts.map((post) => (
               <motion.div
-                key={item.id}
+                key={post.id}
                 className={styles["post-list-item"]}
                 variants={itemVariants}
                 onClick={() =>
-                  navigate(`/postDetails/${item.id}`, {
+                  navigate(`/postDetails/${post.id}`, {
                     state: {
-                      id: item.id,
-                      username: item.username,
-                      title: item.title,
-                      description: item.description,
-                      createdAt: item.createdAt,
+                      id: post.id,
+                      username: post.username,
+                      title: post.title,
+                      description: post.description,
+                      createdAt: post.createdAt,
                     },
                   })
-                } // 예시로 post ID 추가
+                }
               >
                 <div className={styles["post-user"]}>
                   <div className={styles["user-info"]}>
@@ -150,14 +91,14 @@ function PostPage() {
                       className={`fas fa-user-circle ${styles["user-icon"]}`}
                     ></i>
                     <span className={styles["post-username"]}>
-                      {item.username}
+                      {post.username}
                     </span>
                   </div>
                 </div>
-                <div className={styles["post-title"]}>{item.title}</div>
-                <div className={styles["post-desc"]}>{item.description}</div>
+                <div className={styles["post-title"]}>{post.title}</div>
+                <div className={styles["post-desc"]}>{post.description}</div>
                 <div className={styles["post-footer"]}>
-                  <div className={styles["post-date"]}>{item.createdAt}</div>
+                  <div className={styles["post-date"]}>{post.createdAt}</div>
                 </div>
               </motion.div>
             ))}

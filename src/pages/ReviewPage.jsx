@@ -118,11 +118,14 @@ function ReviewPage() {
     }
 
     if (editingReviewId != null) {
+      // 수정
       dispatch(updateReview(editingReviewId, reviewText, selectedStars));
     } else {
-      dispatch(addReview(id, reviewText, selectedStars));
+      // 등록
+      dispatch(addReview(id, reviewText, selectedStars)); // ⭐ id는 movieId
     }
 
+    // 입력창 초기화
     setReviewText("");
     setSelectedStars(0);
     setShowReviewBox(false);
