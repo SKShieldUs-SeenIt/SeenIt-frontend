@@ -27,7 +27,7 @@ export default function AllMoviesPage() {
 
   return (
     <div className="all-movies-page">
-      <h1 className="page-title">내가 준 평점 영화</h1>
+      <h1 className="page-title">내가 평점 준 영화 리스트</h1>
 
       <div className="movie-list">
         {currentMovies.map((movie, i) => (
