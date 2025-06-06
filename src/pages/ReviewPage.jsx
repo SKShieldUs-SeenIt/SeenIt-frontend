@@ -1,12 +1,17 @@
 import styles from "./ReviewPage.module.css";
 import moviePoster from "../assets/movie.jpg";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { fetchMovieReviews } from "../actions/reviewAction";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchReviews,
+  addReview,
+  updateReview,
+  deleteReview,
+} from "../actions/reviewAction";
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
@@ -40,14 +45,15 @@ function ReviewPage() {
   const { id } = useParams();
 
   const [movie, setMovie] = useState(null);
-  const [reviews, setReviews] = useState([]);
 
   const dispatch = useDispatch();
-  const reviewsFromRedux = useSelector((state) => state.reviews.movieReviews);
+  const reviewsFromRedux = useSelector((state) => state.reviews.reviews);
+
+  const memoizedReviews = useMemo(() => reviewsFromRedux, [reviewsFromRedux]);
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchMovieReviews(id));
+      dispatch(fetchReviews(id));
     }
   }, [dispatch, id]);
 
@@ -58,11 +64,6 @@ function ReviewPage() {
     // 영화 정보 불러오기
     axios.get(`/api/movies/${id}`).then((res) => {
       setMovie(res.data);
-    });
-
-    // 리뷰 목록 불러오기
-    axios.get(`/api/reviews/movies/${id}`).then((res) => {
-      setReviews(res.data);
     });
   }, [id]);
 
@@ -116,28 +117,9 @@ function ReviewPage() {
     }
 
     if (editingReviewId != null) {
-      setNewReviews((prev) =>
-        prev.map((r) =>
-          r.id === editingReviewId
-            ? {
-                ...r,
-                description: reviewText,
-                stars: selectedStars,
-                createdAt: new Date().toLocaleString(),
-              }
-            : r
-        )
-      );
+      dispatch(updateReview(editingReviewId, reviewText, selectedStars));
     } else {
-      const newReview = {
-        id: Date.now(),
-        username: "User Name",
-        stars: selectedStars,
-        description: reviewText,
-        createdAt: new Date().toLocaleString(),
-        isEditable: true,
-      };
-      setNewReviews((prev) => [newReview, ...prev]);
+      dispatch(addReview(id, reviewText, selectedStars));
     }
 
     setReviewText("");
@@ -153,10 +135,11 @@ function ReviewPage() {
   };
 
   const handleConfirmDelete = () => {
-    setNewReviews((prev) => prev.filter((r) => r.id !== selectedReviewId));
+    if (selectedReviewId) {
+      dispatch(deleteReview(selectedReviewId));
+    }
     setShowConfirm(false);
     setSelectedReviewId(null);
-
     setEditingReviewId(null);
     setEditingText("");
     setReviewText("");
@@ -172,6 +155,9 @@ function ReviewPage() {
     setEditingReviewId(review.id);
     setEditingText(review.description);
     setEditingStars(review.stars);
+    setReviewText(review.description);
+    setSelectedStars(review.stars);
+    setShowReviewBox(true);
   };
 
   const handleSaveEdit = () => {
@@ -197,7 +183,7 @@ function ReviewPage() {
     setEditingText("");
   };
 
-  const allReviews = [...reviewsFromRedux, ...newReviews, ...initialReviews];
+  const allReviews = [...memoizedReviews, ...newReviews, ...initialReviews];
 
   const [selectedStars, setSelectedStars] = useState(0);
 
