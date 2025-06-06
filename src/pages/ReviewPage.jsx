@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { fetchMovieReviews } from "../actions/reviewAction";
+
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
@@ -39,6 +41,15 @@ function ReviewPage() {
 
   const [movie, setMovie] = useState(null);
   const [reviews, setReviews] = useState([]);
+
+  const dispatch = useDispatch();
+  const reviewsFromRedux = useSelector((state) => state.reviews.movieReviews);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchMovieReviews(id));
+    }
+  }, [dispatch, id]);
 
   // useEffect에서 API 호출
   useEffect(() => {
@@ -186,7 +197,7 @@ function ReviewPage() {
     setEditingText("");
   };
 
-  const allReviews = [...newReviews, ...initialReviews];
+  const allReviews = [...reviewsFromRedux, ...newReviews, ...initialReviews];
 
   const [selectedStars, setSelectedStars] = useState(0);
 
