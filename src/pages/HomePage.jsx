@@ -141,10 +141,9 @@ export default function HomePage() {
                     movie.moviePosterPath
                       ? `https://image.tmdb.org/t/p/w500${movie.moviePosterPath}`
                       : null
-                  }                  rating={movie.rating}
-                  combinedRating={movie.score}
+                  }                  
                   isUserRated={true}   
-
+                  score={movie.score} // ✅ 따로 넘긴다
                   tmdbId={movie.tmdbId ?? movie.movieId}
                   hideReviewCount={true} 
 
