@@ -155,9 +155,9 @@ function ReviewPage() {
   const handleEdit = (review) => {
     setEditingReviewId(review.id);
     setEditingText(review.content);
-    setEditingStars(review.stars);
+    setEditingStars(review.rating);
     setReviewText(review.content);
-    setSelectedStars(review.stars);
+    setSelectedStars(review.rating);
     setShowReviewBox(true);
   };
 
@@ -431,7 +431,7 @@ function ReviewPage() {
                 ) : (
                   <>
                     <div className={styles["review-stars"]}>
-                      {renderStars(review.stars)}
+                      {renderStars(review.rating)}
                     </div>
                     <div className={styles["review-desc"]}>
                       {review.content}
