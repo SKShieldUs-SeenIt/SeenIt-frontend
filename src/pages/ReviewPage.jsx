@@ -1,7 +1,17 @@
 import styles from "./ReviewPage.module.css";
 import moviePoster from "../assets/movie.jpg";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchReviews,
+  addReview,
+  updateReview,
+  deleteReview,
+} from "../actions/reviewAction";
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
@@ -29,10 +39,34 @@ function ReviewPage() {
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editingText, setEditingText] = useState("");
   const [editingStars, setEditingStars] = useState(0);
-  // const [isEditing, setIsEditing] = useState(false);
-  // const [editReviewId, setEditReviewId] = useState(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showEditWarningModal, setShowEditWarningModal] = useState(false);
+
+  const { id } = useParams();
+
+  const [movie, setMovie] = useState(null);
+
+  const dispatch = useDispatch();
+  const reviewsFromRedux = useSelector((state) => state.reviews.reviews);
+  const user = useSelector((state) => state.user.user);
+
+  const memoizedReviews = useMemo(() => reviewsFromRedux, [reviewsFromRedux]);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchReviews(id));
+    }
+  }, [dispatch, id]);
+
+  // useEffect에서 API 호출
+  useEffect(() => {
+    if (!id) return;
+
+    // 영화 정보 불러오기
+    axios.get(`/api/movies/${id}`).then((res) => {
+      setMovie(res.data);
+    });
+  }, [id]);
 
   const initialReviews = [
     {
@@ -84,28 +118,9 @@ function ReviewPage() {
     }
 
     if (editingReviewId != null) {
-      setNewReviews((prev) =>
-        prev.map((r) =>
-          r.id === editingReviewId
-            ? {
-                ...r,
-                description: reviewText,
-                stars: selectedStars,
-                createdAt: new Date().toLocaleString(),
-              }
-            : r
-        )
-      );
+      dispatch(updateReview(editingReviewId, reviewText, selectedStars));
     } else {
-      const newReview = {
-        id: Date.now(),
-        username: "User Name",
-        stars: selectedStars,
-        description: reviewText,
-        createdAt: new Date().toLocaleString(),
-        isEditable: true,
-      };
-      setNewReviews((prev) => [newReview, ...prev]);
+      dispatch(addReview(id, reviewText, selectedStars));
     }
 
     setReviewText("");
@@ -121,10 +136,11 @@ function ReviewPage() {
   };
 
   const handleConfirmDelete = () => {
-    setNewReviews((prev) => prev.filter((r) => r.id !== selectedReviewId));
+    if (selectedReviewId) {
+      dispatch(deleteReview(selectedReviewId));
+    }
     setShowConfirm(false);
     setSelectedReviewId(null);
-
     setEditingReviewId(null);
     setEditingText("");
     setReviewText("");
@@ -138,8 +154,11 @@ function ReviewPage() {
 
   const handleEdit = (review) => {
     setEditingReviewId(review.id);
-    setEditingText(review.description);
-    setEditingStars(review.stars);
+    setEditingText(review.content);
+    setEditingStars(review.rating);
+    setReviewText(review.content);
+    setSelectedStars(review.rating);
+    setShowReviewBox(true);
   };
 
   const handleSaveEdit = () => {
@@ -165,7 +184,7 @@ function ReviewPage() {
     setEditingText("");
   };
 
-  const allReviews = [...newReviews, ...initialReviews];
+  const allReviews = [...memoizedReviews, ...newReviews];
 
   const [selectedStars, setSelectedStars] = useState(0);
 
@@ -267,11 +286,17 @@ function ReviewPage() {
       <div>
         <CommonHeader title="Reviews" />
         <motion.div className={styles["review-container"]}>
-          <CommonMovieInfo
-            title="The Last of Us"
-            director="Neil Druckmann"
-            poster={moviePoster}
-          />
+          {movie && (
+            <CommonMovieInfo
+              title={movie.title}
+              director={movie.releaseDate || "Unknown"}
+              poster={
+                movie.posterPath
+                  ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                  : moviePoster
+              }
+            />
+          )}
 
           {/* Write Review Button */}
           {!showReviewBox && (
@@ -306,7 +331,7 @@ function ReviewPage() {
               <div className={styles["review-user"]}>
                 <div className={styles["user-info"]}>
                   <i className="fas fa-user-circle" />
-                  <span className={styles["review-username"]}>User Name</span>
+                  <span className={styles["review-username"]}>{user.name}</span>
                 </div>
               </div>
               {/* <div className={styles["review-stars"]}>★★★★☆</div> */}
@@ -338,83 +363,89 @@ function ReviewPage() {
             </motion.div>
           )}
 
-          {/* Review List */}
-          {allReviews.map((review) => (
-            <motion.div
-              key={review.id}
-              className={styles["review-list-item"]}
-              variants={itemVariants}
-            >
-              <div className={styles["review-user"]}>
-                <div className={styles["user-info"]}>
-                  <i className="fas fa-user-circle" />
-                  <span className={styles["review-username"]}>
-                    {review.username}
-                  </span>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Review List */}
+            {allReviews.map((review) => (
+              <motion.div
+                key={review.id}
+                className={styles["review-list-item"]}
+                variants={itemVariants}
+              >
+                <div className={styles["review-user"]}>
+                  <div className={styles["user-info"]}>
+                    <i className="fas fa-user-circle" />
+                    <span className={styles["review-username"]}>
+                      {review.username}
+                    </span>
+                  </div>
+
+                  {review.isEditable && editingReviewId !== review.id && (
+                    <div className={styles["review-actions"]}>
+                      <button
+                        className={`${styles.btn} ${styles.edit}`}
+                        onClick={() => handleEdit(review)}
+                      >
+                        edit
+                      </button>
+                      <button
+                        className={`${styles.btn} ${styles.delete}`}
+                        onClick={() => handleAskDelete(review.id)}
+                      >
+                        delete
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                {review.isEditable && editingReviewId !== review.id && (
-                  <div className={styles["review-actions"]}>
-                    <button
-                      className={`${styles.btn} ${styles.edit}`}
-                      onClick={() => handleEdit(review)}
-                    >
-                      edit
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.delete}`}
-                      onClick={() => handleAskDelete(review.id)}
-                    >
-                      delete
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* ✅ 편집 중일 때는 수정 UI 보여줌 */}
-              {editingReviewId === review.id ? (
-                <>
-                  <div className={styles["review-stars"]}>
-                    {/* 별점 선택 UI */}
-                    {renderStarSelector(editingStars, setEditingStars)}
-                  </div>
-                  <textarea
-                    className={styles["review-textarea"]}
-                    value={editingText}
-                    onChange={(e) => setEditingText(e.target.value)}
-                  />
-                  <div className={styles["review-actions"]}>
-                    <button
-                      className={`${styles.btn} ${styles.save}`}
-                      onClick={handleSaveEdit}
-                    >
-                      save
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.cancel}`}
-                      onClick={handleCancelEdit}
-                    >
-                      cancel
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className={styles["review-stars"]}>
-                    {renderStars(review.stars)}
-                  </div>
-                  <div className={styles["review-desc"]}>
-                    {review.description}
-                  </div>
-                  <div className={styles["review-footer"]}>
-                    <div className={styles["review-date"]}>
-                      {review.createdAt}
+                {/* ✅ 편집 중일 때는 수정 UI 보여줌 */}
+                {editingReviewId === review.id ? (
+                  <>
+                    <div className={styles["review-stars"]}>
+                      {/* 별점 선택 UI */}
+                      {renderStarSelector(editingStars, setEditingStars)}
                     </div>
-                  </div>
-                </>
-              )}
-            </motion.div>
-          ))}
+                    <textarea
+                      className={styles["review-textarea"]}
+                      value={editingText}
+                      onChange={(e) => setEditingText(e.target.value)}
+                    />
+                    <div className={styles["review-actions"]}>
+                      <button
+                        className={`${styles.btn} ${styles.save}`}
+                        onClick={handleSaveEdit}
+                      >
+                        save
+                      </button>
+                      <button
+                        className={`${styles.btn} ${styles.cancel}`}
+                        onClick={handleCancelEdit}
+                      >
+                        cancel
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={styles["review-stars"]}>
+                      {renderStars(review.rating)}
+                    </div>
+                    <div className={styles["review-desc"]}>
+                      {review.content}
+                    </div>
+                    <div className={styles["review-footer"]}>
+                      <div className={styles["review-date"]}>
+                        {review.createdAt}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
 
         {/* Delete Confirm Modal */}
