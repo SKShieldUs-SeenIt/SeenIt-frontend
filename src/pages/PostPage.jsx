@@ -122,40 +122,46 @@ function PostPage() {
             </motion.div>
           ))}
 
-          {postsList.map((item) => (
-            <motion.div
-              key={item.id}
-              className={styles["post-list-item"]}
-              variants={itemVariants}
-              onClick={() =>
-                navigate(`/postDetails/${item.id}`, {
-                  state: {
-                    id: item.id,
-                    username: item.username,
-                    title: item.title,
-                    description: item.description,
-                    createdAt: item.createdAt,
-                  },
-                })
-              } // 예시로 post ID 추가
-            >
-              <div className={styles["post-user"]}>
-                <div className={styles["user-info"]}>
-                  <i
-                    className={`fas fa-user-circle ${styles["user-icon"]}`}
-                  ></i>
-                  <span className={styles["post-username"]}>
-                    {item.username}
-                  </span>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {postsList.map((item) => (
+              <motion.div
+                key={item.id}
+                className={styles["post-list-item"]}
+                variants={itemVariants}
+                onClick={() =>
+                  navigate(`/postDetails/${item.id}`, {
+                    state: {
+                      id: item.id,
+                      username: item.username,
+                      title: item.title,
+                      description: item.description,
+                      createdAt: item.createdAt,
+                    },
+                  })
+                } // 예시로 post ID 추가
+              >
+                <div className={styles["post-user"]}>
+                  <div className={styles["user-info"]}>
+                    <i
+                      className={`fas fa-user-circle ${styles["user-icon"]}`}
+                    ></i>
+                    <span className={styles["post-username"]}>
+                      {item.username}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className={styles["post-title"]}>{item.title}</div>
-              <div className={styles["post-desc"]}>{item.description}</div>
-              <div className={styles["post-footer"]}>
-                <div className={styles["post-date"]}>{item.createdAt}</div>
-              </div>
-            </motion.div>
-          ))}
+                <div className={styles["post-title"]}>{item.title}</div>
+                <div className={styles["post-desc"]}>{item.description}</div>
+                <div className={styles["post-footer"]}>
+                  <div className={styles["post-date"]}>{item.createdAt}</div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
     </motion.div>
