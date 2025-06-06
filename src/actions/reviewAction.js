@@ -9,11 +9,6 @@ import {
   deleteReviewSuccess,
 } from "../reducers/reviewSlice";
 
-const token = localStorage.getItem("jwt");
-if (token) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-}
-
 // 리뷰 전체 조회
 export const fetchReviews = (movieId) => async (dispatch) => {
   dispatch(fetchReviewsStart());
