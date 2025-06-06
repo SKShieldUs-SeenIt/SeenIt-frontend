@@ -1,5 +1,6 @@
+// src/components/home/MovieCard.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // ✅ 이거 빠져있었음!
+import { useNavigate } from 'react-router-dom';
 import './MovieCard.css';
 
 export default function MovieCard({
@@ -10,6 +11,8 @@ export default function MovieCard({
   posterPath,
   tmdbId,
   isUserRated = false,
+  onHoverStart,
+  onHoverEnd,
 }) {
   const navigate = useNavigate();
 
@@ -17,14 +20,32 @@ export default function MovieCard({
     if (tmdbId) navigate(`/details/${tmdbId}`);
   };
 
+  const handleMouseEnter = () => {
+    if (onHoverStart && posterPath) {
+      
+      onHoverStart(posterPath); // ⬅️ 포스터 URL 전달
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (onHoverEnd) {
+      onHoverEnd();
+    }
+  };
+
   const ratingText = isUserRated
-    ? ` 내 평점: ${score ?? 'N/A'}`
-    : ` 평균 평점: ${combinedRating ?? 'N/A'}`;
+    ? `내 평점: ${score ?? 'N/A'}`
+    : `평점: ${combinedRating ?? 'N/A'}`;
 
   const ratingClass = isUserRated ? 'user-rating' : 'global-rating';
 
   return (
-    <div className="movie-card" onClick={handleClick}>
+    <div
+      className="movie-card"
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className={`rating-badge ${ratingClass}`}>{ratingText}</div>
 
       {posterPath ? (
