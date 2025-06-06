@@ -183,7 +183,7 @@ function ReviewPage() {
     setEditingText("");
   };
 
-  const allReviews = [...memoizedReviews, ...newReviews, ...initialReviews];
+  const allReviews = [...memoizedReviews, ...newReviews];
 
   const [selectedStars, setSelectedStars] = useState(0);
 

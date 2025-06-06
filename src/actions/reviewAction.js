@@ -1,4 +1,3 @@
-// src/actions/reviewAction.js
 import axios from "axios";
 import {
   fetchReviewsStart,
@@ -13,21 +12,32 @@ import {
 export const fetchReviews = (movieId) => async (dispatch) => {
   dispatch(fetchReviewsStart());
   try {
-    const response = await axios.get(`/api/reviews/movies/${movieId}`);
+    const token = localStorage.getItem("jwtToken");
+
+    const response = await axios.get(`/api/reviews/movies/${movieId}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}, // ⬅️ 조건부 추가
+    });
+
     dispatch(fetchReviewsSuccess(response.data.content || []));
   } catch (error) {
     dispatch(fetchReviewsFailure(error.message));
   }
 };
 
+
 // 리뷰 추가
 export const addReview = (movieId, content, rating) => async (dispatch) => {
+  const token = localStorage.getItem("jwtToken");
   try {
-    const response = await axios.post("/api/reviews", {
-      movieId,
-      content,
-      rating,
-    });
+    const response = await axios.post(
+      "/api/reviews",
+      { movieId, content, rating },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     dispatch(addReviewSuccess(response.data));
   } catch (error) {
     console.error(error);
@@ -36,11 +46,17 @@ export const addReview = (movieId, content, rating) => async (dispatch) => {
 
 // 리뷰 수정
 export const updateReview = (reviewId, content, rating) => async (dispatch) => {
+  const token = localStorage.getItem("jwtToken");
   try {
-    const response = await axios.put(`/api/reviews/${reviewId}`, {
-      content,
-      rating,
-    });
+    const response = await axios.put(
+      `/api/reviews/${reviewId}`,
+      { content, rating },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     dispatch(updateReviewSuccess(response.data));
   } catch (error) {
     console.error(error);
@@ -49,8 +65,13 @@ export const updateReview = (reviewId, content, rating) => async (dispatch) => {
 
 // 리뷰 삭제
 export const deleteReview = (reviewId) => async (dispatch) => {
+  const token = localStorage.getItem("jwtToken");
   try {
-    await axios.delete(`/api/reviews/${reviewId}`);
+    await axios.delete(`/api/reviews/${reviewId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     dispatch(deleteReviewSuccess(reviewId));
   } catch (error) {
     console.error(error);
