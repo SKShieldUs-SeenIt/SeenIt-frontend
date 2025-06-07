@@ -10,6 +10,13 @@ import {
    fetchUserRatedMoviesStart,
   fetchUserRatedMoviesSuccess,
   fetchUserRatedMoviesFailure,
+  fetchLatestMoviesFailure,
+  fetchLatestMoviesSuccess,
+  fetchLatestMoviesStart,
+
+    fetchRecommendedMoviesStart,
+  fetchRecommendedMoviesSuccess,
+  fetchRecommendedMoviesFailure
 } from '../reducers/movieSlice';
 
 export const fetchPopularMovies = (count = 10) => async (dispatch) => {
@@ -79,5 +86,46 @@ export const fetchUserRatedMovies = (userId) => async (dispatch) => {
   } catch (error) {
     console.error('❌ [fetchUserRatedMovies] 요청 실패:', error);
     dispatch(fetchUserRatedMoviesFailure(error.message));
+  }
+};
+
+
+export const fetchLatestMovies = (limit = 100) => async (dispatch) => {
+  dispatch(fetchLatestMoviesStart());
+  try {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/statistics/recently-popular`, {
+      params: { limit },
+    });
+
+    console.log('[fetchLatestMovies] 응답:', res.data);
+
+    dispatch(fetchLatestMoviesSuccess(res.data)); // ✅ 배열만 넣기
+  } catch (err) {
+    console.error('[fetchLatestMovies] 실패:', err);
+    dispatch(fetchLatestMoviesFailure(err.message));
+  }
+};
+
+export const fetchRecommendedMovies = (genreName, page = 0, size = 20) => async (dispatch) => {
+  dispatch(fetchRecommendedMoviesStart());
+
+  try {
+    const res = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}/api/movies/genre/name/${encodeURIComponent(genreName)}`,
+      {
+        params: { page, size }
+      }
+    );
+
+    console.log('[🎥 fetchRecommendedMovies] ✅ 응답:', res.data.content);
+    dispatch(fetchRecommendedMoviesSuccess(res.data.content));
+  } catch (error) {
+    console.error('[🎥 fetchRecommendedMovies] ❌ 에러:', error);
+    dispatch(fetchRecommendedMoviesFailure(error.message));
   }
 };
