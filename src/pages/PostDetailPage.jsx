@@ -8,6 +8,8 @@ import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import { fetchPostByCode } from "../actions/postAction";
 import { deletePost } from "../actions/postAction";
+import { useSelector } from "react-redux";
+import { fetchUserInfo } from "../actions/userAction";
 
 const containerVariants = {
   hidden: {},
@@ -51,25 +53,33 @@ function PostDetailPage() {
   const [showSubReplyDeleteModal, setShowSubReplyDeleteModal] = useState(false);
   const [showEmptyReplyModal, setShowEmptyReplyModal] = useState(false);
 
-  const { id } = useParams();
+  const { code } = useParams();
   const dispatch = useDispatch();
   const [post, setPost] = useState(null);
 
+  const user = useSelector((state) => state.user.user);
+
+  useEffect(() => {
+      dispatch(fetchUserInfo());
+    }, [dispatch]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    dispatch(fetchPostByCode(id))
+    dispatch(fetchPostByCode(code))
       .then((data) => setPost(data))
       .catch((err) => console.error("게시글 로딩 실패", err));
-  }, [dispatch, id]);
+  }, [dispatch, code]);
 
   const confirmDelete = async () => {
-  try {
-    await dispatch(deletePost(id));
-    navigate("/posts", { state: { contentId: post.contentId, contentType: post.contentType } });
-  } catch (err) {
-    console.error("게시글 삭제 실패!", err);
-  }
-};
+    try {
+      await dispatch(deletePost(code));
+      navigate("/posts", {
+        state: { contentId: post.contentId, contentType: post.contentType },
+      });
+    } catch (err) {
+      console.error("게시글 삭제 실패!", err);
+    }
+  };
 
   const cancelDelete = () => {
     setShowDeleteModal(false);
@@ -204,20 +214,24 @@ function PostDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
         >
-          <div className={styles["post-buttons"]}>
-            <button
-              className={styles["btn-edit"]}
-              onClick={() => navigate(`/editPost/${post.id}`, { state: post })}
-            >
-              edit
-            </button>
-            <button
-              className={styles["btn-delete"]}
-              onClick={() => setShowDeleteModal(true)}
-            >
-              delete
-            </button>
-          </div>
+          {post?.user.userId === user?.userId && (
+            <div className={styles["post-buttons"]}>
+              <button
+                className={styles["btn-edit"]}
+                onClick={() =>
+                  navigate(`/editPost/${post.code}`, { state: post })
+                }
+              >
+                edit
+              </button>
+              <button
+                className={styles["btn-delete"]}
+                onClick={() => setShowDeleteModal(true)}
+              >
+                delete
+              </button>
+            </div>
+          )}
           {post && (
             <>
               <div className={styles["post-header"]}>

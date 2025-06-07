@@ -125,7 +125,7 @@ export default function App() {
           <Route path="/posts" element={<PostPage />} />
           <Route path="/writePosts" element={<WritePostPage />} />
           <Route path="/postDetails" element={<PostDetailPage />} />
-          <Route path="/postDetails/:id" element={<PostDetailPage />} />
+          <Route path="/postDetails/:code" element={<PostDetailPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/editPost/:id" element={<EditPostPage />} />
 
