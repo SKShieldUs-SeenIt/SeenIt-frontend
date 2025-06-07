@@ -10,6 +10,9 @@ import { fetchPostByCode } from "../actions/postAction";
 import { deletePost } from "../actions/postAction";
 import { useSelector } from "react-redux";
 import { fetchUserInfo } from "../actions/userAction";
+import { fetchCommentsByPost } from "../actions/commentAction";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 
 const containerVariants = {
   hidden: {},
@@ -54,14 +57,16 @@ function PostDetailPage() {
   const [showEmptyReplyModal, setShowEmptyReplyModal] = useState(false);
 
   const { code } = useParams();
+  const postCode = code;
   const dispatch = useDispatch();
   const [post, setPost] = useState(null);
 
   const user = useSelector((state) => state.user.user);
+  const comments = useSelector((state) => state.comments.comments);
 
   useEffect(() => {
-      dispatch(fetchUserInfo());
-    }, [dispatch]);
+    dispatch(fetchUserInfo());
+  }, [dispatch]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -69,6 +74,12 @@ function PostDetailPage() {
       .then((data) => setPost(data))
       .catch((err) => console.error("게시글 로딩 실패", err));
   }, [dispatch, code]);
+
+  useEffect(() => {
+    if (postCode) {
+      dispatch(fetchCommentsByPost(postCode));
+    }
+  }, [dispatch, postCode]);
 
   const confirmDelete = async () => {
     try {
@@ -216,20 +227,27 @@ function PostDetailPage() {
         >
           {post?.user.userId === user?.userId && (
             <div className={styles["post-buttons"]}>
-              <button
-                className={styles["btn-edit"]}
-                onClick={() =>
-                  navigate(`/editPost/${post.code}`, { state: post })
-                }
-              >
-                edit
-              </button>
-              <button
-                className={styles["btn-delete"]}
-                onClick={() => setShowDeleteModal(true)}
-              >
-                delete
-              </button>
+              <Tippy content="수정하기">
+                <button
+                  className={`${styles.btn} ${styles.edit}`}
+                  onClick={() =>
+                    navigate(`/editPost/${post.code}`, { state: post })
+                  }
+                >
+                  <i className="fas fa-pen-to-square" />
+                </button>
+              </Tippy>
+
+              <span className={styles.divider}>|</span>
+
+              <Tippy content="삭제하기">
+                <button
+                  className={`${styles.btn} ${styles.delete}`}
+                  onClick={() => setShowDeleteModal(true)}
+                >
+                  <i className="fas fa-trash" />
+                </button>
+              </Tippy>
             </div>
           )}
           {post && (
@@ -250,12 +268,14 @@ function PostDetailPage() {
           {/* 댓글 입력창 토글 버튼 + 입력창 */}
           <div className={styles["reply-header-top"]}>
             {!showReplyInput && (
-              <button
-                className={styles["write-reply-btn"]}
-                onClick={() => setShowReplyInput(true)}
-              >
-                Write Reply
-              </button>
+              <Tippy content="댓글 작성">
+                <button
+                  className={styles["write-reply-btn"]}
+                  onClick={() => setShowReplyInput(true)}
+                >
+                  <i className="fas fa-pencil-alt"></i>
+                </button>
+              </Tippy>
             )}
 
             {showReplyInput && (
@@ -298,6 +318,53 @@ function PostDetailPage() {
               </motion.div>
             )}
           </div>
+
+          {comments
+            .filter((reply) => !reply.parentCommentId)
+            .map((reply) => (
+              <motion.div
+                key={reply.id}
+                className={styles["reply-card"]}
+                variants={replyItemVariants}
+              >
+                <div className={styles["reply-header"]}>
+                  <i
+                    className={`fas fa-user-circle ${styles["user-icon"]}`}
+                  ></i>
+                  <span className={styles["user-name"]}>
+                    {reply.user?.name}
+                  </span>
+                </div>
+
+                <div className={styles["reply-description"]}>
+                  {reply.content}
+                </div>
+
+                {/* 대댓글 렌더링 */}
+                {reply.childComments?.map((child) => (
+                  <div key={child.id} className={styles["sub-reply"]}>
+                    <i
+                      className={`fas fa-level-up-alt fa-rotate-90 ${styles["reply-arrow"]}`}
+                    ></i>
+                    <div
+                      className={`${styles["reply-card"]} ${styles["nested"]}`}
+                    >
+                      <div className={styles["reply-header"]}>
+                        <i
+                          className={`fas fa-user-circle ${styles["user-icon"]}`}
+                        ></i>
+                        <span className={styles["user-name"]}>
+                          {child.user?.name}
+                        </span>
+                      </div>
+                      <div className={styles["reply-description"]}>
+                        {child.content}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            ))}
 
           {replies.map((reply) => (
             <motion.div
@@ -508,45 +575,6 @@ function PostDetailPage() {
             initial="hidden"
             animate="visible"
           >
-            {[0, 1, 2].map((_, index) => (
-              <motion.div
-                key={index}
-                className={styles["reply-card"]}
-                variants={replyItemVariants}
-              >
-                <div className={styles["reply-header"]}>
-                  <i
-                    className={`fas fa-user-circle ${styles["user-icon"]}`}
-                  ></i>
-                  <span className={styles["user-name"]}>User Name</span>
-                </div>
-                <div className={styles["reply-description"]}>
-                  Reply description...
-                </div>
-
-                {index === 0 && (
-                  <div className={styles["sub-reply"]}>
-                    <i
-                      className={`fas fa-level-up-alt fa-rotate-90 ${styles["reply-arrow"]}`}
-                    ></i>
-                    <div
-                      className={`${styles["reply-card"]} ${styles["nested"]}`}
-                    >
-                      <div className={styles["reply-header"]}>
-                        <i
-                          className={`fas fa-user-circle ${styles["user-icon"]}`}
-                        ></i>
-                        <span className={styles["user-name"]}>User Name</span>
-                      </div>
-                      <div className={styles["reply-description"]}>
-                        Sub-reply description...
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            ))}
-
             {showDeleteModal && (
               <DeleteModal
                 message="게시글을 삭제하시겠습니까?"

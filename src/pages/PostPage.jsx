@@ -128,7 +128,7 @@ function PostPage() {
                 key={post.id}
                 className={styles["post-list-item"]}
                 variants={itemVariants}
-                onClick={() => navigate(`/postDetails/${post.code}`)}
+                onClick={() => navigate(`/posts/${post.code}`)}
               >
                 <div className={styles["post-user"]}>
                   <div className={styles["user-info"]}>

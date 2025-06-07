@@ -1,0 +1,109 @@
+import axios from "axios";
+
+import {
+  fetchSuccess,
+  createSuccess,
+  updateSuccess,
+  deleteSuccess,
+} from "../reducers/commentSlice";
+
+// 댓글 불러오기
+export const fetchCommentsByPost = (postCode) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("jwtToken");
+    const res = await axios.get(`/api/posts/${postCode}/comments`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch(fetchSuccess(res.data));
+  } catch (err) {
+    console.error("❌ 댓글 불러오기 실패:", err);
+  }
+};
+
+// 댓글 전체 조회
+export const fetchComments = (postCode) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("jwtToken");
+    const res = await axios.get(`/api/posts/${postCode}/comments`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch({ type: "comment/fetchSuccess", payload: res.data });
+  } catch (err) {
+    console.error("❌ 댓글 불러오기 실패:", err);
+  }
+};
+
+
+// 댓글 생성
+export const createComment = (postCode, content, parentId = null) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("jwtToken");
+    const res = await axios.post(
+      `/api/posts/${postCode}/comments`,
+      { content, parentId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    dispatch({ type: "comment/createSuccess", payload: res.data });
+  } catch (err) {
+    console.error("❌ 댓글 작성 실패:", err);
+  }
+};
+
+// 댓글 수정
+export const updateComment = (id, content) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("jwtToken");
+    const res = await axios.put(
+      `/api/comments/${id}`,
+      { content },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    dispatch({ type: "comment/updateSuccess", payload: res.data });
+  } catch (err) {
+    console.error("❌ 댓글 수정 실패:", err);
+  }
+};
+
+// 댓글 삭제
+export const deleteComment = (id) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("jwtToken");
+    await axios.delete(`/api/comments/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch({ type: "comment/deleteSuccess", payload: id });
+  } catch (err) {
+    console.error("❌ 댓글 삭제 실패:", err);
+  }
+};
+
+export const createSubComment = (parentId, content) => async (dispatch) => {
+  try {
+    const token = localStorage.getItem("jwtToken");
+    const res = await axios.post(`/api/comments/${parentId}/replies`, 
+      { content }, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    dispatch(updateSuccess(res.data)); // 대댓글이니까 기존 댓글 업데이트용으로도 활용 가능
+  } catch (err) {
+    console.error("❌ 대댓글 작성 실패:", err);
+  }
+};

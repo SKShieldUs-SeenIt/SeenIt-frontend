@@ -74,7 +74,6 @@
 }
 
 .post-buttons button {
-  margin-left: 10px;
   padding: 6px 10px;
   border: none;
   border-radius: 5px;
@@ -82,23 +81,43 @@
   cursor: pointer;
   color: white;
   transition: background-color 0.2s;
+  
 }
 
 .post-buttons button:hover {
   opacity: 0.9;
 }
 
-.btn-delete {
-  background-color: #ff5c5c;
-  width: 60px;
+.post-buttons .btn {
+  background: none;      
+  border: none;            
+  color: #ccc;            
+  font-size: 1.2rem;       
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-right: -10px;
 }
 
-.btn-edit {
-  background-color: #4e8cff;
+.post-buttons .btn:hover {
+  color: #ffffff;          /* hover 시 더 밝게 */
 }
 
 .post-content {
   margin-top: 0px;
+}
+
+.divider {
+  color: #ccc;
+  font-size: 1.2rem;
+  user-select: none;
+}
+
+.post-buttons .edit {
+  margin-right: 3px;
+}
+
+.post-buttons .delete {
+  margin-left: 3px;
 }
 
 .post-main-title {
@@ -131,20 +150,17 @@
 }
 
 .write-reply-btn {
-  background-color: #4b6cb7;
+  background-color: transparent;
   color: white;
   border: none;
   padding: 8px 14px;
   border-radius: 5px;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: color 0.2s;
   display: block;
   margin-left: auto;
-}
-
-.write-reply-btn:hover {
-  background-color: #3a5197;
+  margin-right: -10px;
 }
 
 .reply-description-input {

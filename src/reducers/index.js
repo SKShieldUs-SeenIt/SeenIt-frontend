@@ -5,6 +5,7 @@ import userReducer from './userSlice';
 import movieReducer from './movieSlice';
 import reviewReducer from './reviewSlice';
 import postReducer  from './postSlice';
+import commentReducer from './commentSlice';
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     movies: movieReducer,
     reviews: reviewReducer,
     posts: postReducer,
+    comments: commentReducer,
   },
 });
 
