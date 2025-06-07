@@ -142,7 +142,7 @@ function PostPage() {
                   </div>
                 </div>
                 <div className={styles["post-title"]}>{post.title}</div>
-                <div className={styles["post-desc"]}>{post.description}</div>
+                <div className={styles["post-desc"]}>{post.body}</div>
                 <div className={styles["post-footer"]}>
                   <div className={styles["post-date"]}>{post.createdAt}</div>
                 </div>

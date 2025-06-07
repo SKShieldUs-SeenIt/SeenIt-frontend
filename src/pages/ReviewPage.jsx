@@ -317,7 +317,7 @@ function ReviewPage() {
             >
               <div className={styles["review-user"]}>
                 <div className={styles["user-info"]}>
-                  <i className="fas fa-user-circle" />
+                  <i className={`fas fa-user-circle  ${styles["user-icon"]}`} />
                   <span className={styles["review-username"]}>{user.name}</span>
                 </div>
               </div>
