@@ -1,4 +1,4 @@
-body {
+.body {
   background-size: cover;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);

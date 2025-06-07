@@ -136,10 +136,11 @@ function ReviewPage() {
       return;
     }
 
-    dispatch(updateReview(editingReviewId, editingText, editingStars))
-      .then(() => {
+    dispatch(updateReview(editingReviewId, editingText, editingStars)).then(
+      () => {
         setShowSuccessModal(true);
-      })
+      }
+    );
 
     setEditingReviewId(null);
     setEditingText("");
@@ -294,7 +295,11 @@ function ReviewPage() {
                 whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
               >
-                Write Review
+                <i
+                  className="fas fa-pencil-alt"
+                  title="리뷰 작성"
+                  style={{ fontSize: "1.2rem", cursor: "pointer" }}
+                ></i>
               </motion.button>
             </div>
           )}
@@ -419,7 +424,9 @@ function ReviewPage() {
                     </div>
                     <div className={styles["review-footer"]}>
                       <div className={styles["review-date"]}>
-                        {review.updatedAt ? `수정됨: ${review.updatedAt}` : `작성일: ${review.createdAt}`}
+                        {review.updatedAt
+                          ? `수정됨: ${review.updatedAt}`
+                          : `작성일: ${review.createdAt}`}
                       </div>
                     </div>
                   </>
