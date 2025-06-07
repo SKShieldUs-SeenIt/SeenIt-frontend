@@ -12,6 +12,7 @@ import {
   updateReview,
   deleteReview,
 } from "../actions/reviewAction";
+import { fetchUserInfo } from "../actions/userAction";
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
@@ -40,7 +41,9 @@ function ReviewPage() {
   const [editingText, setEditingText] = useState("");
   const [editingStars, setEditingStars] = useState(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const [warningMessage, setWarningMessage] = useState("");
   const [showEditWarningModal, setShowEditWarningModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { id } = useParams();
 
@@ -58,74 +61,31 @@ function ReviewPage() {
     }
   }, [dispatch, id]);
 
-  // useEffect에서 API 호출
   useEffect(() => {
     if (!id) return;
 
-    // 영화 정보 불러오기
     axios.get(`/api/movies/${id}`).then((res) => {
       setMovie(res.data);
     });
   }, [id]);
 
-  const initialReviews = [
-    {
-      id: 1,
-      username: "User Name",
-      stars: 4.5,
-      description: "Review Description...",
-      createdAt: "2024-01-01 12:00",
-      isEditable: false,
-    },
-    {
-      id: 2,
-      username: "User Name",
-      stars: 3,
-      description: "Another review...",
-      createdAt: "2024-01-02 13:00",
-      isEditable: false,
-    },
-    {
-      id: 3,
-      username: "User Name",
-      stars: 5,
-      description: "Loved it!",
-      createdAt: "2024-01-03 14:00",
-      isEditable: false,
-    },
-    {
-      id: 4,
-      username: "User Name",
-      stars: 3,
-      description: "It was okay.",
-      createdAt: "2024-01-04 15:00",
-      isEditable: false,
-    },
-    {
-      id: 5,
-      username: "User Name",
-      stars: 4,
-      description: "Pretty good!",
-      createdAt: "2024-01-05 16:00",
-      isEditable: false,
-    },
-  ];
+  useEffect(() => {
+    dispatch(fetchUserInfo());
+  }, [dispatch]);
 
   const handleSubmit = () => {
     if (selectedStars === 0) {
+      setWarningMessage("별점을 선택해주세요.");
       setShowWarningModal(true);
       return;
     }
 
     if (editingReviewId != null) {
-      // 수정
       dispatch(updateReview(editingReviewId, reviewText, selectedStars));
     } else {
-      // 등록
       dispatch(addReview(id, reviewText, selectedStars)); // ⭐ id는 movieId
     }
 
-    // 입력창 초기화
     setReviewText("");
     setSelectedStars(0);
     setShowReviewBox(false);
@@ -161,25 +121,31 @@ function ReviewPage() {
     setEditingStars(review.rating);
     setReviewText(review.content);
     setSelectedStars(review.rating);
-    setShowReviewBox(true);
   };
 
   const handleSaveEdit = () => {
-    setNewReviews((prev) =>
-      prev.map((r) =>
-        r.id === editingReviewId
-          ? {
-              ...r,
-              description: editingText,
-              stars: editingStars,
-              createdAt: new Date().toLocaleString(),
-            }
-          : r
-      )
-    );
+    if (editingStars === 0) {
+      setWarningMessage("별점을 입력해주세요.");
+      setShowWarningModal(true);
+      return;
+    }
+
+    if (editingText.trim().length < 10) {
+      setWarningMessage("리뷰는 최소 10자 이상 입력해주세요.");
+      setShowWarningModal(true);
+      return;
+    }
+
+    dispatch(updateReview(editingReviewId, editingText, editingStars))
+      .then(() => {
+        setShowSuccessModal(true);
+      })
+
     setEditingReviewId(null);
     setEditingText("");
     setEditingStars(0);
+    setReviewText("");
+    setSelectedStars(0);
   };
 
   const handleCancelEdit = () => {
@@ -190,7 +156,7 @@ function ReviewPage() {
   const allReviews = [...memoizedReviews, ...newReviews];
 
   const [selectedStars, setSelectedStars] = useState(0);
-
+  if (!user) return <div>로딩 중...</div>;
   const renderStarSelector = (value, onChange) => {
     return (
       <div className={styles["star-selector"]} style={{ userSelect: "none" }}>
@@ -307,6 +273,16 @@ function ReviewPage() {
               <motion.button
                 className={`${styles.btn} ${styles["write-review"]}`}
                 onClick={() => {
+                  const alreadyReviewed = memoizedReviews.some(
+                    (r) => r.username === user.name
+                  );
+
+                  if (alreadyReviewed) {
+                    setWarningMessage("이미 리뷰를 작성했습니다.");
+                    setShowWarningModal(true);
+                    return;
+                  }
+
                   if (editingReviewId !== null) {
                     setShowEditWarningModal(true);
                   } else {
@@ -386,22 +362,24 @@ function ReviewPage() {
                     </span>
                   </div>
 
-                  {review.isEditable && editingReviewId !== review.id && (
-                    <div className={styles["review-actions"]}>
-                      <button
-                        className={`${styles.btn} ${styles.edit}`}
-                        onClick={() => handleEdit(review)}
-                      >
-                        edit
-                      </button>
-                      <button
-                        className={`${styles.btn} ${styles.delete}`}
-                        onClick={() => handleAskDelete(review.id)}
-                      >
-                        delete
-                      </button>
-                    </div>
-                  )}
+                  {review.userId === user.userId &&
+                    editingReviewId !== review.id && (
+                      <div className={styles["review-actions"]}>
+                        <button
+                          className={`${styles.btn} ${styles.edit}`}
+                          onClick={() => handleEdit(review)}
+                        >
+                          edit
+                        </button>
+                        <span className={styles.divider}>|</span>
+                        <button
+                          className={`${styles.btn} ${styles.delete}`}
+                          onClick={() => handleAskDelete(review.id)}
+                        >
+                          delete
+                        </button>
+                      </div>
+                    )}
                 </div>
 
                 {/* ✅ 편집 중일 때는 수정 UI 보여줌 */}
@@ -416,7 +394,7 @@ function ReviewPage() {
                       value={editingText}
                       onChange={(e) => setEditingText(e.target.value)}
                     />
-                    <div className={styles["review-actions"]}>
+                    <div className={styles["review-actions2"]}>
                       <button
                         className={`${styles.btn} ${styles.save}`}
                         onClick={handleSaveEdit}
@@ -441,7 +419,7 @@ function ReviewPage() {
                     </div>
                     <div className={styles["review-footer"]}>
                       <div className={styles["review-date"]}>
-                        {review.createdAt}
+                        {review.updatedAt ? `수정됨: ${review.updatedAt}` : `작성일: ${review.createdAt}`}
                       </div>
                     </div>
                   </>
@@ -487,7 +465,7 @@ function ReviewPage() {
 
         {showWarningModal && (
           <WarningModal
-            message="별점을 선택해주세요."
+            message={warningMessage}
             onClose={() => setShowWarningModal(false)}
           />
         )}
@@ -496,6 +474,13 @@ function ReviewPage() {
           <WarningModal
             message="수정 중인 리뷰가 있습니다. 먼저 저장하거나 취소해주세요."
             onClose={() => setShowEditWarningModal(false)}
+          />
+        )}
+
+        {showSuccessModal && (
+          <WarningModal
+            message="리뷰가 수정되었습니다!"
+            onClose={() => setShowSuccessModal(false)}
           />
         )}
       </div>

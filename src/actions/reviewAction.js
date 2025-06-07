@@ -30,7 +30,7 @@ export const addReview = (movieId, content, rating) => async (dispatch) => {
   const token = localStorage.getItem("jwtToken");
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/api/reviews`,
+      `/api/reviews`,
       { movieId, content, rating }, // ⬅️ JSON 형식 OK
       {
         headers: {
@@ -42,6 +42,7 @@ export const addReview = (movieId, content, rating) => async (dispatch) => {
     dispatch(addReviewSuccess(response.data)); // 🔥 추가 성공
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
@@ -62,6 +63,7 @@ export const updateReview = (reviewId, content, rating) => async (dispatch) => {
     dispatch(updateReviewSuccess(response.data));
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
