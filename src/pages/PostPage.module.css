@@ -1,6 +1,5 @@
 .post-container {
   padding: 10px 50px;
-  background-color: #26272e;
   color: white;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -23,11 +22,12 @@
 }
 
 .btn.writePosts {
-  background-color: #2e3eb8;
+  background-color: transparent;
   color: white;
-  width: 120px;
+  width: auto;
   height: 35px;
   transition: background-color 0.2s;
+  margin-right: -10px;
 }
 
 .btn.writePosts:hover {

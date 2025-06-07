@@ -7,6 +7,8 @@ import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPosts } from "../actions/postAction";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 
 const containerVariants = {
   hidden: {},
@@ -52,16 +54,26 @@ function PostPage() {
           /> */}
 
           <div className={styles["write-post-container"]}>
-            <motion.button
-              className={`${styles.btn} ${styles.writePosts}`}
-              onClick={() => navigate("/writePosts")}
-              initial={{ y: -30, scale: 0.8, opacity: 0 }}
-              animate={{ y: 0, scale: 1, opacity: 1 }}
-              whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+            <Tippy
+              content="게시글 작성"
+              placement="top"
+              animation="shift-away"
+              arrow={true}
             >
-              Write Post
-            </motion.button>
+              <motion.button
+                className={`${styles.btn} ${styles.writePosts}`}
+                onClick={() => navigate("/writePosts")}
+                initial={{ y: -30, scale: 0.8, opacity: 0 }}
+                animate={{ y: 0, scale: 1, opacity: 1 }}
+                whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+              >
+                <i
+                  className="fas fa-pen-to-square"
+                  style={{ fontSize: "1.2rem" }}
+                ></i>
+              </motion.button>
+            </Tippy>
           </div>
 
           <motion.div
