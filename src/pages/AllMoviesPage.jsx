@@ -1,6 +1,6 @@
 // src/pages/AllMoviesPage.jsx
 import React, { useEffect, useState } from 'react';
-import './AllMoviesPage.css';
+import styles from './AllMoviesPage.module.css';
 import MovieCard from '../components/home/MovieCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,14 +11,13 @@ import {
 export default function AllMoviesPage() {
   const dispatch = useDispatch();
 
-  const [filter, setFilter] = useState('popular'); // 'popular' | 'latest'
+  const [filter, setFilter] = useState('popular');
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 12;
 
   const { popular, latest, loading } = useSelector((state) => state.movies);
   const [visibleMovies, setVisibleMovies] = useState([]);
 
-  // 📡 🔥 필터가 바뀔 때 API 호출
   useEffect(() => {
     if (filter === 'popular') {
       dispatch(fetchPopularMovies(100));
@@ -27,14 +26,11 @@ export default function AllMoviesPage() {
     }
   }, [dispatch, filter]);
 
-  // 🎯 필터 & 페이지 변화 시 자르기
   useEffect(() => {
     const allMovies = filter === 'popular' ? popular : latest;
     const start = (currentPage - 1) * moviesPerPage;
     const end = start + moviesPerPage;
     setVisibleMovies(allMovies.slice(start, end));
-
-    console.log(`🧪 필터: ${filter}`, allMovies);
   }, [popular, latest, currentPage, filter]);
 
   const totalPages = Math.ceil(
@@ -42,12 +38,12 @@ export default function AllMoviesPage() {
   );
 
   return (
-    <div className="all-movies-page">
-      <h1 className="page-title">모든 영화</h1>
+    <div className={styles.allMoviesPage}>
+      <h1 className={styles.pageTitle}>모든 영화</h1>
 
-      <div className="filter-tabs">
+      <div className={styles.filterTabs}>
         <button
-          className={filter === 'popular' ? 'active' : ''}
+          className={`${styles.filterButton} ${filter === 'popular' ? styles.active : ''}`}
           onClick={() => {
             setFilter('popular');
             setCurrentPage(1);
@@ -56,7 +52,7 @@ export default function AllMoviesPage() {
           인기순
         </button>
         <button
-          className={filter === 'latest' ? 'active' : ''}
+          className={`${styles.filterButton} ${filter === 'latest' ? styles.active : ''}`}
           onClick={() => {
             setFilter('latest');
             setCurrentPage(1);
@@ -67,9 +63,9 @@ export default function AllMoviesPage() {
       </div>
 
       {loading ? (
-        <p className="loading-text">로딩 중...</p>
+        <p className={styles.loadingText}>로딩 중...</p>
       ) : (
-        <div className="movie-grid">
+        <div className={styles.movieGrid}>
           {visibleMovies.map((movie) => (
             <MovieCard
               key={movie.contentId || movie.id}
@@ -87,12 +83,11 @@ export default function AllMoviesPage() {
         </div>
       )}
 
-      {/* 페이지네이션 */}
-      <div className="pagination">
+      <div className={styles.pagination}>
         {Array.from({ length: totalPages }).map((_, idx) => (
           <button
             key={idx}
-            className={currentPage === idx + 1 ? 'active' : ''}
+            className={`${styles.pageButton} ${currentPage === idx + 1 ? styles.active : ''}`}
             onClick={() => setCurrentPage(idx + 1)}
           >
             {idx + 1}

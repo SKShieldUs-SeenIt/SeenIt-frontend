@@ -1,0 +1,50 @@
+/* src/pages/MySeenMoviePage.module.css */
+
+.mySeenMoviePage {
+  padding: 2rem;
+  min-height: 100vh;
+  background-color: #111;
+  color: #fff;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* 영화 그리드 */
+.movieGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+  background-color: #444;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pagination button:hover {
+  background-color: #666;
+}
+
+.activePage {
+  background-color: crimson;
+  font-weight: bold;
+}
