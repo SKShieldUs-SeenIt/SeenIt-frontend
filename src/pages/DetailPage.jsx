@@ -180,7 +180,14 @@ function DetailPage() {
                 className={`${styles.btn} ${styles["btn-action"]}`}
                 whileHover={{ scale: 1.55 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/posts")}
+                onClick={() =>
+                  navigate("/posts", {
+                    state: {
+                      contentType: "MOVIE",
+                      contentId: movieId,
+                    },
+                  })
+                }
               >
                 Go to Posts
               </motion.button>

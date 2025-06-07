@@ -57,3 +57,19 @@ export const fetchPostByCode = (postCode) => async () => {
     throw err;
   }
 };
+
+export const fetchPostsByContent = (type, id) => async (dispatch) => {
+  dispatch(fetchPostsStart());
+  try {
+    const token = localStorage.getItem("jwtToken");
+    const res = await axios.get(`/api/posts/content?type=${type}&id=${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch(fetchPostsSuccess(res.data));
+  } catch (err) {
+    dispatch(fetchPostsFailure(err.message));
+  }
+};
+

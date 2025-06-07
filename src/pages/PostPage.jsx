@@ -2,13 +2,16 @@ import styles from "./PostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams, useLocation } from "react-router-dom";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllPosts } from "../actions/postAction";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
+import { fetchPostsByContent } from "../actions/postAction";
 
 const containerVariants = {
   hidden: {},
@@ -31,12 +34,39 @@ const itemVariants = {
 function PostPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const contentType = location.state?.contentType;
+  const contentId = location.state?.contentId;
+
   const posts = useSelector((state) => state.posts.posts);
   const user = useSelector((state) => state.user.user);
 
+  const [movie, setMovie] = useState(null);
+
   useEffect(() => {
-    dispatch(fetchAllPosts());
-  }, [dispatch]);
+  console.log("🧪 contentType", contentType);
+  console.log("🧪 contentId", contentId);
+
+  if (!contentType || !contentId) return;
+
+  if (contentType === "MOVIE") {
+    axios.get(`/api/movies/${contentId}`).then((res) => {
+      console.log("🎬 불러온 영화 데이터:", res.data); // 👉 이거 찍어보자!
+      setMovie(res.data);
+    }).catch((err) => {
+      console.error("❌ 영화 불러오기 실패:", err);
+    });
+  }
+}, [contentType, contentId]);
+
+
+  useEffect(() => {
+    if (contentType && contentId) {
+      dispatch(fetchPostsByContent(contentType, contentId));
+    } else {
+      dispatch(fetchAllPosts());
+    }
+  }, [dispatch, contentType, contentId]);
 
   return (
     <motion.div
@@ -47,11 +77,17 @@ function PostPage() {
       <div>
         <CommonHeader title="Posts" />
         <motion.div className={styles["post-container"]}>
-          {/* <CommonMovieInfo
-            title="The Last of Us"
-            director="Neil Druckmann"
-            poster={moviePoster}
-          /> */}
+          {movie && (
+            <CommonMovieInfo
+              title={movie.title}
+              director={movie.releaseDate || "Unknown"}
+              poster={
+                movie.posterPath
+                  ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                  : moviePoster
+              }
+            />
+          )}
 
           <div className={styles["write-post-container"]}>
             <Tippy
@@ -59,6 +95,7 @@ function PostPage() {
               placement="top"
               animation="shift-away"
               arrow={true}
+              asChild
             >
               <motion.button
                 className={`${styles.btn} ${styles.writePosts}`}
@@ -69,7 +106,7 @@ function PostPage() {
                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
               >
                 <i
-                  className="fas fa-pen-to-square"
+                  className="fa-solid fa-pencil"
                   style={{ fontSize: "1.2rem" }}
                 ></i>
               </motion.button>
