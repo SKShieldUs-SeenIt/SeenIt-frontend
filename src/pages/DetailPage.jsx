@@ -22,39 +22,43 @@ function DetailPage() {
   if (!movie) return <div>로딩 중...</div>;
 
   const renderStars = (score) => {
-    const fullStars = Math.floor(score);
-    const halfStar = score % 1 >= 0.5 ? 1 : 0;
-    const emptyStars = 5 - fullStars - halfStar;
-
     const stars = [];
 
-    for (let i = 0; i < fullStars; i++) {
+    const fullStars = Math.floor(score); // 정수 별
+    const hasHalf = score - fullStars > 0.0 && score - fullStars <= 0.5;
+    const totalStars = fullStars + (hasHalf ? 0.5 : 1); // 별 + 반 계산용
+
+    const showFull = hasHalf ? fullStars : Math.ceil(score); // 보여줄 꽉찬 별 수
+    const showHalf = hasHalf ? 1 : 0;
+    const showEmpty = 5 - showFull - showHalf;
+
+    for (let i = 0; i < showFull; i++) {
       stars.push(
         <i
           key={`full-${i}`}
           className="fas fa-star"
           style={{ color: "#FFD700", marginRight: "2px" }}
-        ></i>
+        />
       );
     }
 
-    if (halfStar) {
+    if (showHalf) {
       stars.push(
         <i
           key="half"
           className="fas fa-star-half-alt"
           style={{ color: "#FFD700", marginRight: "2px" }}
-        ></i>
+        />
       );
     }
 
-    for (let i = 0; i < emptyStars; i++) {
+    for (let i = 0; i < showEmpty; i++) {
       stars.push(
         <i
           key={`empty-${i}`}
           className="far fa-star"
           style={{ color: "#FFD700", marginRight: "2px" }}
-        ></i>
+        />
       );
     }
 
@@ -73,6 +77,15 @@ function DetailPage() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.2 }}
     >
+      {movie && (
+        <div
+          className={styles.backgroundOverlay}
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.posterPath})`,
+          }}
+        />
+      )}
+
       <div>
         <CommonHeader />
 
@@ -167,7 +180,14 @@ function DetailPage() {
                 className={`${styles.btn} ${styles["btn-action"]}`}
                 whileHover={{ scale: 1.55 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/posts")}
+                onClick={() =>
+                  navigate("/posts", {
+                    state: {
+                      contentType: "MOVIE",
+                      contentId: movieId,
+                    },
+                  })
+                }
               >
                 Go to Posts
               </motion.button>

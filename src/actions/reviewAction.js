@@ -30,19 +30,22 @@ export const addReview = (movieId, content, rating) => async (dispatch) => {
   const token = localStorage.getItem("jwtToken");
   try {
     const response = await axios.post(
-      "/api/reviews",
-      { movieId, content, rating },
+      `/api/reviews`,
+      { movieId, content, rating }, // ⬅️ JSON 형식 OK
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+         withCredentials: true,
       }
     );
-    dispatch(addReviewSuccess(response.data));
+    dispatch(addReviewSuccess(response.data)); // 🔥 추가 성공
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
+
 
 // 리뷰 수정
 export const updateReview = (reviewId, content, rating) => async (dispatch) => {
@@ -60,6 +63,7 @@ export const updateReview = (reviewId, content, rating) => async (dispatch) => {
     dispatch(updateReviewSuccess(response.data));
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 

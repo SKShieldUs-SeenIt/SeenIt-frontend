@@ -75,7 +75,7 @@ export const fetchUserRatedMovies = (userId) => async (dispatch) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
 
-    const url = `${import.meta.env.VITE_API_BASE_URL}/api/ratings/users/${userId}`;
+    const url = `/api/ratings/users/${userId}`;
     console.log(`📡 [fetchUserRatedMovies] 요청 URL: ${url}`);
 
     const res = await axios.get(url);

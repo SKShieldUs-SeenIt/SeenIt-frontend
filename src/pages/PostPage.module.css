@@ -1,6 +1,5 @@
 .post-container {
   padding: 10px 50px;
-  background-color: #26272e;
   color: white;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -23,11 +22,12 @@
 }
 
 .btn.writePosts {
-  background-color: #2e3eb8;
+  background-color: transparent;
   color: white;
-  width: 120px;
+  width: auto;
   height: 35px;
   transition: background-color 0.2s;
+  margin-right: -10px;
 }
 
 .btn.writePosts:hover {
@@ -49,10 +49,13 @@
 }
 
 .post-list-item {
-  background: #333;
-  padding: 15px;
+  background: rgba(255, 255, 255, 0.05); /* 살짝 투명하게 */
+  backdrop-filter: blur(8px); /* 블러 효과 */
   border-radius: 10px;
+  padding: 15px;
   margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 

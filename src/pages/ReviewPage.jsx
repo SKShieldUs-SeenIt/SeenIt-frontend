@@ -12,9 +12,12 @@ import {
   updateReview,
   deleteReview,
 } from "../actions/reviewAction";
+import { fetchUserInfo } from "../actions/userAction";
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css"; // 기본 스타일
 
 const containerVariants = {
   hidden: {},
@@ -40,7 +43,9 @@ function ReviewPage() {
   const [editingText, setEditingText] = useState("");
   const [editingStars, setEditingStars] = useState(0);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const [warningMessage, setWarningMessage] = useState("");
   const [showEditWarningModal, setShowEditWarningModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { id } = useParams();
 
@@ -58,61 +63,21 @@ function ReviewPage() {
     }
   }, [dispatch, id]);
 
-  // useEffect에서 API 호출
   useEffect(() => {
     if (!id) return;
 
-    // 영화 정보 불러오기
     axios.get(`/api/movies/${id}`).then((res) => {
       setMovie(res.data);
     });
   }, [id]);
 
-  const initialReviews = [
-    {
-      id: 1,
-      username: "User Name",
-      stars: 4.5,
-      description: "Review Description...",
-      createdAt: "2024-01-01 12:00",
-      isEditable: false,
-    },
-    {
-      id: 2,
-      username: "User Name",
-      stars: 3,
-      description: "Another review...",
-      createdAt: "2024-01-02 13:00",
-      isEditable: false,
-    },
-    {
-      id: 3,
-      username: "User Name",
-      stars: 5,
-      description: "Loved it!",
-      createdAt: "2024-01-03 14:00",
-      isEditable: false,
-    },
-    {
-      id: 4,
-      username: "User Name",
-      stars: 3,
-      description: "It was okay.",
-      createdAt: "2024-01-04 15:00",
-      isEditable: false,
-    },
-    {
-      id: 5,
-      username: "User Name",
-      stars: 4,
-      description: "Pretty good!",
-      createdAt: "2024-01-05 16:00",
-      isEditable: false,
-    },
-  ];
+  useEffect(() => {
+    dispatch(fetchUserInfo());
+  }, [dispatch]);
 
   const handleSubmit = () => {
     if (selectedStars === 0) {
+      setWarningMessage("별점을 선택해주세요.");
       setShowWarningModal(true);
       return;
     }
@@ -120,7 +85,7 @@ function ReviewPage() {
     if (editingReviewId != null) {
       dispatch(updateReview(editingReviewId, reviewText, selectedStars));
     } else {
-      dispatch(addReview(id, reviewText, selectedStars));
+      dispatch(addReview(id, reviewText, selectedStars)); // ⭐ id는 movieId
     }
 
     setReviewText("");
@@ -158,25 +123,32 @@ function ReviewPage() {
     setEditingStars(review.rating);
     setReviewText(review.content);
     setSelectedStars(review.rating);
-    setShowReviewBox(true);
   };
 
   const handleSaveEdit = () => {
-    setNewReviews((prev) =>
-      prev.map((r) =>
-        r.id === editingReviewId
-          ? {
-              ...r,
-              description: editingText,
-              stars: editingStars,
-              createdAt: new Date().toLocaleString(),
-            }
-          : r
-      )
+    if (editingStars === 0) {
+      setWarningMessage("별점을 입력해주세요.");
+      setShowWarningModal(true);
+      return;
+    }
+
+    if (editingText.trim().length < 10) {
+      setWarningMessage("리뷰는 최소 10자 이상 입력해주세요.");
+      setShowWarningModal(true);
+      return;
+    }
+
+    dispatch(updateReview(editingReviewId, editingText, editingStars)).then(
+      () => {
+        setShowSuccessModal(true);
+      }
     );
+
     setEditingReviewId(null);
     setEditingText("");
     setEditingStars(0);
+    setReviewText("");
+    setSelectedStars(0);
   };
 
   const handleCancelEdit = () => {
@@ -187,7 +159,7 @@ function ReviewPage() {
   const allReviews = [...memoizedReviews, ...newReviews];
 
   const [selectedStars, setSelectedStars] = useState(0);
-
+  if (!user) return <div>로딩 중...</div>;
   const renderStarSelector = (value, onChange) => {
     return (
       <div className={styles["star-selector"]} style={{ userSelect: "none" }}>
@@ -301,22 +273,37 @@ function ReviewPage() {
           {/* Write Review Button */}
           {!showReviewBox && (
             <div className={styles["write-review-button-container"]}>
-              <motion.button
-                className={`${styles.btn} ${styles["write-review"]}`}
-                onClick={() => {
-                  if (editingReviewId !== null) {
-                    setShowEditWarningModal(true);
-                  } else {
-                    setShowReviewBox(true);
-                  }
-                }}
-                initial={{ y: -10, scale: 0.8, opacity: 0 }}
-                animate={{ y: 0, scale: 1, opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-              >
-                Write Review
-              </motion.button>
+              <Tippy content="리뷰 작성">
+                <motion.button
+                  className={`${styles.btn} ${styles["write-review"]}`}
+                  onClick={() => {
+                    const alreadyReviewed = memoizedReviews.some(
+                      (r) => r.username === user.name
+                    );
+
+                    if (alreadyReviewed) {
+                      setWarningMessage("이미 리뷰를 작성했습니다.");
+                      setShowWarningModal(true);
+                      return;
+                    }
+
+                    if (editingReviewId !== null) {
+                      setShowEditWarningModal(true);
+                    } else {
+                      setShowReviewBox(true);
+                    }
+                  }}
+                  initial={{ y: -10, scale: 0.8, opacity: 0 }}
+                  animate={{ y: 0, scale: 1, opacity: 1 }}
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+                >
+                  <i
+                    className="fas fa-pencil-alt"
+                    style={{ fontSize: "1.2rem" }}
+                  ></i>
+                </motion.button>
+              </Tippy>
             </div>
           )}
 
@@ -330,7 +317,7 @@ function ReviewPage() {
             >
               <div className={styles["review-user"]}>
                 <div className={styles["user-info"]}>
-                  <i className="fas fa-user-circle" />
+                  <i className={`fas fa-user-circle  ${styles["user-icon"]}`} />
                   <span className={styles["review-username"]}>{user.name}</span>
                 </div>
               </div>
@@ -383,22 +370,30 @@ function ReviewPage() {
                     </span>
                   </div>
 
-                  {review.isEditable && editingReviewId !== review.id && (
-                    <div className={styles["review-actions"]}>
-                      <button
-                        className={`${styles.btn} ${styles.edit}`}
-                        onClick={() => handleEdit(review)}
-                      >
-                        edit
-                      </button>
-                      <button
-                        className={`${styles.btn} ${styles.delete}`}
-                        onClick={() => handleAskDelete(review.id)}
-                      >
-                        delete
-                      </button>
-                    </div>
-                  )}
+                  {review.userId === user.userId &&
+                    editingReviewId !== review.id && (
+                      <div className={styles["review-actions"]}>
+                        <Tippy content="수정하기">
+                          <button
+                            className={`${styles.btn} ${styles.edit}`}
+                            onClick={() => handleEdit(review)}
+                          >
+                            <i class="fa-solid fa-pen-to-square"></i>
+                          </button>
+                        </Tippy>
+
+                        <span className={styles.divider}>|</span>
+
+                        <Tippy content="삭제하기">
+                          <button
+                            className={`${styles.btn} ${styles.delete}`}
+                            onClick={() => handleAskDelete(review.id)}
+                          >
+                            <i className="fas fa-trash" />
+                          </button>
+                        </Tippy>
+                      </div>
+                    )}
                 </div>
 
                 {/* ✅ 편집 중일 때는 수정 UI 보여줌 */}
@@ -413,7 +408,7 @@ function ReviewPage() {
                       value={editingText}
                       onChange={(e) => setEditingText(e.target.value)}
                     />
-                    <div className={styles["review-actions"]}>
+                    <div className={styles["review-actions2"]}>
                       <button
                         className={`${styles.btn} ${styles.save}`}
                         onClick={handleSaveEdit}
@@ -438,7 +433,9 @@ function ReviewPage() {
                     </div>
                     <div className={styles["review-footer"]}>
                       <div className={styles["review-date"]}>
-                        {review.createdAt}
+                        {review.updatedAt
+                          ? `수정됨: ${review.updatedAt}`
+                          : `작성일: ${review.createdAt}`}
                       </div>
                     </div>
                   </>
@@ -484,7 +481,7 @@ function ReviewPage() {
 
         {showWarningModal && (
           <WarningModal
-            message="별점을 선택해주세요."
+            message={warningMessage}
             onClose={() => setShowWarningModal(false)}
           />
         )}
@@ -493,6 +490,13 @@ function ReviewPage() {
           <WarningModal
             message="수정 중인 리뷰가 있습니다. 먼저 저장하거나 취소해주세요."
             onClose={() => setShowEditWarningModal(false)}
+          />
+        )}
+
+        {showSuccessModal && (
+          <WarningModal
+            message="리뷰가 수정되었습니다!"
+            onClose={() => setShowSuccessModal(false)}
           />
         )}
       </div>

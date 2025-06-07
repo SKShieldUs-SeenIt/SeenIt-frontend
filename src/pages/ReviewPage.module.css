@@ -1,6 +1,6 @@
 .review-container {
   padding: 10px 50px;
-  background-color: #26272e;
+  /* background-color: #26272e; */
   color: white;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -50,12 +50,16 @@
 }
 
 .btn.write-review {
-  background-color: #3a49d8;
+  /* background-color: #3a49d8; */
+  background-color: transparent;
   color: white;
-  width: 130px;
+  width: auto;
   height: 35px;
   font-weight: normal;
   cursor: pointer;
+  padding: 8px 8px;
+  /* border: 1.5px solid white;
+  border-radius: 6px; */
 }
 
 .review-box {
@@ -154,10 +158,13 @@
 }
 
 .review-list-item {
-  background: #333;
-  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
   border-radius: 10px;
+  padding: 15px;
   margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .review-desc {
@@ -175,8 +182,12 @@
   align-items: flex-end;
 }
 
-.review-actions .btn {
-  margin-left: 8px;
+.review-actions2 {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .btn {
@@ -217,7 +228,8 @@
 }
 
 .btn.edit {
-  background-color: #4e8cff;
+  /* background-color: #4e8cff; */
+  background-color: transparent;
   color: white;
   width: 40px;
   height: 25px;
@@ -229,15 +241,22 @@
 }
 
 .btn.delete {
-  background-color: #ff5c5c;
+  /* background-color: #ff5c5c; */
+  background-color: transparent;
   color: white;
-  width: 50px;
+  width: 40px;
   height: 25px;
   transition: background-color 0.2s ease;
 }
 
 .btn.delete:hover {
   opacity: 0.9; 
+}
+
+.divider {
+  color: #ccc;
+  font-size: 1.2rem;
+  user-select: none;
 }
 
 .modal-overlay {

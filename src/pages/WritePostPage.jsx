@@ -3,16 +3,30 @@ import styles from "./WritePostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
+import { fetchUserInfo } from "../actions/userAction";
+import { createPost } from "../actions/postAction";
 
 function WritePostsPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
+  const contentId = location.state?.contentId;
+  const contentType = location.state?.contentType;
+  const user = useSelector((state) => state.user.user);
+
+  const [movie, setMovie] = useState(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchUserInfo());
+  }, [dispatch]);
 
   useEffect(() => {
     // 페이지 새로 고침 시 input 필드를 비워줍니다.
@@ -20,26 +34,37 @@ function WritePostsPage() {
     setDescription("");
   }, []);
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (contentType === "MOVIE" && contentId) {
+      axios
+        .get(`/api/movies/${contentId}`)
+        .then((res) => {
+          setMovie(res.data);
+        })
+        .catch((err) => {
+          console.error("영화 정보 불러오기 실패:", err);
+        });
+    }
+  }, [contentType, contentId]);
+
+  const handleSubmit = async () => {
     if (title.trim() === "" || description.trim() === "") {
       setShowWarningModal(true);
       return;
     }
 
-    const newPost = {
-      id: Date.now(), // 고유 ID
-      title,
-      description,
-      username: "User Name",
-      createdAt: new Date().toLocaleString(),
-    };
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("body", description);
+    formData.append("contentType", contentType);
+    formData.append("contentId", contentId);
 
-    const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-    const updatedPosts = [newPost, ...savedPosts];
-
-    localStorage.setItem("posts", JSON.stringify(updatedPosts));
-
-    navigate("/posts", { state: { newPost } });
+    try {
+      await dispatch(createPost(formData)); // ✅ DB에 게시글 등록!
+      navigate("/posts", { state: { contentId, contentType } });
+    } catch (err) {
+      console.error("게시글 등록 중 오류 발생!", err);
+    }
   };
 
   return (
@@ -51,11 +76,17 @@ function WritePostsPage() {
       <div>
         <CommonHeader title="Posts" />
         <motion.div className={styles["post-container"]}>
-          <CommonMovieInfo
-            title="The Last of Us"
-            director="Neil Druckmann"
-            poster={moviePoster}
-          />
+          {movie && (
+            <CommonMovieInfo
+              title={movie.title}
+              director={movie.releaseDate || "Unknown"}
+              poster={
+                movie.posterPath
+                  ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                  : moviePoster
+              }
+            />
+          )}
 
           <motion.div
             className={styles["post-card"]}
@@ -65,11 +96,13 @@ function WritePostsPage() {
           >
             <div className={styles["post-header"]}>
               <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
-              <span className={styles["user-name"]}>User Name</span>
+              <span className={styles["user-name"]}>{user?.name}</span>
               <div className={styles["post-buttons"]}>
                 <button
                   className={styles["btn-cancel"]}
-                  onClick={() => navigate("/posts")}
+                  onClick={() =>
+                    navigate("/posts", { state: { contentId, contentType } })
+                  }
                 >
                   cancel
                 </button>
