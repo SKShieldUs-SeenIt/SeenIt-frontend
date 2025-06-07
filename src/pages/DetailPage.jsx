@@ -73,6 +73,15 @@ function DetailPage() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1.2 }}
     >
+      {movie && (
+        <div
+          className={styles.backgroundOverlay}
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.posterPath})`,
+          }}
+        />
+      )}
+
       <div>
         <CommonHeader />
 
