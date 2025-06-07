@@ -11,6 +11,7 @@ import { deletePost } from "../actions/postAction";
 import { useSelector } from "react-redux";
 import { fetchUserInfo } from "../actions/userAction";
 import { fetchCommentsByPost } from "../actions/commentAction";
+import CommentSection from "../components/comment/Comment";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
@@ -24,15 +25,6 @@ const containerVariants = {
   },
 };
 
-const replyItemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
-  },
-};
-
 function PostDetailPage() {
   const navigate = useNavigate();
 
@@ -42,13 +34,6 @@ function PostDetailPage() {
   const [replies, setReplies] = useState([]);
   const [showReplyDeleteModal, setShowReplyDeleteModal] = useState(false);
   const [selectedReplyId, setSelectedReplyId] = useState(null);
-  const [editReplyId, setEditReplyId] = useState(null);
-  const [editReplyContent, setEditReplyContent] = useState("");
-  const [activeReplyBox, setActiveReplyBox] = useState(null);
-  const [subReplyText, setSubReplyText] = useState("");
-  const [editSubReplyId, setEditSubReplyId] = useState(null);
-  const [editSubReplyContent, setEditSubReplyContent] = useState("");
-  const [editParentReplyId, setEditParentReplyId] = useState(null);
   const [selectedSubReply, setSelectedSubReply] = useState({
     parentId: null,
     subReplyId: null,
@@ -122,60 +107,6 @@ function PostDetailPage() {
     localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
     setShowReplyDeleteModal(false);
     setSelectedReplyId(null);
-  };
-
-  const handleEditClick = (reply) => {
-    setEditReplyId(reply.id);
-    setEditReplyContent(reply.content);
-  };
-
-  const handleSaveEdit = () => {
-    setReplies((prev) =>
-      prev.map((r) =>
-        r.id === editReplyId ? { ...r, content: editReplyContent } : r
-      )
-    );
-    setEditReplyId(null);
-    setEditReplyContent("");
-  };
-
-  const handleCancelEdit = () => {
-    setEditReplyId(null);
-    setEditReplyContent("");
-  };
-
-  const handleEditSubReplyClick = (parentId, subReply) => {
-    setEditParentReplyId(parentId);
-    setEditSubReplyId(subReply.id);
-    setEditSubReplyContent(subReply.content);
-  };
-
-  const handleCancelSubReplyEdit = () => {
-    setEditSubReplyId(null);
-    setEditParentReplyId(null);
-    setEditSubReplyContent("");
-  };
-
-  const handleSaveSubReplyEdit = () => {
-    const updatedReplies = replies.map((r) => {
-      if (r.id === editParentReplyId) {
-        const updatedSubReplies = r.replies.map((s) =>
-          s.id === editSubReplyId ? { ...s, content: editSubReplyContent } : s
-        );
-        return { ...r, replies: updatedSubReplies };
-      }
-      return r;
-    });
-    setReplies(updatedReplies);
-    localStorage.setItem(`replies-${post.id}`, JSON.stringify(updatedReplies));
-    setEditSubReplyId(null);
-    setEditParentReplyId(null);
-    setEditSubReplyContent("");
-  };
-
-  const handleDeleteSubReply = (parentId, subReplyId) => {
-    setSelectedSubReply({ parentId, subReplyId });
-    setShowSubReplyDeleteModal(true);
   };
 
   const confirmDeleteSubReply = () => {
@@ -265,308 +196,23 @@ function PostDetailPage() {
             </>
           )}
 
-          {/* 댓글 입력창 토글 버튼 + 입력창 */}
-          <div className={styles["reply-header-top"]}>
-            {!showReplyInput && (
-              <Tippy content="댓글 작성">
-                <button
-                  className={styles["write-reply-btn"]}
-                  onClick={() => setShowReplyInput(true)}
-                >
-                  <i className="fas fa-pencil-alt"></i>
-                </button>
-              </Tippy>
-            )}
-
-            {showReplyInput && (
-              <motion.div
-                className={styles["reply-card"]}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+          {!showReplyInput && (
+            <Tippy content="댓글 작성">
+              <button
+                className={styles["write-reply-btn"]}
+                onClick={() => setShowReplyInput(true)}
               >
-                <div className={styles["reply-header"]}>
-                  <i
-                    className={`fas fa-user-circle ${styles["user-icon"]}`}
-                  ></i>
-                  <span className={styles["user-name"]}>User Name</span>
-                </div>
+                <i className="fas fa-pencil-alt"></i>
+              </button>
+            </Tippy>
+          )}
 
-                <textarea
-                  className={styles["reply-description-input"]}
-                  placeholder="댓글을 입력하세요..."
-                  value={newReply}
-                  onChange={(e) => setNewReply(e.target.value)}
-                />
-
-                <div className={styles["reply-btn-group"]}>
-                  <button
-                    className={styles["submit-reply-btn"]}
-                    onClick={handleSubmitReply}
-                  >
-                    submit
-                  </button>
-                  <button
-                    className={styles["cancel-reply-btn"]}
-                    onClick={() => {
-                      setShowReplyInput(false);
-                      setNewReply("");
-                    }}
-                  >
-                    cancel
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </div>
-
-          {comments
-            .filter((reply) => !reply.parentCommentId)
-            .map((reply) => (
-              <motion.div
-                key={reply.id}
-                className={styles["reply-card"]}
-                variants={replyItemVariants}
-              >
-                <div className={styles["reply-header"]}>
-                  <i
-                    className={`fas fa-user-circle ${styles["user-icon"]}`}
-                  ></i>
-                  <span className={styles["user-name"]}>
-                    {reply.user?.name}
-                  </span>
-                </div>
-
-                <div className={styles["reply-description"]}>
-                  {reply.content}
-                </div>
-
-                {/* 대댓글 렌더링 */}
-                {reply.childComments?.map((child) => (
-                  <div key={child.id} className={styles["sub-reply"]}>
-                    <i
-                      className={`fas fa-level-up-alt fa-rotate-90 ${styles["reply-arrow"]}`}
-                    ></i>
-                    <div
-                      className={`${styles["reply-card"]} ${styles["nested"]}`}
-                    >
-                      <div className={styles["reply-header"]}>
-                        <i
-                          className={`fas fa-user-circle ${styles["user-icon"]}`}
-                        ></i>
-                        <span className={styles["user-name"]}>
-                          {child.user?.name}
-                        </span>
-                      </div>
-                      <div className={styles["reply-description"]}>
-                        {child.content}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
-            ))}
-
-          {replies.map((reply) => (
-            <motion.div
-              key={reply.id}
-              className={styles["reply-card"]}
-              variants={replyItemVariants}
-            >
-              <div className={styles["reply-header"]}>
-                <i className={`fas fa-user-circle ${styles["user-icon"]}`}></i>
-                <span className={styles["user-name"]}>User Name</span>
-                {/* 수정 중일 땐 버튼 안 보이게 */}
-                {editReplyId !== reply.id && (
-                  <div className={styles["reply-buttons"]}>
-                    <button
-                      className={styles["btn-edit"]}
-                      onClick={() => handleEditClick(reply)}
-                    >
-                      edit
-                    </button>
-                    <button
-                      className={styles["btn-delete"]}
-                      onClick={() => {
-                        setSelectedReplyId(reply.id);
-                        setShowReplyDeleteModal(true);
-                      }}
-                    >
-                      delete
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {editReplyId === reply.id ? (
-                <>
-                  <textarea
-                    className={styles["reply-description-input"]}
-                    value={editReplyContent}
-                    onChange={(e) => setEditReplyContent(e.target.value)}
-                  />
-                  <div className={styles["reply-btn-group"]}>
-                    <button
-                      className={styles["submit-reply-btn"]}
-                      onClick={handleSaveEdit}
-                    >
-                      save
-                    </button>
-                    <button
-                      className={styles["cancel-reply-btn"]}
-                      onClick={handleCancelEdit}
-                    >
-                      cancel
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className={styles["reply-description"]}>
-                  {reply.content}
-                </div>
-              )}
-
-              {reply.replies?.map((subReply) => (
-                <div key={subReply.id} className={styles["sub-reply"]}>
-                  <i
-                    className={`fas fa-level-up-alt fa-rotate-90 ${styles["reply-arrow"]}`}
-                  ></i>
-                  <div
-                    className={`${styles["reply-card"]} ${styles["nested"]}`}
-                  >
-                    <div className={styles["reply-header"]}>
-                      <i
-                        className={`fas fa-user-circle ${styles["user-icon"]}`}
-                      ></i>
-                      <span className={styles["user-name"]}>User Name</span>
-
-                      {editSubReplyId !== subReply.id ||
-                      editParentReplyId !== reply.id ? (
-                        <div className={styles["reply-buttons"]}>
-                          <button
-                            className={styles["btn-edit"]}
-                            onClick={() =>
-                              handleEditSubReplyClick(reply.id, subReply)
-                            }
-                          >
-                            edit
-                          </button>
-                          <button
-                            className={styles["btn-delete"]}
-                            onClick={() =>
-                              handleDeleteSubReply(reply.id, subReply.id)
-                            }
-                          >
-                            delete
-                          </button>
-                        </div>
-                      ) : null}
-                    </div>
-
-                    {editSubReplyId === subReply.id &&
-                    editParentReplyId === reply.id ? (
-                      <>
-                        <textarea
-                          className={styles["reply-description-input"]}
-                          value={editSubReplyContent}
-                          onChange={(e) =>
-                            setEditSubReplyContent(e.target.value)
-                          }
-                        />
-                        <div className={styles["reply-btn-group"]}>
-                          <button
-                            className={styles["submit-reply-btn"]}
-                            onClick={handleSaveSubReplyEdit}
-                          >
-                            save
-                          </button>
-                          <button
-                            className={styles["cancel-reply-btn"]}
-                            onClick={handleCancelSubReplyEdit}
-                          >
-                            cancel
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <div className={styles["reply-description"]}>
-                        {subReply.content}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-
-              {/* 답글 쓰기 버튼 */}
-              {activeReplyBox !== reply.id ? (
-                <button
-                  className={styles["sub-reply-btn"]}
-                  onClick={() => {
-                    setActiveReplyBox(reply.id);
-                    setSubReplyText("");
-                  }}
-                >
-                  Write Reply
-                </button>
-              ) : (
-                <motion.div className={styles["reply-card"]}>
-                  <div className={styles["reply-header"]}>
-                    <i
-                      className={`fas fa-user-circle ${styles["user-icon"]}`}
-                    ></i>
-                    <span className={styles["user-name"]}>User Name</span>
-                  </div>
-                  <textarea
-                    className={styles["reply-description-input"]}
-                    placeholder="답글을 입력하세요..."
-                    value={subReplyText}
-                    onChange={(e) => setSubReplyText(e.target.value)}
-                  />
-                  <div className={styles["reply-btn-group"]}>
-                    <button
-                      className={styles["submit-reply-btn"]}
-                      onClick={() => {
-                        if (!subReplyText.trim()) {
-                          setShowEmptyReplyModal(true);
-                          return;
-                        }
-                        const updatedReplies = replies.map((r) => {
-                          if (r.id === reply.id) {
-                            const newSubReply = {
-                              id: Date.now(),
-                              content: subReplyText,
-                            };
-                            return {
-                              ...r,
-                              replies: [...(r.replies || []), newSubReply],
-                            };
-                          }
-                          return r;
-                        });
-                        setReplies(updatedReplies);
-                        localStorage.setItem(
-                          `replies-${post.id}`,
-                          JSON.stringify(updatedReplies)
-                        );
-                        setSubReplyText("");
-                        setActiveReplyBox(null);
-                      }}
-                    >
-                      submit
-                    </button>
-                    <button
-                      className={styles["cancel-reply-btn"]}
-                      onClick={() => {
-                        setActiveReplyBox(null);
-                        setSubReplyText("");
-                      }}
-                    >
-                      cancel
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </motion.div>
-          ))}
+          <CommentSection
+            comments={comments}
+            postCode={code}
+            showReplyInput={showReplyInput}
+            setShowReplyInput={setShowReplyInput}
+          />
 
           {/* 댓글 영역 (예시 댓글 하드코딩) */}
           <motion.div

@@ -77,7 +77,8 @@ export const updateComment = (id, content) => async (dispatch) => {
 };
 
 // 댓글 삭제
-export const deleteComment = (id) => async (dispatch) => {
+// 댓글 삭제
+export const deleteComment = (id, postCode) => async (dispatch) => {
   try {
     const token = localStorage.getItem("jwtToken");
     await axios.delete(`/api/comments/${id}`, {
@@ -85,11 +86,17 @@ export const deleteComment = (id) => async (dispatch) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    dispatch({ type: "comment/deleteSuccess", payload: id });
+
+    // ✅ 삭제 성공 후 다시 fetchCommentsByPost 호출해서 최신 댓글로 갱신
+    dispatch(fetchCommentsByPost(postCode));
+    
+    // 또는 이걸 쓸 수도 있어 (단, 상태에서 직접 제거하는 경우)
+    // dispatch({ type: "comment/deleteSuccess", payload: id });
   } catch (err) {
     console.error("❌ 댓글 삭제 실패:", err);
   }
 };
+
 
 export const createSubComment = (parentId, content) => async (dispatch) => {
   try {

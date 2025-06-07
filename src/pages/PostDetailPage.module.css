@@ -244,7 +244,6 @@
 }
 
 .reply-buttons button {
-  margin-left: 8px;
   padding: 3px 0px;
   font-size: 12px;
   border-radius: 4px;
@@ -253,16 +252,23 @@
   color: white;
   cursor: pointer;
   transition: background-color 0.2s;
+  margin-right: -10px;
 }
 
 .reply-buttons .btn-edit {
-  background-color: #3a6fd8;
+  background-color: transparent;
   width: 35px;
   text-align: center;
+  margin-right: 6px;
 }
 
 .reply-buttons .btn-delete {
-  background-color: #e04848;
+  background-color: transparent;
+  width: 40px;
+}
+
+.reply-buttons .btn-reply {
+  background-color: transparent;
   width: 40px;
 }
 
