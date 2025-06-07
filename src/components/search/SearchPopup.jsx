@@ -62,7 +62,11 @@ export default function SearchPopup({ onClose }) {
             >
               <MovieCard
                 title={movie.title}
-                posterPath={movie.posterPath}
+                  posterPath={
+                    movie.posterPath
+                      ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                      : null
+                  }
                 combinedRating={movie.combinedRating}
                 reviewCount={movie.reviewCount}
                 tmdbId={movie.tmdbId}

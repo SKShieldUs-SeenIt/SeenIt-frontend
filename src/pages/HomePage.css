@@ -1,54 +1,84 @@
+/* 전체적인 리셋 */
 body {
   overflow-x: hidden;
 }
 
 .homepage-container {
-  width: 100vw;
-  min-height: 100vh;
-  background-color: #151313;
-  display: flex;
-  justify-content: center;
-  overflow-x: hidden;
-  /* outline: 2px solid red; */
-}
-
-.homepage {
-  width: 100%;
-  max-width: 1200px;
-  padding: 2.5rem;
-  /* outline: 2px solid red; */
-}
-
-.movie-section {
   position: relative;
-  margin-top: 3rem;
+  min-height: 100vh;
+  background: #000;
+  overflow: hidden;
 }
 
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  font-style: bold;
+/* 🎬 인기 영화 섹션 전용 배경 */
+.popular-section {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.background-fade-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.25) blur(2px);
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0;
+}
+
+/* 실제 콘텐츠는 위에 */
+.movie-section > *:not(.background-fade-image) {
+  position: relative;
+  z-index: 2;
+}
+
+/* Home 내부 콘텐츠 */
+.homepage {
+  position: relative;
+  z-index: 3;
+  padding: 2rem 0;
+}
+
+/* 제목 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
   margin-bottom: 1rem;
 }
 
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-left: 4rem;
+}
+
+/* Swiper */
 .swiper-container {
   padding-bottom: 2rem;
   width: 100%;
   overflow: visible !important;
-  /* outline: 2px dashed red; */
 }
 
 .custom-slide {
   width: 220px !important;
   flex-shrink: 0;
-  /* outline: 1px solid red; */
-}
-.movie-card:hover {
-  transform: scale(1.3);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Search클릭시 */
+/* 카드 확대 효과 */
+.movie-card:hover {
+  transform: scale(1.2);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+}
+
+/* 🔍 Search 팝업 오버레이 */
 .overlay {
   position: fixed;
   top: 0;
@@ -72,12 +102,9 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: 1.5rem;
   transition: all 0.3s ease;
 }
-
 
 .search-input {
   font-size: 1rem;
@@ -96,24 +123,21 @@ body {
 }
 
 .view-all-button {
-  position: absolute;
-  top: 10px;
-  right: 20px;
   background: none;
   border: none;
   color: #fff;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
-  padding: 0;
-  margin: 0;
-  outline: none; /* 이 부분 추가 */
+  transition: opacity 0.2s ease;
+  margin-right: 2rem;
 }
 
 .view-all-button:hover {
+  opacity: 0.8;
   text-decoration: underline;
 }
 
 .view-all-button:focus {
-  outline: none; /* 키보드 포커스 시에도 테두리 제거 */
+  outline: none;
 }
