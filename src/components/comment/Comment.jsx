@@ -139,6 +139,15 @@ const CommentSection = ({
                 {/* 내가 쓴 댓글일 때만 수정/삭제 버튼 */}
                 {reply.user?.userId === user?.userId && editId !== reply.id && (
                   <>
+                  <Tippy content="답글 작성">
+                      <button
+                        className={styles["btn-reply"]}
+                        onClick={() => setActiveReplyBox(reply.id)}
+                      >
+                        <i className="fas fa-pencil" style={{ marginRight: "20px" }}/>
+                      </button>
+                    </Tippy>
+                    <span className={styles.divider}>|</span>
                     <Tippy content="수정하기">
                       <button
                         className={styles["btn-edit"]}
