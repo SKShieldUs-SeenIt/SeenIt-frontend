@@ -6,35 +6,61 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchPopularMovies,
   fetchLatestMovies,
+  fetchRecommendedMovies,
 } from '../actions/movieAction';
 
 export default function AllMoviesPage() {
   const dispatch = useDispatch();
-
   const [filter, setFilter] = useState('popular');
   const [currentPage, setCurrentPage] = useState(1);
   const moviesPerPage = 12;
 
-  const { popular, latest, loading } = useSelector((state) => state.movies);
+  const { popular, latest, recommended, loading } = useSelector((state) => state.movies);
+  const userPreferredGenres = useSelector((state) => state.user.user?.preferredGenres || []);
+  const [selectedGenre, setSelectedGenre] = useState('');
+
   const [visibleMovies, setVisibleMovies] = useState([]);
 
+  // 추천 탭 진입 시 기본 장르로 초기 fetch
   useEffect(() => {
     if (filter === 'popular') {
       dispatch(fetchPopularMovies(100));
     } else if (filter === 'latest') {
       dispatch(fetchLatestMovies(100));
+    } else if (filter === 'recommended' && userPreferredGenres.length > 0) {
+      const defaultGenre = userPreferredGenres[0];
+      setSelectedGenre(defaultGenre);
+      dispatch(fetchRecommendedMovies(defaultGenre, 0, 100));
     }
-  }, [dispatch, filter]);
+  }, [dispatch, filter, userPreferredGenres]);
 
+  // 장르 변경 시 추천영화 새로 요청
   useEffect(() => {
-    const allMovies = filter === 'popular' ? popular : latest;
+    if (filter === 'recommended' && selectedGenre) {
+      dispatch(fetchRecommendedMovies(selectedGenre, 0, 100));
+    }
+  }, [selectedGenre]);
+
+  // 필터 적용된 영화 보여주기
+  useEffect(() => {
+    const allMovies =
+      filter === 'popular'
+        ? popular
+        : filter === 'latest'
+        ? latest
+        : recommended;
+
     const start = (currentPage - 1) * moviesPerPage;
     const end = start + moviesPerPage;
     setVisibleMovies(allMovies.slice(start, end));
-  }, [popular, latest, currentPage, filter]);
+  }, [popular, latest, recommended, currentPage, filter]);
 
   const totalPages = Math.ceil(
-    (filter === 'popular' ? popular.length : latest.length) / moviesPerPage
+    (filter === 'popular'
+      ? popular.length
+      : filter === 'latest'
+      ? latest.length
+      : recommended.length) / moviesPerPage
   );
 
   return (
@@ -60,6 +86,33 @@ export default function AllMoviesPage() {
         >
           최신순
         </button>
+        <button
+          className={`${styles.filterButton} ${filter === 'recommended' ? styles.active : ''}`}
+          onClick={() => {
+            setFilter('recommended');
+            setCurrentPage(1);
+          }}
+        >
+          추천영화
+        </button>
+
+        {/* 🎯 추천영화 장르 선택 */}
+        {filter === 'recommended' && userPreferredGenres.length > 0 && (
+          <select
+            className={styles.genreSelect}
+            value={selectedGenre}
+            onChange={(e) => {
+              setSelectedGenre(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            {userPreferredGenres.map((genre) => (
+              <option key={genre} value={genre}>
+                {genre}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {loading ? (

@@ -94,3 +94,26 @@
   background-color: crimson;
   font-weight: bold;
 }
+.genreSelect {
+  margin-left: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: #1e1f25;
+  color: #fff;
+  border: 1px solid #444;
+  font-size: 0.95rem;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.genreSelect:hover {
+  border-color: #888;
+  background-color: #2b2c33;
+}
+
+.genreSelect:focus {
+  outline: none;
+  border-color: #2c7dfa;
+  box-shadow: 0 0 0 2px rgba(44, 125, 250, 0.4);
+}
