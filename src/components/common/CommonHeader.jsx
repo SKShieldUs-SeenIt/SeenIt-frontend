@@ -1,7 +1,14 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import styles from "./CommonHeader.module.css";
 
 export default function CommonHeader({ title }) {
+  const navigate = useNavigate();
+
+  const handleGoHome = () => {
+    navigate("/home"); // 홈 경로로 이동
+  };
+
   return (
     <>
       <motion.div
@@ -10,21 +17,15 @@ export default function CommonHeader({ title }) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
-        <motion.div
-          className={styles["search-bar"]}
+        <motion.button
+          className={styles["home-btn"]}
+          onClick={handleGoHome}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
         >
-          <input
-            type="text"
-            placeholder="Search movies..."
-            className={styles["search-input"]}
-          />
-          <button className={styles["search-btn"]}>
-            <i className="fas fa-search"></i>
-          </button>
-        </motion.div>
+          <i className="fas fa-house"></i>
+        </motion.button>
       </motion.div>
 
       <motion.h1
