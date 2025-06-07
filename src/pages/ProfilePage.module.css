@@ -247,3 +247,24 @@
   color: #fff;
   border-color: #2c7dfa;
 }
+.deleteButton {
+  background-color: #e50914;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: flex-end; /* 🔥 우측 정렬 */
+}
+
+.deleteButton:hover {
+  background-color: #b00610;
+}
+.deleteButtonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}

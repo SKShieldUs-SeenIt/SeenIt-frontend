@@ -115,3 +115,23 @@
 .post-date {
   margin-left: auto;
 }
+.deleteSection {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.deleteButton {
+  background-color: #8b0000;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.deleteButton:hover {
+  background-color: #a10000;
+}

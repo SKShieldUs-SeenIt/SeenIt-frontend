@@ -28,15 +28,17 @@ export default function HomePage() {
   const popularMovies = useSelector((state) => state.movies.popular);
   const ratedMovies = useSelector((state) => state.movies.ratedMovies);
 
+  // ✅ 초기 데이터 fetch
   useEffect(() => {
     dispatch(fetchUserInfo()).then((user) => {
       if (user?.userId) {
         dispatch(fetchUserRatedMovies(user.userId));
       }
     });
-    dispatch(fetchPopularMovies(10));
+    dispatch(fetchPopularMovies(20)); // 전체 fetch
   }, [dispatch]);
 
+  // ✅ Hover 이벤트 핸들러
   const handleCardHoverStart = (posterUrl) => {
     const timer = setTimeout(() => {
       setBackgroundPoster(posterUrl);
@@ -49,24 +51,26 @@ export default function HomePage() {
     setBackgroundPoster(null);
   };
 
+  const visiblePopularMovies = popularMovies.slice(0, 10); // ✅ 딱 10개만
+
   return (
     <div className="homepage-container">
       {/* 🎬 배경 포스터 */}
-  <AnimatePresence>
-    {backgroundPoster && (
-      <motion.div
-        key={backgroundPoster}
-        className="background-fade-image"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{
-          backgroundImage: `url(${backgroundPoster})`,
-        }}
-      />
-    )}
-  </AnimatePresence>
+      <AnimatePresence>
+        {backgroundPoster && (
+          <motion.div
+            key={backgroundPoster}
+            className="background-fade-image"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{
+              backgroundImage: `url(${backgroundPoster})`,
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {showSearchPopup && <SearchPopup onClose={() => setShowSearchPopup(false)} />}
 
@@ -82,24 +86,24 @@ export default function HomePage() {
 
         {/* 🎬 인기 영화 */}
         <section className="movie-section">
-          <div className="section-header"> {/* ✅ header 묶음 */}
-    <h2 className="section-title">인기 영화</h2>
-    <button
-      className="view-all-button"
-      onClick={() => navigate('/all-movies')}
-    >
-      View All
-    </button>
-  </div>
+          <div className="section-header">
+            <h2 className="section-title">인기 영화</h2>
+            <button
+              className="view-all-button"
+              onClick={() => navigate('/all-movies')}
+            >
+              View All
+            </button>
+          </div>
 
           <Swiper
-            key={`popular-${popularMovies.length}`}
+            key={`popular-${visiblePopularMovies.length}`}
             modules={[EffectCoverflow]}
             effect="coverflow"
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={5}
-            initialSlide={Math.floor(popularMovies.length / 2)}
+            initialSlide={Math.floor(visiblePopularMovies.length / 2 -2)}
             coverflowEffect={{
               rotate: 10,
               stretch: 0,
@@ -109,7 +113,7 @@ export default function HomePage() {
             }}
             className="swiper-container"
           >
-            {popularMovies.map((movie) => (
+            {visiblePopularMovies.map((movie) => (
               <SwiperSlide key={movie.id} className="custom-slide">
                 <MovieCard
                   title={movie.title}
@@ -131,15 +135,15 @@ export default function HomePage() {
 
         {/* ⭐ 내가 평점 준 영화 */}
         <section className="movie-section">
- <div className="section-header"> {/* ✅ header 묶음 */}
-    <h2 className="section-title">내가 평점 준 영화</h2>
-    <button
-      className="view-all-button"
-      onClick={() => navigate('/My-movies')}
-    >
-      View All
-    </button>
-  </div>
+          <div className="section-header">
+            <h2 className="section-title">내가 평점 준 영화</h2>
+            <button
+              className="view-all-button"
+              onClick={() => navigate('/My-movies')}
+            >
+              View All
+            </button>
+          </div>
 
           <Swiper
             key={`rated-${ratedMovies.length}`}
@@ -148,7 +152,7 @@ export default function HomePage() {
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={5}
-            initialSlide={Math.floor(ratedMovies.length / 2)}
+            initialSlide={Math.floor(ratedMovies.length / 2 -2)}
             coverflowEffect={{
               rotate: 10,
               stretch: 0,

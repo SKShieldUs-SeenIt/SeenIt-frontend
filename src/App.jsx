@@ -23,7 +23,6 @@ import './App.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import './pages/MySeenMoviePage.css';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(() => {
@@ -92,11 +91,11 @@ export default function App() {
           <Route
             path="/all-movies"
             element={
-              <motion.div
-                initial={{ x: '100%', opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.7 }}
-              >
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                  >
                 <ScrollToTop />
                 <AllMoviesPage />
               </motion.div>
@@ -107,11 +106,11 @@ export default function App() {
           <Route
             path="/My-movies"
             element={
-              <motion.div
-                initial={{ x: '100%', opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.7 }}
-              >
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                >
                 <ScrollToTop />
                 <MySeenMoviePage />
               </motion.div>

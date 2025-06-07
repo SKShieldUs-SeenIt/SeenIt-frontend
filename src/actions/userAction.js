@@ -84,3 +84,30 @@ export const updateUserInfo = (nickname, genres) => async (dispatch) => {
     throw err; // 호출한 쪽에서 try-catch 필요 시
   }
 };
+export const deleteUserAccount = () => async (dispatch) => {
+  const token = localStorage.getItem('jwtToken');
+  if (!token) {
+    console.warn('[deleteUserAccount] ❌ 토큰 없음 - 요청 취소');
+    return;
+  }
+
+  try {
+    await axios.delete(
+      `${import.meta.env.VITE_API_BASE_URL}/api/auth/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log('[deleteUserAccount] ✅ 계정 삭제 완료');
+
+    // ✅ 클라이언트 상태 초기화
+    localStorage.removeItem('jwtToken');
+    dispatch(fetchUserSuccess(null)); // 유저 비움 처리
+  } catch (err) {
+    console.error('[deleteUserAccount] ❌ 계정 삭제 실패:', err);
+    throw err;
+  }
+};

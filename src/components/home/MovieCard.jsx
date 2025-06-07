@@ -16,9 +16,11 @@ export default function MovieCard({
 }) {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    if (tmdbId) navigate(`/details/${tmdbId}`);
-  };
+ const handleClick = () => {
+  console.log("📦 Clicked Movie tmdbId:", tmdbId);
+  if (tmdbId) navigate(`/details/${tmdbId}`);
+  else console.warn("❌ tmdbId 없음 - 이동 실패");
+};
 
   const handleMouseEnter = () => {
     if (onHoverStart && posterPath) {
