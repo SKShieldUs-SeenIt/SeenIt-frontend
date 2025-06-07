@@ -152,7 +152,7 @@ export default function HomePage() {
             grabCursor={true}
             centeredSlides={true}
             slidesPerView={5}
-            initialSlide={Math.floor(ratedMovies.length / 2)}
+            initialSlide={Math.floor(ratedMovies.length / 2 -2)}
             coverflowEffect={{
               rotate: 10,
               stretch: 0,

@@ -1,10 +1,9 @@
-// src/pages/ProfilePage.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./ProfilePage.module.css";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { updateUserInfo } from "../actions/userAction";
+import { updateUserInfo, deleteUserAccount } from "../actions/userAction";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -46,16 +45,23 @@ export default function ProfilePage() {
 
   const handleSaveClick = async () => {
     try {
-      console.log("🧠 Save 버튼 눌림");
-    const genreArray = tempGenre;
-    console.log("📦 저장할 데이터:", { nickname: tempNickname, genres: genreArray });
-
       await dispatch(updateUserInfo(tempNickname, tempGenre));
       setNickname(tempNickname);
       setGenre(tempGenre);
       setIsEditing(false);
     } catch (err) {
       alert("정보 저장에 실패했습니다.");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+      try {
+        await dispatch(deleteUserAccount());
+        navigate("/");
+      } catch (err) {
+        alert("계정 삭제 중 오류가 발생했습니다.");
+      }
     }
   };
 
@@ -100,11 +106,6 @@ export default function ProfilePage() {
         <div className={styles.infoSection}>
           <div className={styles.sectionTitle}>회원 정보</div>
 
-          <motion.div className={styles.infoRow}>
-            <span><i className="fas fa-envelope"></i>Email</span>
-            <div className={styles.infoValue}>{user?.email}</div>
-          </motion.div>
-
           {isEditing ? (
             <>
               <motion.div className={styles.infoRow}>
@@ -148,6 +149,15 @@ export default function ProfilePage() {
                 </div>
               </motion.div>
             </>
+          )}
+
+          {/* ✅ 삭제 버튼 위치 변경: 정보 카드 내부 우측 하단 */}
+          {!isEditing && (
+            <div className={styles.deleteButtonWrapper}>
+              <button className={styles.deleteButton} onClick={handleDeleteAccount}>
+                Delete Account
+              </button>
+            </div>
           )}
         </div>
 
