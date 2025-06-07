@@ -1,17 +1,136 @@
+/* src/pages/AllMoviesPage.css */
+
 .all-movies-page {
-  padding: 40px 20px;
-  background-color: #121212;
-  color: white;
+  padding: 2rem;
+  background-color: #111;
   min-height: 100vh;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .page-title {
   font-size: 2rem;
-  margin-bottom: 20px;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.filter-tabs button {
+  background-color: #222;
+  color: #aaa;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.filter-tabs button.active {
+  background-color: #e50914;
+  color: #fff;
+}
+
+.filter-tabs button:hover {
+  background-color: #e50914;
+  color: white;
 }
 
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.movie-card {
+  background-color: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  z-index: 2;
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+}
+
+.movie-image {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-info-overlay {
+  position: absolute;
+  bottom: 0;
+  padding: 10px;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+}
+
+.movie-title {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.movie-summary {
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.rating-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+.global-rating {
+  background-color: #444;
+}
+
+.user-rating {
+  background-color: #e50914;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pagination button {
+  background-color: #222;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button.active {
+  background-color: #e50914;
+}
+
+.pagination button:hover {
+  background-color: #e50914;
 }

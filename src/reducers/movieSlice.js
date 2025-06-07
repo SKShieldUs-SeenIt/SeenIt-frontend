@@ -7,6 +7,7 @@ const initialState = {
   loading: false,
   error: null,
   ratedMovies: [],
+   latest: [],    
 
 };
 
@@ -50,6 +51,18 @@ const movieSlice = createSlice({
     state.loading = false;
     state.error = action.payload;
   },
+      fetchLatestMoviesStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    fetchLatestMoviesSuccess(state, action) {
+      state.latest = action.payload;
+      state.loading = false;
+    },
+    fetchLatestMoviesFailure(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 
   
@@ -65,6 +78,9 @@ export const {
   fetchUserRatedMoviesStart,
    fetchUserRatedMoviesSuccess,
   fetchUserRatedMoviesFailure, 
+  fetchLatestMoviesStart,         // 🆕
+  fetchLatestMoviesSuccess,       // 🆕
+  fetchLatestMoviesFailure,       // 🆕
 } = movieSlice.actions;
 
 export default movieSlice.reducer;
