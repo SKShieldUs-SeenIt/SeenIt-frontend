@@ -3,6 +3,7 @@ import styles from "./WritePostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
 
@@ -10,6 +11,10 @@ function WritePostsPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const contentId = location.state?.contentId;
+  const contentType = location.state?.contentType;
+
+  const [movie, setMovie] = useState(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -19,6 +24,19 @@ function WritePostsPage() {
     setTitle("");
     setDescription("");
   }, []);
+
+  useEffect(() => {
+    if (contentType === "MOVIE" && contentId) {
+      axios
+        .get(`/api/movies/${contentId}`)
+        .then((res) => {
+          setMovie(res.data);
+        })
+        .catch((err) => {
+          console.error("영화 정보 불러오기 실패:", err);
+        });
+    }
+  }, [contentType, contentId]);
 
   const handleSubmit = () => {
     if (title.trim() === "" || description.trim() === "") {
@@ -51,11 +69,17 @@ function WritePostsPage() {
       <div>
         <CommonHeader title="Posts" />
         <motion.div className={styles["post-container"]}>
-          <CommonMovieInfo
-            title="The Last of Us"
-            director="Neil Druckmann"
-            poster={moviePoster}
-          />
+          {movie && (
+            <CommonMovieInfo
+              title={movie.title}
+              director={movie.releaseDate || "Unknown"}
+              poster={
+                movie.posterPath
+                  ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                  : moviePoster
+              }
+            />
+          )}
 
           <motion.div
             className={styles["post-card"]}

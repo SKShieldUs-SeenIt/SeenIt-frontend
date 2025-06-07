@@ -44,21 +44,20 @@ function PostPage() {
   const [movie, setMovie] = useState(null);
 
   useEffect(() => {
-  console.log("🧪 contentType", contentType);
-  console.log("🧪 contentId", contentId);
+    if (!contentType || !contentId) return;
 
-  if (!contentType || !contentId) return;
-
-  if (contentType === "MOVIE") {
-    axios.get(`/api/movies/${contentId}`).then((res) => {
-      console.log("🎬 불러온 영화 데이터:", res.data); // 👉 이거 찍어보자!
-      setMovie(res.data);
-    }).catch((err) => {
-      console.error("❌ 영화 불러오기 실패:", err);
-    });
-  }
-}, [contentType, contentId]);
-
+    if (contentType === "MOVIE") {
+      axios
+        .get(`/api/movies/${contentId}`)
+        .then((res) => {
+          console.log("🎬 불러온 영화 데이터:", res.data); // 👉 이거 찍어보자!
+          setMovie(res.data);
+        })
+        .catch((err) => {
+          console.error("❌ 영화 불러오기 실패:", err);
+        });
+    }
+  }, [contentType, contentId]);
 
   useEffect(() => {
     if (contentType && contentId) {
@@ -99,7 +98,14 @@ function PostPage() {
             >
               <motion.button
                 className={`${styles.btn} ${styles.writePosts}`}
-                onClick={() => navigate("/writePosts")}
+                onClick={() =>
+                  navigate("/writePosts", {
+                    state: {
+                      contentId: contentId,
+                      contentType: contentType,
+                    },
+                  })
+                }
                 initial={{ y: -30, scale: 0.8, opacity: 0 }}
                 animate={{ y: 0, scale: 1, opacity: 1 }}
                 whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
