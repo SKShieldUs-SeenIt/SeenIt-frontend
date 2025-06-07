@@ -7,6 +7,7 @@ import DeleteModal from "../components/modal/DeleteModal";
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import { fetchPostByCode } from "../actions/postAction";
+import { deletePost } from "../actions/postAction";
 
 const containerVariants = {
   hidden: {},
@@ -61,13 +62,14 @@ function PostDetailPage() {
       .catch((err) => console.error("게시글 로딩 실패", err));
   }, [dispatch, id]);
 
-  const confirmDelete = () => {
-    const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-    const updatedPosts = savedPosts.filter((p) => p.id !== post.id);
-    localStorage.setItem("posts", JSON.stringify(updatedPosts));
-    setShowDeleteModal(false);
-    navigate("/posts"); // 삭제 후 목록으로
-  };
+  const confirmDelete = async () => {
+  try {
+    await dispatch(deletePost(id));
+    navigate("/posts", { state: { contentId: post.contentId, contentType: post.contentType } });
+  } catch (err) {
+    console.error("게시글 삭제 실패!", err);
+  }
+};
 
   const cancelDelete = () => {
     setShowDeleteModal(false);

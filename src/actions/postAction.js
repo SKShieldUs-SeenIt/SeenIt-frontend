@@ -73,3 +73,14 @@ export const fetchPostsByContent = (type, id) => async (dispatch) => {
   }
 };
 
+export const deletePost = (postId) => async () => {
+  try {
+    const token = localStorage.getItem("jwtToken");
+    await axios.delete(`/api/posts/${postId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (err) {
+    console.error("❌ 게시글 삭제 실패:", err);
+    throw err;
+  }
+};

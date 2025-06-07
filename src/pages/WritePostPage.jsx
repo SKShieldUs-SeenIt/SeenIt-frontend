@@ -100,7 +100,9 @@ function WritePostsPage() {
               <div className={styles["post-buttons"]}>
                 <button
                   className={styles["btn-cancel"]}
-                  onClick={() => navigate("/posts")}
+                  onClick={() =>
+                    navigate("/posts", { state: { contentId, contentType } })
+                  }
                 >
                   cancel
                 </button>

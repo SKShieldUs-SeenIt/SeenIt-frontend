@@ -50,7 +50,6 @@ function PostPage() {
       axios
         .get(`/api/movies/${contentId}`)
         .then((res) => {
-          console.log("🎬 불러온 영화 데이터:", res.data); // 👉 이거 찍어보자!
           setMovie(res.data);
         })
         .catch((err) => {
