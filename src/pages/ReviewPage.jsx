@@ -16,6 +16,8 @@ import { fetchUserInfo } from "../actions/userAction";
 import WarningModal from "../components/modal/WarningModal";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css"; // 기본 스타일
 
 const containerVariants = {
   hidden: {},
@@ -271,36 +273,37 @@ function ReviewPage() {
           {/* Write Review Button */}
           {!showReviewBox && (
             <div className={styles["write-review-button-container"]}>
-              <motion.button
-                className={`${styles.btn} ${styles["write-review"]}`}
-                onClick={() => {
-                  const alreadyReviewed = memoizedReviews.some(
-                    (r) => r.username === user.name
-                  );
+              <Tippy content="리뷰 작성">
+                <motion.button
+                  className={`${styles.btn} ${styles["write-review"]}`}
+                  onClick={() => {
+                    const alreadyReviewed = memoizedReviews.some(
+                      (r) => r.username === user.name
+                    );
 
-                  if (alreadyReviewed) {
-                    setWarningMessage("이미 리뷰를 작성했습니다.");
-                    setShowWarningModal(true);
-                    return;
-                  }
+                    if (alreadyReviewed) {
+                      setWarningMessage("이미 리뷰를 작성했습니다.");
+                      setShowWarningModal(true);
+                      return;
+                    }
 
-                  if (editingReviewId !== null) {
-                    setShowEditWarningModal(true);
-                  } else {
-                    setShowReviewBox(true);
-                  }
-                }}
-                initial={{ y: -10, scale: 0.8, opacity: 0 }}
-                animate={{ y: 0, scale: 1, opacity: 1 }}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-              >
-                <i
-                  className="fas fa-pencil-alt"
-                  title="리뷰 작성"
-                  style={{ fontSize: "1.2rem", cursor: "pointer" }}
-                ></i>
-              </motion.button>
+                    if (editingReviewId !== null) {
+                      setShowEditWarningModal(true);
+                    } else {
+                      setShowReviewBox(true);
+                    }
+                  }}
+                  initial={{ y: -10, scale: 0.8, opacity: 0 }}
+                  animate={{ y: 0, scale: 1, opacity: 1 }}
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+                >
+                  <i
+                    className="fas fa-pencil-alt"
+                    style={{ fontSize: "1.2rem" }}
+                  ></i>
+                </motion.button>
+              </Tippy>
             </div>
           )}
 
@@ -370,19 +373,25 @@ function ReviewPage() {
                   {review.userId === user.userId &&
                     editingReviewId !== review.id && (
                       <div className={styles["review-actions"]}>
-                        <button
-                          className={`${styles.btn} ${styles.edit}`}
-                          onClick={() => handleEdit(review)}
-                        >
-                          edit
-                        </button>
+                        <Tippy content="수정하기">
+                          <button
+                            className={`${styles.btn} ${styles.edit}`}
+                            onClick={() => handleEdit(review)}
+                          >
+                            <i class="fa-solid fa-pen-to-square"></i>
+                          </button>
+                        </Tippy>
+
                         <span className={styles.divider}>|</span>
-                        <button
-                          className={`${styles.btn} ${styles.delete}`}
-                          onClick={() => handleAskDelete(review.id)}
-                        >
-                          delete
-                        </button>
+
+                        <Tippy content="삭제하기">
+                          <button
+                            className={`${styles.btn} ${styles.delete}`}
+                            onClick={() => handleAskDelete(review.id)}
+                          >
+                            <i className="fas fa-trash" />
+                          </button>
+                        </Tippy>
                       </div>
                     )}
                 </div>

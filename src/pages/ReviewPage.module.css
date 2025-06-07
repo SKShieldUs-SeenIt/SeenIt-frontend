@@ -182,10 +182,6 @@
   align-items: flex-end;
 }
 
-.review-actions .btn {
-  margin-left: 3px;
-}
-
 .review-actions2 {
   display: flex;
   justify-content: flex-end;
@@ -248,7 +244,7 @@
   /* background-color: #ff5c5c; */
   background-color: transparent;
   color: white;
-  width: 50px;
+  width: 40px;
   height: 25px;
   transition: background-color 0.2s ease;
 }
@@ -259,7 +255,7 @@
 
 .divider {
   color: #ccc;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   user-select: none;
 }
 
