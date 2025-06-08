@@ -78,6 +78,22 @@ export const fetchPostsByContent = (type, id) => async (dispatch) => {
   }
 };
 
+export const fetchPostCountByContent = (type, id) => async () => {
+  try {
+    const token = localStorage.getItem("jwtToken");
+    const res = await axios.get(`/api/posts/content?type=${type}&id=${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data.length;
+  } catch (err) {
+    console.error("❌ 게시글 개수 가져오기 실패:", err);
+    throw err;
+  }
+};
+
+
 export const deletePost = (code) => async () => {
   try {
     const token = localStorage.getItem("jwtToken");

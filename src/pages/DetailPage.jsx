@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from "react";
 import styles from "./DetailPage.module.css";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import axios from "axios";
 import CommonHeader from "../components/common/CommonHeader";
+import { fetchPostCountByContent } from "../actions/postAction";
 
 function DetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [movieId, setMovieId] = useState(null);
+  const dispatch = useDispatch();
+  const [postCount, setPostCount] = useState(0);
 
   useEffect(() => {
     // 영화 상세 정보 가져오기
     axios.get(`/api/movies/tmdb/${id}`).then((res) => {
       setMovie(res.data);
       setMovieId(res.data.id);
+
+      dispatch(fetchPostCountByContent("MOVIE", res.data.id)).then((count) => {
+        setPostCount(count); // 게시글 개수 state에 저장
+      });
     });
   }, [id]);
 
@@ -169,7 +177,7 @@ function DetailPage() {
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 60, delay: 0.9 }}
                 >
-                  2
+                  {postCount}
                 </motion.span>
               </div>
             </div>

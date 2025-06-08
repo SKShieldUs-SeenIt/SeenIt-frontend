@@ -43,6 +43,15 @@ function PostPage() {
 
   const [movie, setMovie] = useState(null);
 
+  const sortedPosts = posts.slice().sort((a, b) => {
+    if (!user || !a.user || !b.user) return 0;
+    if (a.user.userId === user.userId && b.user.userId !== user.userId)
+      return -1;
+    if (a.user.userId !== user.userId && b.user.userId === user.userId)
+      return 1;
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
   useEffect(() => {
     if (!contentType || !contentId) return;
 
@@ -123,7 +132,7 @@ function PostPage() {
             initial="hidden"
             animate="visible"
           >
-            {posts.map((post) => (
+            {sortedPosts.map((post) => (
               <motion.div
                 key={post.id}
                 className={styles["post-list-item"]}
