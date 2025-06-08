@@ -21,7 +21,7 @@ export default function SocialLoginPage() {
 
       <div className="login-buttons">
         <button className="kakao-btn" onClick={handleKakaoLogin}>카카오로 로그인</button>
-        <button onClick={handleSignupClick}>회원가입 테스트용 이동</button>
+        {/* <button onClick={handleSignupClick}>회원가입 테스트용 이동</button> */}
       </div>
     </div>
   );

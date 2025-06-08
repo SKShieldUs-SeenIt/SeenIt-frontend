@@ -13,7 +13,7 @@ export default function AllMoviesPage() {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState('popular');
   const [currentPage, setCurrentPage] = useState(1);
-  const moviesPerPage = 12;
+  const moviesPerPage = 14;
 
   const { popular, latest, recommended, loading } = useSelector((state) => state.movies);
   const userPreferredGenres = useSelector((state) => state.user.user?.preferredGenres || []);
