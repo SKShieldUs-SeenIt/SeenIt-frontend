@@ -9,6 +9,7 @@ import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
 import { fetchUserInfo } from "../actions/userAction";
 import { createPost } from "../actions/postAction";
+import { fetchPostsByContent } from "../actions/postAction";
 
 function WritePostsPage() {
   const navigate = useNavigate();
@@ -60,7 +61,8 @@ function WritePostsPage() {
     formData.append("contentId", contentId);
 
     try {
-      await dispatch(createPost(formData)); // ✅ DB에 게시글 등록!
+      await dispatch(createPost(formData)); 
+      await dispatch(fetchPostsByContent(contentType, contentId));
       navigate("/posts", { state: { contentId, contentType } });
     } catch (err) {
       console.error("게시글 등록 중 오류 발생!", err);

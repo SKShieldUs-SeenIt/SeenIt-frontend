@@ -158,6 +158,12 @@ function ReviewPage() {
 
   const allReviews = [...memoizedReviews, ...newReviews];
 
+  const sortedReviews = allReviews.slice().sort((a, b) => {
+    if (a.userId === user.userId && b.userId !== user.userId) return -1;
+    if (a.userId !== user.userId && b.userId === user.userId) return 1;
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
   const [selectedStars, setSelectedStars] = useState(0);
   if (!user) return <div>로딩 중...</div>;
   const renderStarSelector = (value, onChange) => {
@@ -356,7 +362,7 @@ function ReviewPage() {
             animate="visible"
           >
             {/* Review List */}
-            {allReviews.map((review) => (
+            {sortedReviews.map((review) => (
               <motion.div
                 key={review.id}
                 className={styles["review-list-item"]}

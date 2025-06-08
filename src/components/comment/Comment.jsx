@@ -4,7 +4,6 @@ import {
   updateComment,
   deleteComment,
   createComment,
-  createSubComment,
   fetchCommentsByPost,
 } from "../../actions/commentAction";
 import styles from "../../pages/PostDetailPage.module.css";
@@ -86,7 +85,7 @@ const CommentSection = ({
 
   const handleSubmitSubReply = (parentId) => {
     if (!subReplyText.trim()) return;
-    dispatch(createSubComment(parentId, subReplyText)).then(() => {
+    dispatch(createComment(postCode, subReplyText, parentId)).then(() => {
       dispatch(fetchCommentsByPost(postCode));
     });
     setSubReplyText("");

@@ -77,7 +77,6 @@ export const updateComment = (id, content) => async (dispatch) => {
 };
 
 // 댓글 삭제
-// 댓글 삭제
 export const deleteComment = (id, postCode) => async (dispatch) => {
   try {
     const token = localStorage.getItem("jwtToken");
@@ -94,23 +93,5 @@ export const deleteComment = (id, postCode) => async (dispatch) => {
     // dispatch({ type: "comment/deleteSuccess", payload: id });
   } catch (err) {
     console.error("❌ 댓글 삭제 실패:", err);
-  }
-};
-
-
-export const createSubComment = (parentId, content) => async (dispatch) => {
-  try {
-    const token = localStorage.getItem("jwtToken");
-    const res = await axios.post(`/api/comments/${parentId}/replies`, 
-      { content }, 
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    dispatch(updateSuccess(res.data)); // 대댓글이니까 기존 댓글 업데이트용으로도 활용 가능
-  } catch (err) {
-    console.error("❌ 대댓글 작성 실패:", err);
   }
 };
