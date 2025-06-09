@@ -9,7 +9,7 @@ export default function MySeenMoviePage() {
   const dispatch = useDispatch();
   const ratedMovies = useSelector((state) => state.movies.ratedMovies);
   const [currentPage, setCurrentPage] = useState(1);
-  const moviesPerPage = 12;
+  const moviesPerPage = 14;
 
   useEffect(() => {
     dispatch(fetchUserRatedMovies()); // userId는 내부에서 추출

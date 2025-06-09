@@ -138,12 +138,15 @@ const CommentSection = ({
                 {/* 내가 쓴 댓글일 때만 수정/삭제 버튼 */}
                 {reply.user?.userId === user?.userId && editId !== reply.id && (
                   <>
-                  <Tippy content="답글 작성">
+                    <Tippy content="답글 작성">
                       <button
                         className={styles["btn-reply"]}
                         onClick={() => setActiveReplyBox(reply.id)}
                       >
-                        <i className="fas fa-pencil" style={{ marginRight: "20px" }}/>
+                        <i
+                          className="fas fa-pencil"
+                          style={{ marginRight: "20px" }}
+                        />
                       </button>
                     </Tippy>
                     <span className={styles.divider}>|</span>
@@ -254,10 +257,57 @@ const CommentSection = ({
                     <span className={styles["user-name"]}>
                       {child.user?.name}
                     </span>
+
+                    {child.user?.userId === user?.userId && (
+                      <div className={styles["reply-buttons"]}>
+                        <Tippy content="수정하기">
+                          <button
+                            className={styles["btn-edit"]}
+                            onClick={() => handleEdit(child.id, child.content)}
+                          >
+                            <i className="fas fa-pen-to-square" />
+                          </button>
+                        </Tippy>
+                        <span className={styles.divider}>|</span>
+                        <Tippy content="삭제하기">
+                          <button
+                            className={styles["btn-delete"]}
+                            onClick={() => handleAskDelete(child.id)}
+                          >
+                            <i className="fas fa-trash-alt" />
+                          </button>
+                        </Tippy>
+                      </div>
+                    )}
                   </div>
-                  <div className={styles["reply-description"]}>
-                    {child.content}
-                  </div>
+
+                  {editId === child.id ? (
+                    <>
+                      <textarea
+                        className={styles["reply-description-input"]}
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                      />
+                      <div className={styles["reply-btn-group"]}>
+                        <button
+                          className={styles["submit-reply-btn"]}
+                          onClick={() => handleSave(child.id)}
+                        >
+                          save
+                        </button>
+                        <button
+                          className={styles["cancel-reply-btn"]}
+                          onClick={handleCancel}
+                        >
+                          cancel
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className={styles["reply-description"]}>
+                      {child.content}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
