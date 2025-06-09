@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #111827;
+    background-color: #1e1f26; /* 앱 메인 다크 색상 */
   color: #fff;
   font-family: 'Pretendard', sans-serif;
 }
