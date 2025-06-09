@@ -14,18 +14,15 @@ import MySeenMoviePage from './pages/MySeenMoviePage'
 import ScrollToTop from './components/common/ScrollToTop'; 
 import ProfilePage from './pages/ProfilePage';
 import EditPostPage from './pages/EditPostPage';
-import MySeenMoviePage from './pages/MySeenMoviePage';
-import ScrollToTop from './components/common/ScrollToTop';
 import SignupIDPage from './pages/SignupIdPage';
 import SignupSplashScreen from './components/splash/SignupSplashScreen';
 import SignupGenrePage from './pages/SignupGenrePage';
 import AuthCallback from './pages/AuthCallback'; // 경로는 실제 파일 경로에 맞게 수정
-
+import SignupCompletePage from './pages/SignupCompletePage';
 import './App.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import './pages/MySeenMoviePage.css';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(() => {
@@ -81,8 +78,11 @@ export default function App() {
                 </motion.div>
               }
             />
+          <Route path="/signup/complete" element={<SignupCompletePage />} />
+
           <Route path="/signup/splash" element={<SignupSplashScreen />} />
           <Route path="/kakao/callback" element={<AuthCallback />} />
+
 
           {/* 메인 홈 */}
           <Route path="/home" element={<HomePage />} />
@@ -106,11 +106,11 @@ export default function App() {
           <Route
             path="/My-movies"
             element={
-              <motion.div
-                initial={{ x: '100%', opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.7 }}
-              >
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                >
                 <ScrollToTop />
                 <MySeenMoviePage />
               </motion.div>
@@ -120,7 +120,7 @@ export default function App() {
           {/* 세부 페이지들 */}
           <Route path="/details" element={<DetailPage />} />
           <Route path="/details/:id" element={<DetailPage />} />
-          <Route path="/reviews" element={<ReviewPage />} />
+          <Route path="/reviews/:id" element={<ReviewPage />} />
           <Route path="/posts" element={<PostPage />} />
           <Route path="/writePosts" element={<WritePostPage />} />
           <Route path="/postDetails" element={<PostDetailPage />} />

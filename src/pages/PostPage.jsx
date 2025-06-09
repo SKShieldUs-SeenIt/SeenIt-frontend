@@ -1,10 +1,17 @@
 import styles from "./PostPage.module.css";
 import moviePoster from "../assets/movie.jpg";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams, useLocation } from "react-router-dom";
 import CommonHeader from "../components/common/CommonHeader";
 import CommonMovieInfo from "../components/common/CommonMovieInfo";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllPosts } from "../actions/postAction";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import { fetchPostsByContent } from "../actions/postAction";
 
 const containerVariants = {
   hidden: {},
@@ -26,38 +33,47 @@ const itemVariants = {
 
 function PostPage() {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([]);
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const contentType = location.state?.contentType;
+  const contentId = location.state?.contentId;
+
+  const posts = useSelector((state) => state.posts.posts);
+  const user = useSelector((state) => state.user.user);
+
+  const [movie, setMovie] = useState(null);
+
+  const sortedPosts = posts.slice().sort((a, b) => {
+    if (!user || !a.user || !b.user) return 0;
+    if (a.user.userId === user.userId && b.user.userId !== user.userId)
+      return -1;
+    if (a.user.userId !== user.userId && b.user.userId === user.userId)
+      return 1;
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
 
   useEffect(() => {
-    // localStorage.removeItem("posts");
-    const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-    setPosts(savedPosts);
-  }, []);
+    if (!contentType || !contentId) return;
 
-  const postsList = [
-    {
-      id: 1,
-      username: "User 1",
-      title: "Post Title 1",
-      description: "Description for Post 1",
-      createdAt: "2025-06-01",
-    },
-    {
-      id: 2,
-      username: "User 2",
-      title: "Post Title 2",
-      description: "Description for Post 2",
-      createdAt: "2025-06-02",
-    },
-    {
-      id: 3,
-      username: "User 3",
-      title: "Post Title 3",
-      description: "Description for Post 3",
-      createdAt: "2025-06-03",
-    },
-    // 추가적으로 더 데이터를 넣을 수 있음
-  ];
+    if (contentType === "MOVIE") {
+      axios
+        .get(`/api/movies/${contentId}`)
+        .then((res) => {
+          setMovie(res.data);
+        })
+        .catch((err) => {
+          console.error("❌ 영화 불러오기 실패:", err);
+        });
+    }
+  }, [contentType, contentId]);
+
+  useEffect(() => {
+    if (contentType && contentId) {
+      dispatch(fetchPostsByContent(contentType, contentId));
+    } else {
+      dispatch(fetchAllPosts());
+    }
+  }, [dispatch, contentType, contentId]);
 
   return (
     <motion.div
@@ -68,94 +84,79 @@ function PostPage() {
       <div>
         <CommonHeader title="Posts" />
         <motion.div className={styles["post-container"]}>
-          <CommonMovieInfo
-            title="The Last of Us"
-            director="Neil Druckmann"
-            poster={moviePoster}
-          />
+          {movie && (
+            <CommonMovieInfo
+              title={movie.title}
+              director={movie.releaseDate || "Unknown"}
+              poster={
+                movie.posterPath
+                  ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                  : moviePoster
+              }
+            />
+          )}
 
           <div className={styles["write-post-container"]}>
-            <motion.button
-              className={`${styles.btn} ${styles.writePosts}`}
-              onClick={() => navigate("/writePosts")}
-              initial={{ y: -30, scale: 0.8, opacity: 0 }}
-              animate={{ y: 0, scale: 1, opacity: 1 }}
-              whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+            <Tippy
+              content="게시글 작성"
+              placement="top"
+              animation="shift-away"
+              arrow={true}
+              asChild
             >
-              Write Post
-            </motion.button>
+              <motion.button
+                className={`${styles.btn} ${styles.writePosts}`}
+                onClick={() =>
+                  navigate("/writePosts", {
+                    state: {
+                      contentId: contentId,
+                      contentType: contentType,
+                    },
+                  })
+                }
+                initial={{ y: -30, scale: 0.8, opacity: 0 }}
+                animate={{ y: 0, scale: 1, opacity: 1 }}
+                whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+              >
+                <i
+                  className="fa-solid fa-pencil"
+                  style={{ fontSize: "1.2rem" }}
+                ></i>
+              </motion.button>
+            </Tippy>
           </div>
 
-          {posts.map((post, index) => (
-            <motion.div
-              key={index}
-              className={styles["post-list-item"]}
-              variants={itemVariants}
-              onClick={() =>
-                navigate(`/postDetails/${post.id}`, {
-                  state: {
-                    id: post.id,
-                    username: post.username,
-                    title: post.title,
-                    description: post.description,
-                    createdAt: post.createdAt,
-                  },
-                })
-              }
-            >
-              <div className={styles["post-user"]}>
-                <div className={styles["user-info"]}>
-                  <i
-                    className={`fas fa-user-circle ${styles["user-icon"]}`}
-                  ></i>
-                  <span className={styles["post-username"]}>
-                    {post.username}
-                  </span>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {sortedPosts.map((post) => (
+              <motion.div
+                key={post.id}
+                className={styles["post-list-item"]}
+                variants={itemVariants}
+                onClick={() => navigate(`/posts/${post.code}`)}
+              >
+                <div className={styles["post-user"]}>
+                  <div className={styles["user-info"]}>
+                    <i
+                      className={`fas fa-user-circle ${styles["user-icon"]}`}
+                    ></i>
+                    <span className={styles["post-username"]}>
+                      {post.user.name}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className={styles["post-title"]}>{post.title}</div>
-              <div className={styles["post-desc"]}>{post.description}</div>
-              <div className={styles["post-footer"]}>
-                <div className={styles["post-date"]}>{post.createdAt}</div>
-              </div>
-            </motion.div>
-          ))}
-
-          {postsList.map((item) => (
-            <motion.div
-              key={item.id}
-              className={styles["post-list-item"]}
-              variants={itemVariants}
-              onClick={() =>
-                navigate(`/postDetails/${item.id}`, {
-                  state: {
-                    id: item.id,
-                    username: item.username,
-                    title: item.title,
-                    description: item.description,
-                    createdAt: item.createdAt,
-                  },
-                })
-              } // 예시로 post ID 추가
-            >
-              <div className={styles["post-user"]}>
-                <div className={styles["user-info"]}>
-                  <i
-                    className={`fas fa-user-circle ${styles["user-icon"]}`}
-                  ></i>
-                  <span className={styles["post-username"]}>
-                    {item.username}
-                  </span>
+                <div className={styles["post-title"]}>{post.title}</div>
+                <div className={styles["post-desc"]}>{post.body}</div>
+                <div className={styles["post-footer"]}>
+                  <div className={styles["post-date"]}>{post.createdAt}</div>
                 </div>
-              </div>
-              <div className={styles["post-title"]}>{item.title}</div>
-              <div className={styles["post-desc"]}>{item.description}</div>
-              <div className={styles["post-footer"]}>
-                <div className={styles["post-date"]}>{item.createdAt}</div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
     </motion.div>

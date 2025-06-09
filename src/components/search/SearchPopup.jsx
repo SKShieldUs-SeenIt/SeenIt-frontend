@@ -1,26 +1,33 @@
-import React from 'react';
+// src/components/search/SearchPopup.jsx
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import styles from './SearchPopup.module.css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import MovieCard from '../home/MovieCard';
-
-// 더미 영화 데이터
-const dummyMovies = [
-  { id: 1, title: 'Inception' },
-  { id: 2, title: 'The Dark Knight' },
-  { id: 3, title: 'Interstellar' },
-  { id: 4, title: 'Parasite' },
-  { id: 5, title: 'La La Land' },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSearchMovies } from '../../actions/movieAction';
 
 export default function SearchPopup({ onClose }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const searchResults = useSelector((state) => state.movies.search);
+  const [query, setQuery] = useState('');
 
-  const handleGoToDetail = (id) => {
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (query.trim() !== '') {
+        dispatch(fetchSearchMovies(query));
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [query, dispatch]);
+
+  const handleGoToDetail = (tmdbId) => {
     onClose();
-    navigate(`/details/${id}`);
+    navigate(`/details/${tmdbId}`);
   };
 
   return (
@@ -35,30 +42,35 @@ export default function SearchPopup({ onClose }) {
           <input
             type="text"
             className={styles.searchInput}
-            placeholder="Search for movies..."
+            placeholder="영화를 검색해보세요"
             autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
           />
-          <button className={styles.closeBtn} onClick={onClose}>
-            ✖
-          </button>
+          <button className={styles.closeBtn} onClick={onClose}>✖</button>
         </div>
 
         <h2 className={styles.popupTitle}>검색 결과</h2>
 
-        <Swiper
-          grabCursor={true}
-          spaceBetween={16}
-          slidesPerView={'auto'}
-          className={styles.swiper}
-        >
-          {dummyMovies.map((movie) => (
+        <Swiper grabCursor={true} spaceBetween={16} slidesPerView={'auto'} className={styles.swiper}>
+          {searchResults.map((movie) => (
             <SwiperSlide
               key={movie.id}
               className={styles.slide}
-              onClick={() => handleGoToDetail(movie.id)}
+              onClick={() => handleGoToDetail(movie.tmdbId)}
               style={{ cursor: 'pointer' }}
             >
-              <MovieCard title={movie.title} />
+              <MovieCard
+                title={movie.title}
+                  posterPath={
+                    movie.posterPath
+                      ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                      : null
+                  }
+                combinedRating={movie.combinedRating}
+                reviewCount={movie.reviewCount}
+                tmdbId={movie.tmdbId}
+              />
             </SwiperSlide>
           ))}
         </Swiper>

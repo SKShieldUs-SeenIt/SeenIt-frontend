@@ -28,6 +28,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
+      background-color: #1e1f26; /* 앱 메인 다크 색상 */
+
 }
 
 h1 {
@@ -51,7 +53,7 @@ button:hover {
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  /* outline: 4px auto -webkit-focus-ring-color; */
 }
 
 @media (prefers-color-scheme: light) {

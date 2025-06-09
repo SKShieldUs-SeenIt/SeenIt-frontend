@@ -63,14 +63,16 @@
   color: #fff;
 }
 
+/* SearchPopup.module.css */
+
 .swiper {
-  overflow: visible;
-  padding: 10px 0;
-  
+  padding: 0 1rem;
+  overflow: visible; /* ✅ 슬라이드 넘침 방지 */
 }
 
 .slide {
-  width: 180px;
+  width: 240px !important; /* ✅ SwiperSlide 크기 지정 */
+  flex-shrink: 0;
 }
 
 .detailBtnWrapper {
