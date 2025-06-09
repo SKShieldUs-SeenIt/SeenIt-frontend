@@ -57,7 +57,7 @@ function EditPostPage() {
       setShowWarningModal(true);
       setTimeout(() => {
         setShowWarningModal(false);
-        navigate(`/postDetails/${post.code}`, {
+        navigate(`/posts/${post.code}`, {
           state: {
             ...post,
             title,
