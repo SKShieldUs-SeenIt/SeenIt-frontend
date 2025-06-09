@@ -91,11 +91,11 @@ export default function App() {
           <Route
             path="/all-movies"
             element={
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, ease: 'easeOut' }}
-                  >
+              <motion.div
+                initial={{ x: '100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.7 }}
+              >
                 <ScrollToTop />
                 <AllMoviesPage />
               </motion.div>
@@ -124,7 +124,7 @@ export default function App() {
           <Route path="/posts" element={<PostPage />} />
           <Route path="/writePosts" element={<WritePostPage />} />
           <Route path="/postDetails" element={<PostDetailPage />} />
-          <Route path="/posts/:code" element={<PostDetailPage />} />
+          <Route path="/postDetails/:id" element={<PostDetailPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/editPost/:id" element={<EditPostPage />} />
 

@@ -1,9 +1,10 @@
 // src/pages/signup/SignupCompletePage.jsx
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './SignupCompletePage.css';
 import { useDispatch } from 'react-redux';
-import { updateUserInfo } from '../actions/userAction'; // ✅ 이미 만든 액션 사용
+import { motion } from 'framer-motion';
+import { updateUserInfo } from '../actions/userAction';
+import styles from './SignupCompletePage.module.css'; // ✅ CSS Module 적용
 
 export default function SignupCompletePage() {
   const location = useLocation();
@@ -34,9 +35,18 @@ export default function SignupCompletePage() {
   }, [nickname, genres, navigate, dispatch]);
 
   return (
-    <div className="signup-complete-container">
-      <h1 className="signup-complete-title"> 회원가입이 완료되었습니다!</h1>
-      <p className="signup-complete-subtitle">잠시 후 홈으로 이동합니다...</p>
+    <div className={styles.container}>
+      <motion.div
+        className={styles.card}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <i className={`fas fa-check-circle ${styles.icon}`}></i>
+        <h1 className={styles.title}>회원가입 완료!</h1>
+        <p className={styles.subtitle}>잠시 후 홈으로 이동합니다...</p>
+        <div className={styles.spinner}></div>
+      </motion.div>
     </div>
   );
 }
