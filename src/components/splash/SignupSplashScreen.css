@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #111827;
+    background-color: #1e1f26; /* 앱 메인 다크 색상 */
   color: white;
   animation: fadeIn 1s ease-in-out;
 }
